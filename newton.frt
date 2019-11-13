@@ -6,16 +6,19 @@ fdup f* 2e f-
 2e f*
 ;
 
-: fnext ( r -- r )
+: next ( r -- r )
 fdup fdup fn fswap fn' f/ f-
 ;
 
-: fnear ( r1 r2 -- f )
+: near ( r1 r2 -- f )
 f- fabs 1e-12 f<
 ;
 
 : fnew ( r -- r )
 begin 
-    fdup fnext fswap fover
-fnear until
+    fdup next ( x1 x2 )
+    fswap fover ( x2 x1 x2 )
+near until
 ;
+
+
