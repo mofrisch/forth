@@ -1,7 +1,28 @@
-: letter-I ( char -- f )
-    DUP [CHAR] I = SWAP [CHAR] i = OR
+: letter-I ( char -- char f )
+    DUP DUP [CHAR] I = SWAP [CHAR] i = OR
 ;
 
+: letter-J ( char -- char f )
+    DUP DUP [CHAR] J = SWAP [CHAR] j = OR
+;
+
+: print-UP ( f -- )
+    ." UP" DROP
+;
+
+: print-LEFT ( f -- )
+    ." LEFT" DROP
+;
+
+: printkey2 ( char -- )
+    letter-I IF print-UP
+        ELSE 
+        letter-J IF print-LEFT
+            ELSE 
+                EMIT 
+            THEN
+        THEN
+;
 
 : printkey ( char -- )
     
