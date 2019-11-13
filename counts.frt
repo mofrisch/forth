@@ -82,7 +82,8 @@ page swap 0 do dup i - spaces stars cr loop drop
 : ramp ( n -- )
     dup 0 do 
         dup i swap 2 / < if 
-        i 1+ 7 min . else 
-        dup  i - 7 min . then 
+        i 1+ else 
+        dup i - then 
+        7 min .
     loop drop
 ;
