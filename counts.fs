@@ -64,7 +64,7 @@ page swap 0 do dup i - spaces stars cr loop drop
         dup i line
     loop
     dup 1 > if 
-        dup 2- 0 swap do
+        dup 2 - 0 swap do
             dup i line
         -1 +loop
     then

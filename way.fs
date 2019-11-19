@@ -1,6 +1,6 @@
 
 : upper ( char -- char )
-    DUP [CHAR] i [char] m 1 + WITHIN IF 32 - THENi
+    dup [char] i [char] m 1 + within if 32 - then
 ;
 
 : printkey ( char -- )
