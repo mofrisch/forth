@@ -18,7 +18,7 @@ static cell *sp = stack-1;
 
 static XT *dictionary;
 static XT *macros;
-static XT **definitions;
+static XT **definitions=&dictionary;
 static XT **ip;
 
 static XT **r_base[RETURN_STACK_SIZE];
@@ -233,8 +233,8 @@ static void compiling(char *w) {
         *code++=current_xt;
     } else { // not found, may be a number
         char *end;
-        long long number=strtol(w, &end, 0);
-        if(*end) terminate("word not found");
+        long number=strtol(w, &end, 0);
+        if(*end) error("word not found");
         else literal(number); // compile a number literal
     }
 }
@@ -248,13 +248,13 @@ static void interpreting(char *w) {
     } else { // not found, may be a number
         char *end;
         long number=strtol(w, &end, 0);
-        if(*end) terminate("word not found");
+        if(*end) error("word not found");
         else sp_push(number);
     }
 }
 static void vm(void) {
     for(;;) {
-        current_xt=*ip++;
+        current_xt = *ip++;
         current_xt->primitive();
     }
 }
@@ -263,6 +263,7 @@ int main() {
     register_primitives();
 
     /* we compile interpreting by hand */
+    
     add_word("shell", p_docol); // define a new high level word
     XT **begin=code;
     compile(xt_word);
@@ -277,6 +278,7 @@ int main() {
     *code++=xt_bye; // leave VM
 
     ip=begin; // set instruction pointer
+    print_banner();
     vm(); // and run the vm
 
     return 0;

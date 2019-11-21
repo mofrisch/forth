@@ -16,5 +16,5 @@ int skip_space( void );
 void terminate( char *msg );
 char *word( void );
 char *to_pad(char *str);
-
+void print_banner(void);
 #endif /* utils_h */

@@ -28,7 +28,7 @@ void terminate(char *msg) {
 }
 
 char *word(void) { // symbol might have maximal 256 bytes
-    static char buffer[256], *end=buffer+sizeof(buffer)-1;
+    static char buffer[SYMBOL_SIZE], *end=buffer+sizeof(buffer)-1;
     char *p=buffer, ch;
     if(!(ch=skip_space())) return 0; // no more input
     *p++=ch;
@@ -49,3 +49,10 @@ char *to_pad(char *str) {
     scratch[len]=0; // zero byte at string end
     return scratch;
 }
+
+void print_banner() {
+    printf("Forth v0.0\n");
+    print_ok();
+}
+
+
