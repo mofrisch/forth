@@ -14,14 +14,14 @@
 
 static cell stack[STACK_SIZE];
 static cell *stack_end = stack+STACK_SIZE-1;
-static cell *sp = stack - 1;
+static cell *sp = stack-1;
 
-static XT *dict;
+static XT *dictionary;
 
-void print_ok(void) { // print data stack, than ok>
+void print_ok(void) {
     cell *s;
     for(s = stack; s <= sp; s++) {
-        printf("%ld ", *s);
+        printf("%lld ", *s);
     }
     printf("ok> ");
 }
@@ -54,23 +54,23 @@ static cell pop(void) {
     }
 }
 
-static XT *find(char *w) {
-    XT *xt;
+static XT *find(char *word) {
+    XT *_xt;
     
-    for( xt=dict; xt; xt=xt->next ) {
-        if( !strcmp( xt->name, w ) ) {
-            return xt;
+    for( _xt=dictionary; _xt; _xt=_xt->next ) {
+        if( !strcmp( _xt->name, word ) ) {
+            return _xt;
         }
     }
     return 0;
 }
 
 void add_word(char *name, void (*primitive)(void)) {
-    XT *xt = calloc( 1, sizeof( XT ) );
-    xt->next = dict;
-    dict = xt;
-    xt->name = strdup(name);
-    xt->primitive = primitive;
+    XT *_xt = calloc( 1, sizeof( XT ) );
+    _xt->next = dictionary;
+    dictionary = _xt;
+    _xt->name = strdup(name);
+    _xt->primitive = primitive;
 }
 
 static void p_drop( void ) {
@@ -78,15 +78,15 @@ static void p_drop( void ) {
 }
 
 static void p_words( void ) {
-    XT *w;
-    for( w = dict; w; w = w->next ) {
-        printf("%s ", w->name);
+    XT *_xt;
+    for( _xt = dictionary; _xt; _xt = _xt->next ) {
+        printf("%s ", _xt->name);
     }
     printf("\n");
 }
 
 static void p_dot(void) {
-    printf("%ld \n", pop());
+    printf("%lld \n", pop());
 }
 
 static void p_mul(void) {
@@ -118,10 +118,10 @@ static void register_primitives(void) {
 }
 
 static void interpret(char *w) {
-    XT * _XT;
+    XT * _xt;
     
-    if((_XT=find(w))) {
-        _XT->primitive();
+    if((_xt=find(w))) {
+        _xt->primitive();
     }
     else { // not found, may be a number
         char *end;

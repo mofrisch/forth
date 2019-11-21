@@ -15,8 +15,8 @@
 #include <string.h>
 
 
-#define cell long
-#define STACK_SIZE 4
+#define cell long long
+#define STACK_SIZE 256
 
 void print_ok(void);
 
