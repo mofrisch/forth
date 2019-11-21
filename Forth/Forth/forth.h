@@ -17,6 +17,8 @@
 
 #define cell long long
 #define STACK_SIZE 256
+#define RETURN_STACK_SIZE 32
+#define CODE_SIZE 65536
 
 void print_ok(void);
 
@@ -24,6 +26,7 @@ typedef struct XT {
     struct XT *next;
     char *name;
     void (*primitive)(void);
+    struct XT **data;
 } XT;
 
 #endif /* forth_h */

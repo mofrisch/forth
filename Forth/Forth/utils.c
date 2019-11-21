@@ -27,12 +27,25 @@ void terminate(char *msg) {
     exit(1);
 }
 
-char *word(void) {
-    static char buffer[256], *end = buffer + sizeof(buffer) - 1;
+char *word(void) { // symbol might have maximal 256 bytes
+    static char buffer[256], *end=buffer+sizeof(buffer)-1;
     char *p=buffer, ch;
-    if(!(ch=skip_space())) return 0;
-    *p ++ = ch;
-    while(p<end && (ch=next_char()) && !isspace(ch)) *p++=ch;
-    *p=0;
+    if(!(ch=skip_space())) return 0; // no more input
+    *p++=ch;
+    if(ch=='"') { // +course02: string handling
+        while(p<end && (ch=next_char()) && ch!='"') *p++=ch;
+    } else {
+        while(p<end && (ch=next_char()) && !isspace(ch)) *p++=ch;
+    }
+    *p=0; // zero terminated string
     return buffer;
+}
+
+char *to_pad(char *str) {
+    static char scratch[1024];
+    long len=strlen(str);
+    if(len>sizeof(scratch)-1) len=sizeof(scratch)-1;
+    memcpy(scratch, str, len);
+    scratch[len]=0; // zero byte at string end
+    return scratch;
 }
