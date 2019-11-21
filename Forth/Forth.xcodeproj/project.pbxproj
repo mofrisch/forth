@@ -23,7 +23,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		CD25B0582386FCC100493370 /* first.4th */ = {isa = PBXFileReference; lastKnownFileType = text; path = first.4th; sourceTree = "<group>"; };
 		CDA578D0238444BC00C54A1B /* Forth */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Forth; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA578D3238444BC00C54A1B /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		CDA578DA2384473200C54A1B /* forth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = forth.h; sourceTree = "<group>"; };
@@ -60,7 +59,6 @@
 			isa = PBXGroup;
 			children = (
 				CDA578D3238444BC00C54A1B /* main.c */,
-				CD25B0582386FCC100493370 /* first.4th */,
 				CDA578DA2384473200C54A1B /* forth.h */,
 			);
 			path = Forth;

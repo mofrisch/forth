@@ -49,11 +49,11 @@ static void interpreting(char *w);
 
 static void print_ok(void) {
     cell *s;
-    printf("< ");
+    printf("[ ");
     for(s = stack; s <= sp; s++) {
         printf("%lld ", *s);
     }
-    printf(is_compile_mode ? "> # " : "> ok> ");
+    printf(is_compile_mode ? "] # " : "] ok> ");
 }
 
 void print_banner() {
