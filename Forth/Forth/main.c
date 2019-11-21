@@ -11,7 +11,6 @@
 
 #include "forth.h"
 
-
 static cell stack[STACK_SIZE];
 static cell *stack_end = stack+STACK_SIZE-1;
 static cell *sp = stack-1;
@@ -70,7 +69,7 @@ static int next_char(void) {
 
 int skip_space(void) {
     int ch;
-    while( ( ch=next_char() ) && isspace( ch ) );
+    while( ( ch=next_char() ) && isspace(ch) );
     return ch;
 }
 
@@ -78,8 +77,6 @@ void terminate(char *msg) {
     fprintf(stderr, "terminated: %s\n", msg);
     exit(1);
 }
-
-
 
 char *word(void) {
     static char buffer[256], *end=buffer+sizeof(buffer)-1;
