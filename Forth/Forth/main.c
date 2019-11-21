@@ -63,11 +63,11 @@ void print_banner() {
 
 static int next_char(void) {
     static int last_char;
-    if( last_char == '\n' ) print_ok();
+    if( (last_char == '\n') && (src == stdin)) print_ok();
     last_char = fgetc(src);
     if( src != stdin && last_char == EOF) {
         src = stdin;
-        last_char = '\n';
+        last_char = ' ';
     }
     return last_char == EOF ? 0 : last_char;
 }
@@ -489,7 +489,6 @@ int main(int argc, char *argv[]) {
     register_primitives();
     print_banner();
     if(argc == 2) {
-        printf("reading from %s\n", argv[1]);
         src = fopen(argv[1], "r");
     }
     else {
