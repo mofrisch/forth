@@ -10,7 +10,7 @@
 
 
 #include "forth.h"
-#include "utils.h"
+
 
 static cell stack[STACK_SIZE];
 static cell *stack_end = stack+STACK_SIZE-1;
@@ -47,13 +47,63 @@ static XT *compile(XT *xt);
 static void interpreting(char *w);
 
 
-void print_ok(void) {
+static void print_ok(void) {
     cell *s;
+    printf("< ");
     for(s = stack; s <= sp; s++) {
         printf("%lld ", *s);
     }
-    printf(is_compile_mode ? "compile> " : "ok> ");
+    printf(is_compile_mode ? "> # " : "> ok> ");
 }
+
+void print_banner() {
+    printf("Forth v0.0\n");
+    print_ok();
+}
+
+static int next_char(void) {
+    static int last_char;
+    if( last_char == '\n' ) print_ok();
+    last_char = fgetc( stdin );
+    return last_char == EOF ? 0 : last_char;
+}
+
+int skip_space(void) {
+    int ch;
+    while( ( ch=next_char() ) && isspace( ch ) );
+    return ch;
+}
+
+void terminate(char *msg) {
+    fprintf(stderr, "terminated: %s\n", msg);
+    exit(1);
+}
+
+
+
+char *word(void) {
+    static char buffer[256], *end=buffer+sizeof(buffer)-1;
+    char *p=buffer, ch;
+    if(!(ch=skip_space())) return 0; // no more input
+    *p++=ch;
+    if(ch=='"') { // +course02: string handling
+        while(p<end && (ch=next_char()) && ch!='"') *p++=ch;
+    } else {
+        while(p<end && (ch=next_char()) && !isspace(ch)) *p++=ch;
+    }
+    *p=0; // zero terminated string
+    return buffer;
+}
+
+char *to_pad(char *str) {
+    static char scratch[1024];
+    long len=strlen(str);
+    if(len>sizeof(scratch)-1) len=sizeof(scratch)-1;
+    memcpy(scratch, str, len);
+    scratch[len]=0; // zero byte at string end
+    return scratch;
+}
+
 
 static void clean_stack() {
     sp = stack-1;
@@ -104,7 +154,7 @@ static XT **rp_pop( void ) {
 
 static XT *find(XT *dict, char *word) {
     for(; dict; dict=dict->next ) {
-        if( !strcmp( dict->name, word ) ) {
+        if( !strcasecmp( dict->name, word ) ) {
             return dict;
         }
     }
@@ -112,7 +162,7 @@ static XT *find(XT *dict, char *word) {
 }
 
 static XT* add_word(char *name, void (*primitive)(void)) {
-    XT *_xt = calloc( 1, sizeof( XT ) );
+    XT *_xt = calloc(1, sizeof(XT));
     _xt->next = *definitions;
     *definitions = _xt;
     _xt->name = strdup(name);
@@ -136,7 +186,7 @@ static void p_words( void ) {
 }
 
 static void p_dot(void) {
-    printf("%lld \n", sp_pop());
+    printf("%lld ", sp_pop());
 }
 
 static void p_mul(void) {
@@ -156,7 +206,7 @@ static void p_sub(void) {
 
 static void p_div(void) {
     cell v1 = sp_pop();
-    *sp/=v1;
+    *sp /= v1;
 }
 
 static void p_hello_world(void) {
@@ -176,30 +226,30 @@ static void p_cr(void){ // course02, newline
 
 static void p_docol(void) {
     rp_push(ip);
-    ip=current_xt->data;
+    ip = current_xt->data;
 }
 
 static void p_colon(void) {
-    char *w=word();
+    char *w = word();
     add_word(strdup(w), p_docol);
-    is_compile_mode=1;
+    is_compile_mode = 1;
 }
 
 static void p_semis(void) {
     compile(xt_leave);
-    is_compile_mode=0;
+    is_compile_mode = 0;
 }
 
 static void p_leave(void) {
-    ip=rp_pop();
+    ip = rp_pop();
 }
 
 static void p_lit(void) {
-    sp_push((cell)*ip++);
+    sp_push( (cell) *ip++);
 }
 
 static void p_branch(void) {
-    ip=(void*)*ip;
+    ip= (void*) *ip;
 }
 
 static void p_0branch(void) {
@@ -229,7 +279,8 @@ static void p_interpreting(void) {
 }
 
 static void p_dup(void){
-    cell t=*sp; sp_push(t);
+    cell t= *sp;
+    sp_push(t);
 }
 
 static void p_swap(void) {
@@ -290,13 +341,13 @@ static void p_tick(void) {
     char *w=word();
     XT *xt=find(dictionary, w);
     if(xt) sp_push((cell)xt);
-    else   terminate("word not found");
+    else   error("word not found");
 }
 
 static void p_see(void) {
     p_tick();
-    XT *xt=(XT*)(*sp);
-    *sp=(cell)xt->data;
+    XT *xt = (XT*) (*sp);
+    *sp = (cell) xt->data;
     p_dis();
 }
 
@@ -320,10 +371,13 @@ static void register_primitives(void) {
     add_word("-", p_sub);
     add_word("*", p_mul);
     add_word("/", p_div);
+    
     add_word("hello", p_hello_world);
+    
     xt_drop = add_word("drop", p_drop);
     xt_dup=add_word("dup", p_dup);
     add_word("swap", p_swap);
+    
     add_word("words", p_words);
     add_word("type", p_type);
     add_word(".", p_dot);
@@ -430,7 +484,7 @@ static void vm(void) {
 
 int main() {
     register_primitives();
-
+    print_banner();
     /* we compile interpreting by hand */
     
     add_word("shell", p_docol); // define a new high level word
@@ -447,7 +501,7 @@ int main() {
     *code++ = xt_bye; // leave VM
 
     ip=begin; // set instruction pointer
-    print_banner();
+    
     vm(); // and run the vm
 
     return 0;
