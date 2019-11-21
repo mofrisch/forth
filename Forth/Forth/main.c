@@ -34,6 +34,9 @@ static XT *code_base[CODE_SIZE];
 static XT **code=code_base;
 static XT **code_end=code_base+CODE_SIZE-1;
 
+static XT *compile(XT *xt);
+static void interpreting(char *w);
+
 
 void print_ok(void) {
     cell *s;
@@ -72,12 +75,22 @@ static cell sp_pop(void) {
 }
 
 static void rp_push(XT **ip) {
-    if(rp==r_end) terminate("return stack overflow");
-    *++rp=ip;
+    if( rp == r_end ) {
+        terminate("return stack overflow");
+    }
+    else {
+        *++rp=ip;
+    }
 }
-static XT **rp_pop(void) {
-    if(rp<r_base) terminate("return stack underrun");
-    return *rp--;
+
+static XT **rp_pop( void ) {
+    if( rp < r_base ) {
+        terminate("return stack underrun");
+        return 0;
+    }
+    else {
+        return *rp--;
+    }
 }
 
 static XT *find(XT *dict, char *word) {
@@ -99,8 +112,7 @@ static XT* add_word(char *name, void (*primitive)(void)) {
     return _xt;
 }
 
-static XT *compile(XT *xt) ;
-static void interpreting(char *w) ;
+
 
 static void p_drop( void ) {
     sp_pop();
@@ -224,34 +236,49 @@ static void literal(cell value) {
 }
 
 static void compiling(char *w) {
-
-    if(*w=='"') {
-        literal((cell)strdup(w+1));
-    } else if((current_xt=find(macros, w))) { // if word is a macro execute it immediatly
+    if( *w == '"' ) {
+        literal( (cell) strdup(w+1) );
+    }
+    else if(( current_xt = find(macros, w) )) {
         current_xt->primitive();
-    } else if((current_xt=find(dictionary, w))) { // if word is in regular dictionary, compile it
-        *code++=current_xt;
-    } else { // not found, may be a number
+    }
+    else if(( current_xt=find(dictionary, w) )) {
+        *code++ = current_xt;
+    }
+    else {
         char *end;
         long number=strtol(w, &end, 0);
-        if(*end) error("word not found");
-        else literal(number); // compile a number literal
+        if ( *end ) {
+            error("word not found");
+        }
+        else {
+            literal(number);
+        }
     }
 }
+
 static void interpreting(char *w) {
-    if(is_compile_mode) return compiling(w);
-
-    if(*w=='"') { // +course02: string handling
-        sp_push((cell)to_pad(w+1));
-    } else if((current_xt=find(dictionary, w))) {
+    if( is_compile_mode ) {
+        return compiling(w);
+    }
+    if( *w=='"' ) {
+        sp_push( (cell) to_pad(w+1));
+    }
+    else if(( current_xt = find(dictionary, w) )) {
         current_xt->primitive();
-    } else { // not found, may be a number
+    }
+    else {
         char *end;
-        long number=strtol(w, &end, 0);
-        if(*end) error("word not found");
-        else sp_push(number);
+        long number = strtol(w, &end, 0);
+        if( *end ) {
+            error("word not found");
+        }
+        else {
+            sp_push(number);
+        }
     }
 }
+
 static void vm(void) {
     for(;;) {
         current_xt = *ip++;
@@ -265,17 +292,17 @@ int main() {
     /* we compile interpreting by hand */
     
     add_word("shell", p_docol); // define a new high level word
-    XT **begin=code;
+    XT **begin = code;
     compile(xt_word);
     compile(xt_dup);
     compile(xt_0branch); // if top of stack is null
-    XT **here=code++; // forward jump reference
+    XT **here = code++; // forward jump reference
     compile(xt_interpreting);
     compile(xt_branch);
-    *code++=(void*)begin; // Loop back
-    *here=(void*)code; // resolve reference
-    *code++=xt_drop;
-    *code++=xt_bye; // leave VM
+    *code++ = (void*) begin; // Loop back
+    *here = (void*) code; // resolve reference
+    *code++ = xt_drop;
+    *code++ = xt_bye; // leave VM
 
     ip=begin; // set instruction pointer
     print_banner();
