@@ -16,6 +16,14 @@
 
 
 #define cell long
-#define STACK_SIZE 256
+#define STACK_SIZE 4
+
+void print_ok(void);
+
+typedef struct XT {
+    struct XT *next;
+    char *name;
+    void (*primitive)(void);
+} XT;
 
 #endif /* forth_h */
