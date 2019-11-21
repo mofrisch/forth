@@ -368,6 +368,14 @@ static void p_xt_to_data(void) {
     *sp=(cell)((XT*)*sp)->data;
 }
 
+static void p_dots(void) {
+    cell *s;
+    for(s = stack; s <= sp; s++) {
+        printf("%lld ", *s);
+    }
+    printf("\n");
+}
+
 static void register_primitives(void) {
     add_word("+", p_add);
     add_word("-", p_sub);
@@ -379,6 +387,7 @@ static void register_primitives(void) {
     xt_drop = add_word("drop", p_drop);
     xt_dup=add_word("dup", p_dup);
     add_word("swap", p_swap);
+    add_word(".s", p_dots);
     
     add_word("words", p_words);
     add_word("type", p_type);
