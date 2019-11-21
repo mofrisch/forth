@@ -23,11 +23,6 @@
 
 void print_ok(void);
 
-typedef struct XT {
-    struct XT *next;
-    char *name;
-    void (*primitive)(void);
-    struct XT **data;
-} XT;
+
 
 #endif /* forth_h */

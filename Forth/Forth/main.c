@@ -16,17 +16,26 @@ static cell stack[STACK_SIZE];
 static cell *stack_end = stack+STACK_SIZE-1;
 static cell *sp = stack-1;
 
+typedef struct XT {
+    struct XT *next;
+    char *name;
+    void (*primitive)(void);
+    struct XT **data;
+    int has_literal;
+} XT;
+
 static XT *dictionary;
 static XT *macros;
 static XT **definitions=&dictionary;
 static XT **ip;
+static XT *latest;
 
 static XT **r_base[RETURN_STACK_SIZE];
 static XT ***r_end=r_base+RETURN_STACK_SIZE-1;
 static XT ***rp=r_base-1;
 
 static XT *current_xt;
-static XT *xt_dup, *xt_drop, *xt_interpreting, *xt_word, *xt_bye, *xt_lit, *xt_leave, *xt_branch, *xt_0branch;
+static XT *xt_dup, *xt_drop, *xt_interpreting, *xt_word, *xt_bye, *xt_lit, *xt_leave, *xt_branch, *xt_0branch, *xt_1branch;
 
 static int is_compile_mode;
 
@@ -43,7 +52,7 @@ void print_ok(void) {
     for(s = stack; s <= sp; s++) {
         printf("%lld ", *s);
     }
-    printf("ok> ");
+    printf(is_compile_mode ? "compile> " : "ok> ");
 }
 
 static void clean_stack() {
@@ -109,7 +118,7 @@ static XT* add_word(char *name, void (*primitive)(void)) {
     _xt->name = strdup(name);
     _xt->primitive = primitive;
     _xt->data = code;
-    return _xt;
+    return latest = _xt;
 }
 
 
@@ -138,6 +147,16 @@ static void p_mul(void) {
 static void p_add(void) {
     cell v1 = sp_pop();
     *sp += v1;
+}
+
+static void p_sub(void) {
+    cell v1 = sp_pop();
+    *sp -= v1;
+}
+
+static void p_div(void) {
+    cell v1 = sp_pop();
+    *sp/=v1;
 }
 
 static void p_hello_world(void) {
@@ -184,8 +203,21 @@ static void p_branch(void) {
 }
 
 static void p_0branch(void) {
-    if(sp_pop()) ip++;
-    else         ip=(void*)*ip;
+    if( sp_pop() ) {
+        ip++;
+    }
+    else {
+        ip = (void*) *ip;
+    }
+}
+
+static void p_1branch(void) {
+    if( sp_pop() ) {
+        ip = (void*) *ip;
+    }
+    else {
+        ip++;
+    }
 }
 
 static void p_word(void) {
@@ -200,12 +232,98 @@ static void p_dup(void){
     cell t=*sp; sp_push(t);
 }
 
+static void p_swap(void) {
+    cell t = *sp;
+    *sp = sp[-1];
+    sp[-1] = t;
+}
+
+static void p_if(void) {
+    compile(xt_0branch);
+    sp_push( (cell) code++);
+}
+
+static void p_else(void) {
+    XT ***dest = (void*) sp_pop();
+    compile(xt_branch);
+    sp_push( (cell) code++);
+    *dest = code;
+}
+
+static void p_then(void) {
+    XT ***dest= (void*) sp_pop();
+    *dest = code;
+}
+
+static void p_begin(void) {
+    sp_push( (cell) code);
+}
+
+static void p_while(void) {
+    compile(xt_1branch);
+    *code++ = (void*) sp_pop();
+}
+
+static void p_again(void) {
+    compile(xt_branch);
+    *code++= (void*) sp_pop();
+}
+
+static void p_exit(void) {
+    ip = rp_pop();
+}
+
+static void p_dis(void) {
+    XT **ip= (void*) sp_pop();
+    for(; (*ip)->primitive!=p_leave;ip++) {
+        XT *xt=*ip;
+        if(xt->has_literal) {
+            printf("%p %s %p\n", ip, xt->name, ip[1]);
+            ip++;
+        } else {
+            printf("%p %s\n", ip, xt->name);
+        }
+    }
+}
+
+static void p_tick(void) {
+    char *w=word();
+    XT *xt=find(dictionary, w);
+    if(xt) sp_push((cell)xt);
+    else   terminate("word not found");
+}
+
+static void p_see(void) {
+    p_tick();
+    XT *xt=(XT*)(*sp);
+    *sp=(cell)xt->data;
+    p_dis();
+}
+
+static void p_execute(void) {
+    XT *cur=current_xt;
+    current_xt=(void*)sp_pop();
+    current_xt->primitive();
+    current_xt=cur;
+}
+
+static void p_xt_to_name(void) {
+    *sp=(cell)((XT*)*sp)->name;
+}
+
+static void p_xt_to_data(void) {
+    *sp=(cell)((XT*)*sp)->data;
+}
+
 static void register_primitives(void) {
     add_word("+", p_add);
+    add_word("-", p_sub);
     add_word("*", p_mul);
+    add_word("/", p_div);
     add_word("hello", p_hello_world);
     xt_drop = add_word("drop", p_drop);
     xt_dup=add_word("dup", p_dup);
+    add_word("swap", p_swap);
     add_word("words", p_words);
     add_word("type", p_type);
     add_word(".", p_dot);
@@ -213,14 +331,38 @@ static void register_primitives(void) {
     add_word(":", p_colon);
     xt_bye = add_word("bye", p_bye);
     xt_leave=add_word("leave", p_leave);
+    
     xt_lit=add_word("lit", p_lit);
+    latest->has_literal=1;
+    
     xt_0branch=add_word("0branch", p_0branch);
+    latest->has_literal=1;
+    
+    xt_1branch=add_word("1branch", p_1branch);
+    latest->has_literal=1;
+    
     xt_branch=add_word("branch", p_branch);
+    latest->has_literal=1;
+    
     xt_word=add_word("word", p_word);
     xt_interpreting=add_word("interpreting", p_interpreting);
     
+    add_word("exit", p_exit);
+    add_word("'", p_tick);
+    add_word("execute", p_execute);
+    add_word("see", p_see);
+    add_word("dis", p_dis);
+    add_word("xt>data", p_xt_to_data);
+    add_word("xt>name", p_xt_to_name);
+    
     definitions=&macros;
     add_word(";", p_semis);
+    add_word("if", p_if);
+    add_word("then", p_then);
+    add_word("else", p_else);
+    add_word("begin", p_begin);
+    add_word("while", p_while);
+    add_word("again", p_again);
     definitions=&dictionary;
     
 }
