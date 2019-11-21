@@ -1,2 +1,0 @@
-: first-definition 1 . ;
-
