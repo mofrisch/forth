@@ -11,6 +11,7 @@
 
 #include "forth.h"
 
+FILE* src;
 static cell stack[STACK_SIZE];
 static cell *stack_end = stack+STACK_SIZE-1;
 static cell *sp = stack-1;
@@ -63,7 +64,11 @@ void print_banner() {
 static int next_char(void) {
     static int last_char;
     if( last_char == '\n' ) print_ok();
-    last_char = fgetc( stdin );
+    last_char = fgetc(src);
+    if( src != stdin && last_char == EOF) {
+        src = stdin;
+        last_char = '\n';
+    }
     return last_char == EOF ? 0 : last_char;
 }
 
@@ -479,9 +484,17 @@ static void vm(void) {
     }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    
     register_primitives();
     print_banner();
+    if(argc == 2) {
+        printf("reading from %s\n", argv[1]);
+        src = fopen(argv[1], "r");
+    }
+    else {
+        src = stdin;
+    }
     /* we compile interpreting by hand */
     
     add_word("shell", p_docol); // define a new high level word
@@ -500,7 +513,7 @@ int main() {
     ip=begin; // set instruction pointer
     
     vm(); // and run the vm
-
+    fclose(src);
     return 0;
 }
 
