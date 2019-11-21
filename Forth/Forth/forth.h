@@ -18,6 +18,6 @@
 #define STACK_SIZE 256
 #define RETURN_STACK_SIZE 32
 #define CODE_SIZE 65536
-#define SYMBOL_SIZE 1024
+#define SYMBOL_SIZE 256
 
 #endif /* forth_h */
