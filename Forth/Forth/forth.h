@@ -14,10 +14,12 @@
 #include <ctype.h>
 #include <string.h>
 
+
 #define cell long long
 #define STACK_SIZE 256
 #define RETURN_STACK_SIZE 32
 #define CODE_SIZE 65536
 #define SYMBOL_SIZE 256
 
+#define ERROR(MSG) error(MSG,__func__,__FILE__,__LINE__)
 #endif /* forth_h */

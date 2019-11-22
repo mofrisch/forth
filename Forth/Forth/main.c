@@ -57,7 +57,7 @@ static void print_ok(void) {
 }
 
 void print_banner() {
-    printf("Forth v0.0\n");
+    printf("moForth v0.0\n");
     print_ok();
 }
 
@@ -84,16 +84,17 @@ void terminate(char *msg) {
 }
 
 char *word(void) {
-    static char buffer[256], *end=buffer+sizeof(buffer)-1;
+    static char buffer[256], *end = buffer+sizeof(buffer)-1;
     char *p=buffer, ch;
-    if(!(ch=skip_space())) return 0; // no more input
-    *p++=ch;
-    if(ch=='"') { // +course02: string handling
-        while(p<end && (ch=next_char()) && ch!='"') *p++=ch;
-    } else {
+    if ( !( ch=skip_space() ) ) return 0;
+    *p++ = ch;
+    if( ch == '"' ) {
+        while( p < end && ( ch = next_char() ) && ch != '"' ) *p++ = ch;
+    }
+    else {
         while(p<end && (ch=next_char()) && !isspace(ch)) *p++=ch;
     }
-    *p=0; // zero terminated string
+    *p = 0;
     return buffer;
 }
 
@@ -111,27 +112,21 @@ static void clean_stack() {
     sp = stack-1;
 }
 
-static void error( const char *msg) {
+static int error( const char *msg, const char * fn, const char* file, int line) {
     clean_stack();
-    printf("error: %s \n", msg);
+    printf("error: %s in %s (%s:%d)\n", msg, fn, file, line);
+    return 1;
 }
 
 static void sp_push(cell value) {
-    if(sp == stack_end) {
-        error("Data stack overflow");
-    }
-    else {
-        *++sp=value;
-    }
+    if (sp != stack_end) *++sp=value;
+    else ERROR("stack overflow");
 }
 
 static cell sp_pop(void) {
-    if(sp < stack) {
-        error("Data stack underrun");
-        return 0;
-    }
+    if (sp >= stack) return *sp--;
     else {
-        return *sp--;
+        return ERROR("stack underflow");
     }
 }
 
@@ -197,8 +192,11 @@ static void p_mul(void) {
 }
 
 static void p_add(void) {
-    cell v1 = sp_pop();
-    *sp += v1;
+    if (sp > stack) {
+        cell v1 = sp_pop();
+        *sp += v1;
+    }
+    else ERROR("2 arguments needed");
 }
 
 static void p_sub(void) {
@@ -297,9 +295,12 @@ static void p_dup(void){
 }
 
 static void p_swap(void) {
-    cell t = *sp;
-    *sp = sp[-1];
-    sp[-1] = t;
+    if ( sp > stack ) {
+        cell t = *sp;
+        *sp = sp[-1];
+        sp[-1] = t;
+    } else ERROR("2 arguments needed");
+    
 }
 
 static void p_if(void) {
@@ -354,7 +355,7 @@ static void p_tick(void) {
     char *w=word();
     XT *xt=find(dictionary, w);
     if(xt) sp_push((cell)xt);
-    else   error("word not found");
+    else   ERROR("word not found");
 }
 
 static void p_see(void) {
@@ -395,7 +396,7 @@ static void p_over(void) {
     if ( sp > stack ) {
         cell t = sp[-1];
         sp_push(t);
-    } else error("over needs 2 arguments");
+    } else ERROR("2 arguments needed");
 }
 
 static void p_pick(void) {
@@ -403,7 +404,7 @@ static void p_pick(void) {
     if ( sp > stack+n-2 ) {
         cell t = sp[-n+1];
         sp_push(t);
-    } else error("pick found too few arguments");
+    } else ERROR("too few arguments");
 }
 
 static void p_rot(void) {
@@ -413,7 +414,7 @@ static void p_rot(void) {
         sp[-1] = *sp;
         *sp = t;
     }
-    else error("rot needs 3 arguments");
+    else ERROR("3 arguments needed");
 }
 
 static void register_primitives(void) {
@@ -499,7 +500,7 @@ static void compiling(char *w) {
         char *end;
         long number=strtol(w, &end, 0);
         if ( *end ) {
-            error("word not found");
+            ERROR("word not found");
         }
         else {
             literal(number);
@@ -521,7 +522,7 @@ static void interpreting(char *w) {
         char *end;
         long number = strtol(w, &end, 0);
         if( *end ) {
-            error("word not found");
+            ERROR("word not found");
         }
         else {
             sp_push(number);
