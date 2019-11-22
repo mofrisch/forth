@@ -392,14 +392,18 @@ static void p_depth(void) {
 }
 
 static void p_over(void) {
-    cell t = sp[-1];
-    sp_push(t);
+    if ( sp > stack ) {
+        cell t = sp[-1];
+        sp_push(t);
+    } else error("over needs 2 arguments");
 }
 
 static void p_pick(void) {
     cell n = sp_pop();
-    cell t = sp[-n+1];
-    sp_push(t);
+    if ( sp > stack+n-2 ) {
+        cell t = sp[-n+1];
+        sp_push(t);
+    } else error("pick found too few arguments");
 }
 
 static void p_rot(void) {

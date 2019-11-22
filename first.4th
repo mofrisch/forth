@@ -2,3 +2,4 @@
 : <> = invert ;
 : ?dup dup if dup then ;
 : nip swap drop ;
+: tuck swap over ;
