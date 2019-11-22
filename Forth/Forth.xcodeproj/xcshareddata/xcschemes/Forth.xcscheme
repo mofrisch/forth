@@ -52,7 +52,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "/Users/mo/development/forth/first.4th"
+            argument = "/Users/mo/development/forth/Forth/Forth/first.4th"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

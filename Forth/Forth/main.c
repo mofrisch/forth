@@ -185,49 +185,42 @@ static void p_dot(void) {
 }
 
 static void p_mul(void) {
-    if (sp > stack) {
+    ARGUMENTS_LESS(2) else {
         cell v1 = *sp--;
         *sp *= v1;
     }
-    else ARG_ERROR("2");
 }
 
 static void p_add(void) {
-    if (sp > stack) {
+    ARGUMENTS_LESS(2) else {
         cell v1 = *sp--;
         *sp += v1;
     }
-    else ARG_ERROR("2");
 }
 
 static void p_sub(void) {
-    if (sp > stack) {
+    ARGUMENTS_LESS(2) else {
         cell v1 = *sp--;
         *sp -= v1;
     }
-    else ARG_ERROR("2");
 }
 
 static void p_div(void) {
-    if (sp > stack) {
+    ARGUMENTS_LESS(2) else {
         cell v1 = *sp--;
         *sp /= v1;
     }
-    else ARG_ERROR("2");
 }
 
 static void p_equals(void) {
-    if (sp > stack) {
+    ARGUMENTS_LESS(2) else {
         cell v1 = *sp--;
-        if (v1 == *sp--) *++sp=-1;
-        else *++sp=0;
+        if (v1 == *sp--) *sp-- = -1; else *sp-- = 0;
     }
-    else ARG_ERROR("2");
 }
 
 static void p_invert(void) {
-    if (sp >= stack) {*sp = -!*sp;}
-    else ARG_ERROR("1");
+    ARGUMENTS_LESS(1) else *sp = -!*sp;
 }
 
 static void p_hello_world(void) {
@@ -305,12 +298,11 @@ static void p_dup(void){
 }
 
 static void p_swap(void) {
-    if ( sp > stack ) {
+    ARGUMENTS_LESS(2) else {
         cell t = *sp;
         *sp = sp[-1];
         sp[-1] = t;
-    } else ARG_ERROR("2");
-    
+    }
 }
 
 static void p_if(void) {
@@ -403,10 +395,10 @@ static void p_depth(void) {
 }
 
 static void p_over(void) {
-    if ( sp > stack ) {
+    ARGUMENTS_LESS(2) else {
         cell t = sp[-1];
         sp_push(t);
-    } else ARG_ERROR("2");
+    }
 }
 
 static void p_pick(void) {
@@ -418,13 +410,27 @@ static void p_pick(void) {
 }
 
 static void p_rot(void) {
-    if ( sp > stack+1 ) {
+    ARGUMENTS_LESS(3) else {
         cell t = sp[-2];
         sp[-2] = sp[-1];
         sp[-1] = *sp;
         *sp = t;
     }
-    else ARG_ERROR("3");
+}
+
+static void p_2swap() {
+    ARGUMENTS_LESS(4) else {
+        cell t3 = sp[-3];
+        cell t2 = sp[-2];
+        sp[-3]=sp[-1];
+        sp[-2]=*sp;
+        sp[-1]=t3;
+        *sp=t2;
+    }
+}
+
+static void p_lparan() {
+    
 }
 
 static void register_primitives(void) {
@@ -445,6 +451,7 @@ static void register_primitives(void) {
     add_word("over", p_over);
     add_word("pick", p_pick);
     add_word("rot", p_rot);
+    add_word("2swap", p_2swap);
     
     add_word("words", p_words);
     add_word("type", p_type);

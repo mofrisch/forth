@@ -22,5 +22,6 @@
 #define SYMBOL_SIZE 256
 
 #define ERROR(MSG) error(MSG,__func__,__FILE__,__LINE__)
-#define ARG_ERROR(N) ERROR(N " arguments needed")
+#define ARG_ERROR(N) ERROR(N " argument(s) needed")
+#define ARGUMENTS_LESS(N) if ( sp <= stack+N-2 ) ARG_ERROR(#N);
 #endif /* forth_h */
