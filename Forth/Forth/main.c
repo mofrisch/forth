@@ -211,6 +211,17 @@ static void p_div(void) {
     *sp /= v1;
 }
 
+static void p_equals(void) {
+    cell v1 = sp_pop();
+    cell v2 = sp_pop();
+    if (v1 == v2) sp_push(-1); else sp_push(0);
+}
+
+static void p_invert(void) {
+    cell v1 = sp_pop();
+    if (v1 == 0) sp_push(-1); else sp_push(0);
+}
+
 static void p_hello_world(void) {
     printf("Hello World\n");
 }
@@ -376,22 +387,53 @@ static void p_dots(void) {
     printf("\n");
 }
 
+static void p_depth(void) {
+    sp_push(sp-stack+1);
+}
+
+static void p_over(void) {
+    cell t = sp[-1];
+    sp_push(t);
+}
+
+static void p_pick(void) {
+    cell n = sp_pop();
+    cell t = sp[-n+1];
+    sp_push(t);
+}
+
+static void p_rot(void) {
+    if ( sp > stack+1 ) {
+        cell t = sp[-2];
+        sp[-2] = sp[-1];
+        sp[-1] = *sp;
+        *sp = t;
+    }
+    else error("rot needs 3 arguments");
+}
+
 static void register_primitives(void) {
     add_word("+", p_add);
     add_word("-", p_sub);
     add_word("*", p_mul);
     add_word("/", p_div);
     
-    add_word("hello", p_hello_world);
+    add_word("=", p_equals);
+    add_word("invert", p_invert);
     
     xt_drop = add_word("drop", p_drop);
     xt_dup=add_word("dup", p_dup);
     add_word("swap", p_swap);
     add_word(".s", p_dots);
+    add_word(".", p_dot);
+    add_word("depth", p_depth);
+    add_word("over", p_over);
+    add_word("pick", p_pick);
+    add_word("rot", p_rot);
     
     add_word("words", p_words);
     add_word("type", p_type);
-    add_word(".", p_dot);
+    
     add_word("cr", p_cr);
     add_word(":", p_colon);
     xt_bye = add_word("bye", p_bye);
@@ -399,16 +441,12 @@ static void register_primitives(void) {
     
     xt_lit=add_word("lit", p_lit);
     latest->has_literal=1;
-    
     xt_0branch=add_word("0branch", p_0branch);
     latest->has_literal=1;
-    
     xt_1branch=add_word("1branch", p_1branch);
     latest->has_literal=1;
-    
     xt_branch=add_word("branch", p_branch);
     latest->has_literal=1;
-    
     xt_word=add_word("word", p_word);
     xt_interpreting=add_word("interpreting", p_interpreting);
     
@@ -419,6 +457,7 @@ static void register_primitives(void) {
     add_word("dis", p_dis);
     add_word("xt>data", p_xt_to_data);
     add_word("xt>name", p_xt_to_name);
+    add_word("hello", p_hello_world);
     
     definitions=&macros;
     add_word(";", p_semis);
