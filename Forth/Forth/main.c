@@ -101,7 +101,7 @@ char *word(void) {
 char *to_pad(char *str) {
     static char scratch[1024];
     long len=strlen(str);
-    if(len>sizeof(scratch)-1) len=sizeof(scratch)-1;
+    if( len > sizeof(scratch)-1 ) len = sizeof(scratch)-1;
     memcpy(scratch, str, len);
     scratch[len]=0; // zero byte at string end
     return scratch;
@@ -125,9 +125,7 @@ static void sp_push(cell value) {
 
 static cell sp_pop(void) {
     if (sp >= stack) return *sp--;
-    else {
-        return ERROR("stack underflow");
-    }
+    else return ERROR("stack underflow");
 }
 
 static void rp_push(XT **ip) {
@@ -183,41 +181,53 @@ static void p_words( void ) {
 }
 
 static void p_dot(void) {
-    printf("%lld ", sp_pop());
+    if (sp >= stack) printf("%lld ", sp_pop());
 }
 
 static void p_mul(void) {
-    cell v1 = sp_pop();
-    *sp *= v1;
+    if (sp > stack) {
+        cell v1 = *sp--;
+        *sp *= v1;
+    }
+    else ARG_ERROR("2");
 }
 
 static void p_add(void) {
     if (sp > stack) {
-        cell v1 = sp_pop();
+        cell v1 = *sp--;
         *sp += v1;
     }
-    else ERROR("2 arguments needed");
+    else ARG_ERROR("2");
 }
 
 static void p_sub(void) {
-    cell v1 = sp_pop();
-    *sp -= v1;
+    if (sp > stack) {
+        cell v1 = *sp--;
+        *sp -= v1;
+    }
+    else ARG_ERROR("2");
 }
 
 static void p_div(void) {
-    cell v1 = sp_pop();
-    *sp /= v1;
+    if (sp > stack) {
+        cell v1 = *sp--;
+        *sp /= v1;
+    }
+    else ARG_ERROR("2");
 }
 
 static void p_equals(void) {
-    cell v1 = sp_pop();
-    cell v2 = sp_pop();
-    if (v1 == v2) sp_push(-1); else sp_push(0);
+    if (sp > stack) {
+        cell v1 = *sp--;
+        if (v1 == *sp--) *++sp=-1;
+        else *++sp=0;
+    }
+    else ARG_ERROR("2");
 }
 
 static void p_invert(void) {
-    cell v1 = sp_pop();
-    if (v1 == 0) sp_push(-1); else sp_push(0);
+    if (sp >= stack) {*sp = -!*sp;}
+    else ARG_ERROR("1");
 }
 
 static void p_hello_world(void) {
@@ -228,10 +238,10 @@ static void p_bye() {
     exit(0);
 }
 
-static void p_type(void){ // course02
+static void p_type(void){
     fputs((void*)sp_pop(), stdout);
 }
-static void p_cr(void){ // course02, newline
+static void p_cr(void){
     fputc('\n', stdout);
 }
 
@@ -299,7 +309,7 @@ static void p_swap(void) {
         cell t = *sp;
         *sp = sp[-1];
         sp[-1] = t;
-    } else ERROR("2 arguments needed");
+    } else ARG_ERROR("2");
     
 }
 
@@ -396,7 +406,7 @@ static void p_over(void) {
     if ( sp > stack ) {
         cell t = sp[-1];
         sp_push(t);
-    } else ERROR("2 arguments needed");
+    } else ARG_ERROR("2");
 }
 
 static void p_pick(void) {
@@ -414,7 +424,7 @@ static void p_rot(void) {
         sp[-1] = *sp;
         *sp = t;
     }
-    else ERROR("3 arguments needed");
+    else ARG_ERROR("3");
 }
 
 static void register_primitives(void) {
@@ -543,6 +553,7 @@ int main(int argc, char *argv[]) {
     print_banner();
     if(argc == 2) {
         src = fopen(argv[1], "r");
+        if(!src) src = stdin;
     }
     else {
         src = stdin;
