@@ -1,3 +1,4 @@
+
 \ a line comment
 : first 1 . ;
 
