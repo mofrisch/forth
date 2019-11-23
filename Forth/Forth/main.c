@@ -64,7 +64,23 @@ void print_banner() {
 static int next_char(void) {
     static int last_char;
     if( (last_char == '\n') && (src == stdin)) print_ok();
+    
     last_char = fgetc(src);
+     if(last_char=='\\') {
+        while (last_char!='\n')
+            last_char=fgetc(src);
+        //last_char = fgetc(src);
+    }
+    
+    if(last_char=='(') {
+        while (last_char!=')')
+            last_char=fgetc(src);
+        last_char = fgetc(src);
+    }
+    
+    
+    
+    
     if( src != stdin && last_char == EOF) {
         src = stdin;
         last_char = ' ';
@@ -78,6 +94,10 @@ int skip_space(void) {
     return ch;
 }
 
+int skip_comment_backslash() {
+    return 0;
+}
+
 void terminate(char *msg) {
     fprintf(stderr, "terminated: %s\n", msg);
     exit(1);
@@ -88,11 +108,15 @@ char *word(void) {
     char *p=buffer, ch;
     if ( !( ch=skip_space() ) ) return 0;
     *p++ = ch;
+    
+    
     if( ch == '"' ) {
-        while( p < end && ( ch = next_char() ) && ch != '"' ) *p++ = ch;
+        while( p < end && ( ch = next_char() ) && ch != '"' )
+            *p++ = ch;
     }
     else {
-        while(p<end && (ch=next_char()) && !isspace(ch)) *p++=ch;
+        while( p<end && (ch=next_char()) && !isspace(ch) )
+            *p++=ch;
     }
     *p = 0;
     return buffer;
@@ -429,6 +453,15 @@ static void p_2swap() {
     }
 }
 
+static void p_key() {
+    int ch=fgetc(src);
+    sp_push((cell) ch);
+}
+
+static void p_emit() {
+    
+}
+
 static void p_lparan() {
     
 }
@@ -441,6 +474,7 @@ static void register_primitives(void) {
     
     add_word("=", p_equals);
     add_word("invert", p_invert);
+    add_word("key", p_key);
     
     xt_drop = add_word("drop", p_drop);
     xt_dup=add_word("dup", p_dup);
