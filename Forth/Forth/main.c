@@ -62,30 +62,41 @@ void print_banner() {
 }
 
 static int next_char(void) {
-    static int last_char;
-    if( (last_char == '\n') && (src == stdin)) print_ok();
     
-    last_char = fgetc(src);
-     if(last_char=='\\') {
-        while (last_char!='\n')
-            last_char=fgetc(src);
-        //last_char = fgetc(src);
+    static char current, lookahead;
+    
+    if( (current == '\n') && (src == stdin)) {
+        print_ok();
     }
     
-    if(last_char=='(') {
-        while (last_char!=')')
-            last_char=fgetc(src);
-        last_char = fgetc(src);
+    current=fgetc(src);
+    
+    if(current=='\\' ) {
+        lookahead=fgetc(src);
+        if(isspace(lookahead)) {
+            while(lookahead != '\n') {
+                lookahead=fgetc(src);
+            }
+            current='\n';
+        }
     }
     
+    if(current=='(' ) {
+        lookahead=fgetc(src);
+        if(isspace(lookahead)) {
+            while(lookahead != ')') {
+                lookahead=fgetc(src);
+            }
+            current=' ';
+        }
+    }
     
-    
-    
-    if( src != stdin && last_char == EOF) {
+    if( src != stdin && current == EOF) {
         src = stdin;
-        last_char = ' ';
+        current=fgetc(src);
     }
-    return last_char == EOF ? 0 : last_char;
+    
+    return current;
 }
 
 int skip_space(void) {
@@ -94,9 +105,7 @@ int skip_space(void) {
     return ch;
 }
 
-int skip_comment_backslash() {
-    return 0;
-}
+
 
 void terminate(char *msg) {
     fprintf(stderr, "terminated: %s\n", msg);
@@ -107,6 +116,7 @@ char *word(void) {
     static char buffer[256], *end = buffer+sizeof(buffer)-1;
     char *p=buffer, ch;
     if ( !( ch=skip_space() ) ) return 0;
+    
     *p++ = ch;
     
     
@@ -115,7 +125,7 @@ char *word(void) {
             *p++ = ch;
     }
     else {
-        while( p<end && (ch=next_char()) && !isspace(ch) )
+        while( p<end && (ch=next_char()) && !isspace(ch))
             *p++=ch;
     }
     *p = 0;
@@ -459,10 +469,6 @@ static void p_key() {
 }
 
 static void p_emit() {
-    
-}
-
-static void p_lparan() {
     
 }
 
