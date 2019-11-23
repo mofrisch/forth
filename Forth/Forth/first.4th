@@ -1,5 +1,11 @@
+\ a line comment
 : first 1 . ;
-: <> = invert ;
+
+: <> ( n n -- f )
+    = invert ;
+
 : ?dup dup if dup then ;
+
 : nip swap drop ;
+
 : tuck swap over ;

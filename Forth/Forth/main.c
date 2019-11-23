@@ -93,7 +93,7 @@ static int next_char(void) {
     
     if( src != stdin && current == EOF) {
         src = stdin;
-        current=fgetc(src);
+        current=' ';
     }
     
     return current;
@@ -119,16 +119,17 @@ char *word(void) {
     
     *p++ = ch;
     
-    
     if( ch == '"' ) {
         while( p < end && ( ch = next_char() ) && ch != '"' )
             *p++ = ch;
     }
     else {
-        while( p<end && (ch=next_char()) && !isspace(ch))
+        while( p < end && (ch=next_char()) && !isspace(ch))
             *p++=ch;
     }
+    
     *p = 0;
+    
     return buffer;
 }
 
@@ -249,7 +250,7 @@ static void p_div(void) {
 static void p_equals(void) {
     ARGUMENTS_LESS(2) else {
         cell v1 = *sp--;
-        if (v1 == *sp--) *sp-- = -1; else *sp-- = 0;
+        if (v1 == *sp--) *++sp = -1; else *++sp = 0;
     }
 }
 
@@ -469,7 +470,10 @@ static void p_key() {
 }
 
 static void p_emit() {
-    
+    ARGUMENTS_LESS(1) else {
+        cell t = *sp--;
+        putchar((char) t);
+    }
 }
 
 static void register_primitives(void) {
@@ -481,6 +485,7 @@ static void register_primitives(void) {
     add_word("=", p_equals);
     add_word("invert", p_invert);
     add_word("key", p_key);
+    add_word("emit", p_emit);
     
     xt_drop = add_word("drop", p_drop);
     xt_dup=add_word("dup", p_dup);
