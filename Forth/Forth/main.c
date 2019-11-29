@@ -47,7 +47,6 @@ static XT **code_end=code_base+CODE_SIZE-1;
 static XT *compile(XT *xt);
 static void interpreting(char *w);
 
-
 static void print_ok(void) {
     cell *s;
     printf("[ ");
@@ -70,8 +69,7 @@ static int next_char(void) {
         print_ok();
     }
     
-    
-     current=fgetc(src);
+    current=fgetc(src);
     
     if(current=='\\' ) {
         lookahead=fgetc(src);
@@ -82,18 +80,6 @@ static int next_char(void) {
             current='\n';
         }
     }
-    
-    /*
-     if(current=='(' ) {
-        lookahead=fgetc(src);
-        if(isspace(lookahead)) {
-            while(lookahead != ')') {
-                lookahead=fgetc(src);
-            }
-            current=' ';
-        }
-    }
-     */
     
     if( src != stdin && current == EOF) {
         src = stdin;
@@ -119,21 +105,15 @@ void terminate(char *msg) {
 char *word(void) {
     static char buffer[256], *end = buffer+sizeof(buffer)-1;
     char *p=buffer, ch;
-    if ( !( ch=skip_space() ) ) return 0;
+    if ( !( ch=skip_space() ))
+        return 0;
     
-    *p++ = ch;
-    
-    if( ch == '"' ) {
-        while( p < end && ( ch = next_char() ) && ch != '"' )
-            *p++ = ch;
+    do {
+        *p++ = ch;
     }
-    else {
-        while( p < end && (ch=next_char()) && !isspace(ch))
-            *p++=ch;
-    }
+    while( p < end && (ch=next_char()) && !isspace(ch));
     
     *p = 0;
-    
     return buffer;
 }
 
@@ -330,7 +310,7 @@ static void p_word(void) {
 }
 
 static void p_interpreting(void) {
-    interpreting((void*)S_pop());
+    interpreting( (void*) S_pop());
 }
 
 static void p_dup(void){

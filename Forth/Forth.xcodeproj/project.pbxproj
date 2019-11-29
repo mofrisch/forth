@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CDA578D4238444BC00C54A1B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = CDA578D3238444BC00C54A1B /* main.c */; };
+		CDB6EE1223913CAB006BE8E1 /* forth.c in Sources */ = {isa = PBXBuildFile; fileRef = CDB6EE1123913CAB006BE8E1 /* forth.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +27,7 @@
 		CDA578D0238444BC00C54A1B /* Forth */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Forth; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA578D3238444BC00C54A1B /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		CDA578DA2384473200C54A1B /* forth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = forth.h; sourceTree = "<group>"; };
+		CDB6EE1123913CAB006BE8E1 /* forth.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = forth.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +62,7 @@
 			children = (
 				CDA578D3238444BC00C54A1B /* main.c */,
 				CDA578DA2384473200C54A1B /* forth.h */,
+				CDB6EE1123913CAB006BE8E1 /* forth.c */,
 				CD25B05B23883B7A00493370 /* first.4th */,
 			);
 			path = Forth;
@@ -123,7 +125,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDA578D4238444BC00C54A1B /* main.c in Sources */,
+				CDB6EE1223913CAB006BE8E1 /* forth.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
