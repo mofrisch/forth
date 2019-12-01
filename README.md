@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/kristopherjohnson/cxxforth.svg?branch=master)](https://travis-ci.org/kristopherjohnson/cxxforth)
+I will take this as a base for my own forth implementation...
+
+Moritz Frisch
 
 cxxforth: A Simple Forth Implementation in C++
 ==============================================
