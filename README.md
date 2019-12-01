@@ -2,10 +2,8 @@ I will take this as a base for my own forth implementation...
 
 Moritz Frisch
 
-cxxforth: A Simple Forth Implementation in C++
-==============================================
-
-by Kristopher Johnson
+The original was cxxforth by Kristopher Johnson, who put it in the public domain.
+my version is licensed GPL 3.
 
 cxxforth is a simple implementation of a [Forth][forth] system in C++.
 
@@ -16,9 +14,6 @@ the source code is available in [cxxforth.cpp.md](cxxforth.cpp.md).
 cxxforth implements a subset of the words in the [ANS Forth draft
 standard][dpans].   Refer to that document for descriptions of those words.
 Additional non-ANS words are described in the cxxforth source code.
-
-This is free and unencumbered software released into the public domain.  See
-[UNLICENSE.txt](UNLICENSE.txt) for details.
 
 [forth]: https://en.wikipedia.org/wiki/Forth_(programming_language) "Forth (programming language)"
 
