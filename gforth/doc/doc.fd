@@ -4071,6 +4071,16 @@ make-doc X:traverse-wordlist unknown  )
 
 make-doc X:xchar unknown  )
 
+make-doc .du n --  )
+
+make-doc code-l:c line pos --  )
+
+make-doc editor-cmd2 souceview --  )
+
+make-doc extern-g2 --  )
+Enter the external editor at the place of the latest error,
+@code{locate}, @code{n} or @code{b}.
+
 make-doc heap>dict addr1 u -- addr2 u  )
 
 make-doc object-map unknown  )
