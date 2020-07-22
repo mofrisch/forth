@@ -1,0 +1,120 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+#make dist targets (workaround for broken makes)
+#use GNU make if your make does not grok this.
+
+#Authors: Bernd Paysan, Anton Ertl
+#Copyright (C) 1995,1996,1997,1998,2000,2003,2006,2007,2008,2010,2011,2012,2014,2015,2016,2017,2018,2019 Free Software Foundation, Inc.
+
+#This file is part of Gforth.
+
+#Gforth is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License
+#as published by the Free Software Foundation, either version 3
+#of the License, or (at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.#See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program. If not, see http://www.gnu.org/licenses/.
+
+include Makefile
+
+#!! redundancy with engine/Makefile.in
+DOBJECTS=engine/*.o
+DEBARCH=
+COMPRESS=xz -9
+COMPEXT=.xz
+
+#stuff in a binonly distribution 
+BINONLYDIST = config.status $(ENGINES) $(ENGINES_FAST) $(LIBENGINES)	\
+	$(LIBENGINES:%=engine/%) $(LIBENGINES_FAST)			\
+	$(LIBENGINES_FAST:%=engine/%) engine/.libs $(DOBJECTS)		\
+	engine/config.h engine/Makefile engine/libgforth* stamp-h	\
+	$(wildcard engine/gforth*$(EXE)) $(CONFIG_GEN)			\
+	INSTALL.BINDIST $(buildccdir) include/gforth/$(VERSION)		\
+	install.TAGS $(KERNLS) unix/Makefile gforth.elc
+
+#use dist targets only when srcdir=.
+ddist:		$(SOURCES) $(FORTH_GEN0) @GKERNEL@ $(DOCDIST)
+		-$(RMTREE) gforth-$(VERSION)
+		mkdir gforth-$(VERSION)
+		$(TAR) $(SOURCES) $(FORTH_GEN0) @GKERNEL@ $(DOCDIST) | \
+			(cd gforth-$(VERSION); tar xf -)
+		$(TAR) gforth-$(VERSION)|$(COMPRESS) >gforth-$(VERSION).tar$(COMPEXT)
+		-$(RMTREE) gforth-$(VERSION)
+
+#A source distribution contains only the things needed to install gforth,
+#without the documents.
+dsrcdist:	$(SOURCES) $(FORTH_GEN0) @GKERNEL@
+		-$(RMTREE) gforth-$(VERSION)
+		mkdir gforth-$(VERSION)
+		$(TAR) $(SOURCES) $(FORTH_GEN0) @GKERNEL@ | \
+			(cd gforth-$(VERSION); tar xf -)
+		$(TAR) gforth-$(VERSION)|$(COMPRESS) >gforth-src-$(VERSION).tar$(COMPEXT)
+		-$(RMTREE) gforth-$(VERSION)
+
+dsrconlydist:	$(SOURCES)
+		-$(RMTREE) gforth-$(VERSION)
+		mkdir gforth-$(VERSION)
+		$(TAR) $(SOURCES) | \
+			(cd gforth-$(VERSION); tar xf -)
+		$(TAR) gforth-$(VERSION)|$(COMPRESS) >gforth-srconly-$(VERSION).tar$(COMPEXT)
+		-$(RMTREE) gforth-$(VERSION)
+
+#A document distribution contains only the documents, which can be created
+#with MAKE.
+ddocdist:	$(DOCDIST)
+		-$(RMTREE) gforth-$(VERSION)
+		mkdir gforth-$(VERSION)
+		$(TAR) $(DOCDIST) | (cd gforth-$(VERSION); tar xf -)
+		$(TAR) gforth-$(VERSION)|$(COMPRESS) >gforth-doc-$(VERSION).tar$(COMPEXT)
+		-$(RMTREE) gforth-$(VERSION)
+
+dhtmldist:	html
+		(cd doc; $(TAR) gforth)|$(COMPRESS) >gforth-html-$(VERSION).tar$(COMPEXT)
+
+#a binary distribution contains the complete source distribution,
+# the objects, the executable and the links. the objects are there for making
+# make happy.
+dbindist:	$(SOURCES) $(FORTH_GEN0) @GKERNEL@ gforth.fi $(DOCDIST) $(BINONLYDIST) build-libcc-named
+		-$(RM) -f gforth gforth-[dfi]* engine/gforth-*
+		-$(RM) -f libgforth libgforth-* engine/libgforth*
+		$(MAKE) DOSTRIP=$(STRIP) all
+		-$(RMTREE) gforth-$(VERSION)
+		mkdir gforth-$(VERSION)
+		$(TAR) $(SOURCES) $(FORTH_GEN0) $(FORTH_GEN_FAST) @GKERNEL@ gforth.fi gforthmi vmgen $(DOCDIST) $(BINONLYDIST) | (cd gforth-$(VERSION); tar xf -)
+		$(TAR) gforth-$(VERSION)|$(COMPRESS) >gforth-$(VERSION).bin.@host@.tar$(COMPEXT)
+
+#All file names in a binary distribution
+distfiles:
+		@echo $(SOURCES) $(PRECISE) $(CONFIG_FORTH) $(FORTH_GEN0) $(CONFIG_FORTH) compat/strcomp.fs gforthmi @GKERNEL@ $(DOCDIST) $(BINONLYDIST)
+
+#makes a package with only the stuff not present in the source
+#package. For installation the source package is still needed!
+#This is useful if you want to distribute many binary versions in
+#little space (e.g., on floppy disk): Put the source package and
+#all the binonly packages you are interested in on the disk. The user
+#then just has to unpack the source and his favourite binonly into the
+#same directory and has a full binary distribution.
+dbinonlydist:	$(SOURCES) $(FORTH_GEN0) @GKERNEL@ gforth.fi $(DOCDIST) $(BINONLYDIST)
+		-$(RM) -f gforth gforth-[dfi]* engine/gforth-*
+		-$(RM) -f libgforth libgforth-* engine/libgforth*
+		$(MAKE) DOSTRIP=$(STRIP) all
+		-$(RMTREE) gforth-$(VERSION)
+		mkdir gforth-$(VERSION)
+		$(TAR) $(BINONLYDIST) gforth.fi | (cd gforth-$(VERSION); tar xf -)
+		$(TAR) gforth-$(VERSION)|$(COMPRESS) >gforth-$(VERSION).binonly.@host@.tar$(COMPEXT)
+
+dsetup-debdist:	$(SOURCES) $(FORTH_GEN0) $(FORTH_GEN_FAST) @GKERNEL@ $(DOCDIST) $(BINONLYDIST) debian/control
+		-rm -rf debian/gforth
+		mkdir -p debian/$(emacssitelispdir)
+		make package=$$PWD/debian install
+
+ddebdist:
+		-$(RM) libltdl/config.status
+		dpkg-buildpackage -uc -us -d -b $(DEBARCH)
+
