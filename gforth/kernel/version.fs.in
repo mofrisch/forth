@@ -1,1 +1,0 @@
-: version-string s" @GFORTH_VERSION@" ;

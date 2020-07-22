@@ -1,2 +1,0 @@
-@set VERSION 0.7.9_20200716
-@set UPDATED February 8, 2018

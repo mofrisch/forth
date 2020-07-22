@@ -1,1 +1,0 @@
-/Users/mo/Entwicklung/forth/gforth/engine/libcc.h
