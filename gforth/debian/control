@@ -1,0 +1,163 @@
+Source: gforth
+Section: programming
+Priority: optional
+Maintainer: Bernd Paysan <bernd.paysan@gmx.de>
+Build-Depends: debhelper (>= 4.1.16), build-essential, gcc, autoconf, automake, autotools-dev, libffi-dev, libtool, libtool-bin, libltdl7-dev
+
+Package: gforth-bin
+Version: 0.7.9-20200716
+Architecture: any
+Multi-Arch: same
+Depends: libltdl7, gforth-common (= 0.7.9-20200716)
+Recommends: gforth-lib (= 0.7.9-20200716)
+Suggests: libtool, libtool-bin, libffi6 | libffi5, build-essential, gcc, freetype-gl, libsoil2
+License: GPLv3
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ Forth is an awesome stack based programming language, which is able
+ to extend itself during runtime.
+
+Package: gforth-common
+Version: 0.7.9-20200716
+Architecture: all
+Multi-Arch: foreign
+Recommends: gforth-minos2, gforth-doc
+License: GPLv3
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ This is the architecture independent part
+
+Package: gforth-info
+Version: 0.7.9-20200716
+Architecture: all
+Multi-Arch: foreign
+Provides: gforth-doc
+Priority: optional
+License: GFDL 1.3
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ This is the documentation in info format
+
+Package: gforth-html
+Version: 0.7.9-20200716
+Architecture: all
+Multi-Arch: foreign
+Provides: gforth-doc
+Priority: extra
+License: GFDL 1.3
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ This is the documentation in html format
+
+Package: gforth-pdf
+Version: 0.7.9-20200716
+Architecture: all
+Multi-Arch: foreign
+Provides: gforth-doc
+Priority: extra
+License: GFDL 1.3
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ This is the documentation in PDF format
+
+Package: gforth-lib
+Version: 0.7.9-20200716
+Architecture: any
+Multi-Arch: same
+Depends: libltdl7, gforth-common (= 0.7.9-20200716)
+Suggests: libtool, libtool-bin, libffi6 | libffi5, build-essential, gcc
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ These are the engines as shared librarys for embedding in C programs
+
+Package: gforth-libcc
+Version: 0.7.9-20200716
+Architecture: any
+Multi-Arch: same
+Depends: libltdl7, gforth-common (= 0.7.9-20200716)
+Suggests: libtool, libtool-bin, libffi6 | libffi5, build-essential, gcc, gforth-opengl
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ These are the C binding libraries
+
+Package: gforth-dev
+Version: 0.7.9-20200716
+Architecture: any
+Multi-Arch: same
+Depends: gforth-lib (= 0.7.9-20200716)
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ This is the library include file
+
+Package: gforth
+Version: 0.7.9-20200716
+Architecture: any
+Multi-Arch: same
+Depends: gforth-bin (= 0.7.9-20200716), gforth-libcc (= 0.7.9-20200716)
+Description: GNU Forth
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ This package contains the links to the architecture specific binaries
+
+Package: gforth-gles-dependencies
+Version: 0.7.9-20200716
+Architecture: all
+Provides: gforth-opengl
+Depends: libgles2, libgl1-mesa-dri
+Recommends: libegl1 | libegl1-mesa
+Description: GNU Forth
+ OpenGL ES dependency meta-package
+
+Package: gforth-gl-dependencies
+Version: 0.7.9-20200716
+Architecture: all
+Provides: gforth-opengl
+Depends: libglx0, libgl1, libgl1-mesa-dri
+Description: GNU Forth
+ OpenGL dependency meta-package
+
+Package: gforth-noto-fonts
+Version: 0.7.9-20200716
+Architecture: all
+Provides: gforth-fonts
+Depends: fonts-noto, fonts-noto-emoji, fonts-liberation | liberation-fonts
+Recomments: fonts-noto-cjk
+Description: GNU Forth
+ Noto fonts dependency meta-package
+
+Package: gforth-liberation-fonts
+Version: 0.7.9-20200716
+Architecture: all
+Provides: gforth-fonts
+Depends: fonts-liberation | liberation-fonts, fonts-arphic-gkai00mp
+Description: GNU Forth
+ Liberation fonts dependency meta-package
+
+Package: gforth-minos2
+Version: 0.7.9-20200716
+Architecture: all
+Multi-Arch: foreign
+Depends: gforth (= 0.7.9-20200716), gforth-opengl, freetype-gl, libxrandr2, libsoil2, gforth-fonts
+Recommends: fonts-emoji, fonts-awesome
+Description: GNU Forth Minos2 GUI
+ Gforth is the Forth implementation of the GNU project, providing all
+ features of the ANS Forth (Forth-94) and the Forth-2012 standards.
+ .
+ This package contains the minos2 GUI stuff, and all the necessary dependencies.

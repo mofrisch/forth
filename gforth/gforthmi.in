@@ -1,0 +1,83 @@
+#! @mi_prefix@/bin/sh
+# @configure_input@
+#Authors: Anton Ertl, Bernd Paysan
+#Copyright (C) 1997,1998,2000,2002,2003,2004,2007,2012,2013,2015,2016,2018,2019 Free Software Foundation, Inc.
+
+#This file is part of Gforth.
+
+#Gforth is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License
+#as published by the Free Software Foundation, either version 3
+#of the License, or (at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.#See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, see http://www.gnu.org/licenses/.
+
+export GFORTH_ENV=off
+startup="-i @kernel_fi@ exboot.fs startup.fs @asm_fs@ @disasm_fs@"
+prefix=@prefix@
+exec_prefix=@exec_prefix@@mi_prefix@
+if [ -f "@libdir@/gforth/@PACKAGE_VERSION@/gforth.fi" ]
+then
+  helper=""
+else
+  helper="$startup"
+fi
+test "x$GFORTHD" != x || GFORTHD="@bindir@/gforth-ditc-@PACKAGE_VERSION@-@machine@ --die-on-signal"
+test "x$GFORTH" != x || GFORTH="@bindir@/gforth-@PACKAGE_VERSION@-@machine@ --die-on-signal $helper"
+if test $# = 0 || test $1 = --help || test $1 = -h; then
+  echo "usage: `basename $0` [--application] target-name [gforth-options]"
+  echo "creates a relocatable image 'target-name'"
+  echo "environment:"
+  echo " \$GFORTHD (default: $GFORTHD): Engine used for creating the fixed images"
+  echo " \$GFORTH (default: $GFORTH): Engine used for computing the relocatable image"
+  test $# != 0 || exit 1
+  exit 0
+elif test $1 = --version || test $1 = -v; then
+  echo "gforthmi (@PACKAGE_NAME@) @PACKAGE_VERSION@ @machine@"
+  $GFORTH --version
+  echo 'Authors: Anton Ertl, Bernd Paysan'
+  echo 'Copyright (C) 1998,2002,2003,2004,2007,2012,2013,2015,2016,2018,2019 Free Software Foundation, Inc.'
+  echo 'This program is part of Gforth'
+  $GFORTH -e "license bye"
+  exit 0
+elif test $1 = --application; then
+    application=yes
+    shift
+    outfile=$1; shift
+elif test $1 = --system; then
+    system=yes
+    shift
+    outfile="@libdir@/gforth/@PACKAGE_VERSION@/gforth.fi"
+    export libccdir="@libexecdir@/gforth/@PACKAGE_VERSION@/@machine@/libcc-named"
+else
+    outfile=$1; shift
+fi
+if [ ! -z "@extraccdir@" ]
+then
+    export libccdir="@extraccdir@"
+fi
+export HOSTPREFIX="@HOSTPREFIX@"
+tmpfile=./temp-image.fi
+if test x$system = xyes; then
+    $GFORTHD --clear-dictionary --no-offset-im --die-on-signal $startup -e "savesystem $tmpfile"1+$$" bye"
+    $GFORTHD --clear-dictionary --offset-image --die-on-signal $startup -e "savesystem $tmpfile"2+$$" bye"
+else
+    $GFORTHD --clear-dictionary --no-offset-im --die-on-signal "$@" -e "savesystem $tmpfile"1+$$" bye"
+    $GFORTHD --clear-dictionary --offset-image --die-on-signal "$@" -e "savesystem $tmpfile"2+$$" bye"
+fi
+$GFORTH comp-i.fs -e "comp-image $tmpfile"1+$$" $tmpfile"2+$$" $outfile"$$" bye" || exit 1
+@no_chmod@chmod +x $outfile$$ || exit 1
+@MV@ $outfile$$ $outfile || exit 1
+@RM@ $tmpfile"1+$$" $tmpfile"2+$$"
+if test x$application = xyes; then
+    $GFORTH -e "s\" $outfile\"" make-app.fs
+else
+    true #old shells require this
+fi
+

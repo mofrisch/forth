@@ -1,0 +1,59 @@
+Authors of Gforth (alphabetically listed, format as Linux CREDITS):
+
+N: Anton Ertl
+E: anton@mips.complang.tuwien.ac.at
+D: Project initiator, C based primitives, locals, gray, manual, 
+D: Release manager, GNU maintainer
+P: dsa1024/760F3526 F2CE 53F2 6D3B 43BC 4668 741D 3EB5 FFF1 760F 3526
+
+N: Bernd Paysan
+E: bernd@net2o.de
+D: Project leader, kernel, cross compiler, non-Unix ports based on GCC, 
+D: MINOS2, Release manager, GNU maintainer
+S: Wilbrechtstr. 85
+S: D-81477 München
+S: Germany
+P: rsa4096/3B7FA946 60E7 1A15 9357 5330 99A0 AAF9 CAF0 21DB 3B7F A946
+
+N: David Kühling
+E: dvdkhlng@gmx.de
+D: Emacs integration
+
+N: Gerald Wodni
+E: gerald.wodni@gee.at
+D: SWIG module for C libraries
+
+N: Heinz Schnitter
+E: heinz.schnitter@muenchen-mail.de
+D: R8C assembler
+
+N: Jens Wilke
+E: jens.wilke@headissue.com
+D: Embedded Control versions (non-gcc), decompiler, cross compiler refinement
+
+N: Klaus Kohl-Schöpe
+E: kks@designin.de
+D: 8086 Gforth EC
+
+N: Neal Crook
+E: neal@pinga.free-online.co.uk
+D: manual, glossary entries
+
+-----
+Authors: Anton Ertl, Bernd Paysan, Jens Wilke
+Copyright (C) 1998,2000,2003,2007,2017,2018,2019 Free Software Foundation, Inc.
+
+This file is part of Gforth.
+
+Gforth is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation, either version 3
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.#See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see http://www.gnu.org/licenses/.

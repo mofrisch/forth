@@ -1,0 +1,94 @@
+#Makefile for Gforth
+
+#Authors: Bernd Paysan, Anton Ertl, Gerald Wodni
+#Copyright (C) 1995,1996,1997,1998,2000,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019 Free Software Foundation, Inc.
+
+#This file is part of Gforth.
+
+#Gforth is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License
+#as published by the Free Software Foundation, either version 3
+#of the License, or (at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program. If not, see http://www.gnu.org/licenses/.
+
+srcdir = .
+SRCINC = -I .
+TEXI2DVI = texi2dvi $(SRCINC)
+TEXI2PDF = texi2dvi $(SRCINC) --pdf
+DVI2PS	= dvips -t letterSize -Z
+#you can get texi2html from http://wwwcn.cern.ch/dci/texi2html/
+MAKEINFO = makeinfo $(SRCINC)
+GFORTH_CSS = gforth.css
+TEXI2HTML = texi2html $(SRCINC)
+CP	= cp -p
+RECODE = sed -e "s/‘/'/g" -e "s/’/'/g" -e 's/“/"/g' -e 's/”/"/g' -e 's/•/*/g' -e 's/–/--/g' -e 's/—/---/g' -e 's/−/-/g'
+RECODE_UTF  = iconv -f LATIN1
+
+VPATH = .
+
+GFORTH_TEXI =  gforth.texi version.texi
+
+VMGEN_TEXI = vmgen.texi version.texi fdl.texi
+
+gforth.dvi gforth.fns:	$(GFORTH_TEXI)
+		$(TEXI2DVI) gforth.texi
+
+gforth.pdf:	$(GFORTH_TEXI)
+		$(TEXI2PDF) gforth.texi
+
+vmgen.dvi:	$(VMGEN_TEXI)
+		$(TEXI2DVI) $<
+
+vmgen.pdf:	$(VMGEN_TEXI)
+		$(TEXI2PDF) $<
+
+gforth.ps:	gforth.dvi
+		$(DVI2PS) gforth.dvi -o $@
+
+vmgen.ps:	vmgen.dvi
+		$(DVI2PS) vmgen.dvi -o $@
+
+gforth.info:	$(GFORTH_TEXI)
+		$(MAKEINFO) $<
+
+vmgen.info:	$(VMGEN_TEXI)
+		$(MAKEINFO) $<
+
+gforth:		$(GFORTH_TEXI)
+		$(MAKEINFO) --css-ref $(GFORTH_CSS) -o gforth --html $<
+		$(CP) $(srcdir)/$(GFORTH_CSS) gforth/
+
+vmgen:		$(VMGEN_TEXI)
+		$(MAKEINFO) --html $<
+
+gforth.txt:	$(GFORTH_TEXI)
+		-$(MAKEINFO) --no-headers --no-split --enable-encoding $< | $(RECODE) >gforth.txt
+
+vmgen.txt:	$(VMGEN_TEXI)
+		-$(MAKEINFO) --no-headers --no-split $< >vmgen.txt
+
+dvi:		gforth.dvi vmgen.dvi
+
+pdf:		gforth.pdf vmgen.pdf
+
+ps:		gforth.ps vmgen.ps
+
+info:		gforth.info vmgen.info
+
+txt:		gforth.txt vmgen.txt
+
+html:		gforth vmgen
+
+doc:		info html ps txt
+
+Makefile: Makefile.in ../config.status ../configure.ac
+	cd .. && $(MAKE) doc/Makefile.in
+
+all:		Makefile doc
