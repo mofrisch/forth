@@ -30,8 +30,8 @@ Kernel configured for up to 12 processors.
 Processor type: x86_64h (Intel x86-64h Haswell)
 Processors active: 0 1 2 3 4 5 6 7 8 9 10 11
 Primary memory available: 16.00 gigabytes
-Default processor set: 536 tasks, 2135 threads, 12 processors
-Load average: 1.41, Mach factor: 10.58
+Default processor set: 536 tasks, 2209 threads, 12 processors
+Load average: 1.66, Mach factor: 10.33
 /bin/machine           = unknown
 /usr/bin/oslevel       = unknown
 /bin/universe          = unknown
@@ -469,7 +469,7 @@ configure:11952: checking for shl_load
 configure:11952: gcc -o conftest -g -O2   conftest.c  >&5
 Undefined symbols for architecture x86_64:
   "_shl_load", referenced from:
-      _main in ccO9zFHZ.o
+      _main in ccav76Mb.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:11952: $? = 1
@@ -796,7 +796,7 @@ configure:12413: checking for argz_add
 configure:12413: gcc -o conftest -g -O2   conftest.c  >&5
 Undefined symbols for architecture x86_64:
   "_argz_add", referenced from:
-      _main in ccFiTAlZ.o
+      _main in cccINMZA.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:12413: $? = 1
@@ -878,7 +878,7 @@ configure:12413: checking for argz_append
 configure:12413: gcc -o conftest -g -O2   conftest.c  >&5
 Undefined symbols for architecture x86_64:
   "_argz_append", referenced from:
-      _main in ccNxu94P.o
+      _main in cchIrL3t.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:12413: $? = 1
@@ -960,7 +960,7 @@ configure:12413: checking for argz_count
 configure:12413: gcc -o conftest -g -O2   conftest.c  >&5
 Undefined symbols for architecture x86_64:
   "_argz_count", referenced from:
-      _main in ccgsyjGT.o
+      _main in ccAiOgW9.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:12413: $? = 1
@@ -1042,7 +1042,7 @@ configure:12413: checking for argz_create_sep
 configure:12413: gcc -o conftest -g -O2   conftest.c  >&5
 Undefined symbols for architecture x86_64:
   "_argz_create_sep", referenced from:
-      _main in ccPSrQOa.o
+      _main in ccNoi19t.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:12413: $? = 1
@@ -1124,7 +1124,7 @@ configure:12413: checking for argz_insert
 configure:12413: gcc -o conftest -g -O2   conftest.c  >&5
 Undefined symbols for architecture x86_64:
   "_argz_insert", referenced from:
-      _main in ccRXhPVt.o
+      _main in ccNgnaBM.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:12413: $? = 1
@@ -1206,7 +1206,7 @@ configure:12413: checking for argz_next
 configure:12413: gcc -o conftest -g -O2   conftest.c  >&5
 Undefined symbols for architecture x86_64:
   "_argz_next", referenced from:
-      _main in cc9gpUqT.o
+      _main in ccE6tIiO.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:12413: $? = 1
@@ -1288,7 +1288,7 @@ configure:12413: checking for argz_stringify
 configure:12413: gcc -o conftest -g -O2   conftest.c  >&5
 Undefined symbols for architecture x86_64:
   "_argz_stringify", referenced from:
-      _main in ccu456QM.o
+      _main in ccgwJenj.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:12413: $? = 1
@@ -3243,7 +3243,7 @@ conftest.c:105:6: warning: conflicting types for built-in function 'pow10'; expe
 ld: warning: dylib (/usr/local/lib/libltdl.dylib) was built for newer macOS version (10.15) than being linked (10.10)
 Undefined symbols for architecture x86_64:
   "_pow10", referenced from:
-      _main in ccbP3xtP.o
+      _main in ccvz5rWb.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:16617: $? = 1
@@ -3379,7 +3379,7 @@ conftest.c:93:1: note: 'sincos' is declared in header '<math.h>'
 ld: warning: dylib (/usr/local/lib/libltdl.dylib) was built for newer macOS version (10.15) than being linked (10.10)
 Undefined symbols for architecture x86_64:
   "_sincos", referenced from:
-      _main in ccUtxxLu.o
+      _main in ccto0LpT.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:16630: $? = 1
@@ -3708,7 +3708,7 @@ configure:16824: gcc -o conftest -g -O2 -fomit-frame-pointer -pthread  -I/opt/X1
 ld: warning: dylib (/usr/local/lib/libltdl.dylib) was built for newer macOS version (10.15) than being linked (10.10)
 Undefined symbols for architecture x86_64:
   "_mcheck", referenced from:
-      _main in ccydfNwE.o
+      _main in ccXHjzy1.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:16824: $? = 1
@@ -3852,7 +3852,7 @@ configure:16824: gcc -o conftest -g -O2 -fomit-frame-pointer -pthread  -I/opt/X1
 ld: warning: dylib (/usr/local/lib/libltdl.dylib) was built for newer macOS version (10.15) than being linked (10.10)
 Undefined symbols for architecture x86_64:
   "_mprobe", referenced from:
-      _main in ccwSvpGg.o
+      _main in cc4YhyP0.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:16824: $? = 1
@@ -4593,7 +4593,7 @@ configure:16958: gcc -o conftest -g -O2 -fomit-frame-pointer -pthread  -I/opt/X1
 ld: warning: dylib (/usr/local/lib/libltdl.dylib) was built for newer macOS version (10.15) than being linked (10.10)
 Undefined symbols for architecture x86_64:
   "_pthread_setaffinity_np", referenced from:
-      _main in ccOPabek.o
+      _main in ccK6tBGA.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:16958: $? = 1
@@ -4754,7 +4754,7 @@ configure:16974: gcc -o conftest -g -O2 -fomit-frame-pointer -pthread  -I/opt/X1
 ld: warning: dylib (/usr/local/lib/libltdl.dylib) was built for newer macOS version (10.15) than being linked (10.10)
 Undefined symbols for architecture x86_64:
   "_getrandom", referenced from:
-      _main in cclJU3lD.o
+      _main in ccbUmBhE.o
 ld: symbol(s) not found for architecture x86_64
 collect2: error: ld returned 1 exit status
 configure:16974: $? = 1

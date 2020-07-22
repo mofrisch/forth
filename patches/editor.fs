@@ -1,5 +1,7 @@
 
-: code-l:c ( line pos -- ) drop ." :" . ;
+: .du   ( n -- )       0  <<# #s #> type #>> ;
+
+: code-l:c ( line pos -- )  swap ." :" .du  ." :" .du ;
 
 : editor-cmd2 ( souceview -- )
     s" EDITOR" getenv dup 0= IF
@@ -7,11 +9,11 @@
     THEN
 
     2dup 2>r type space 
-    2r@ s" code" string-prefix? IF
-        ." -g "
-        decode-view 1+
-        loadfilename#>str esc'type code-l:c 
     
+    2r@ s" code" string-prefix? IF \ vscode
+        ." -g "
+        decode-view 1+ 2>r
+        ''' emit loadfilename#>str esc'type  2r> code-l:c ''' emit
     ELSE 
         2r@ s" emacsclient" string-prefix? IF  ." -n "  THEN
         decode-view 1+
