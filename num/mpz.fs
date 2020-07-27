@@ -1,16 +1,18 @@
-.( MPZ library ) cr
+.( MPZ library 0.0.0)
 
 Vocabulary gmp
 
 get-current also gmp definitions
 
-include gmp.fs
+require gmp.fs
 
 previous definitions also gmp
 
+
+
 false value mem_debug
 
-variable dict_start   here dict_start !
+\ variable dict_start   here dict_start !
 variable inits        0 inits !
 variable clears       0 clears !
 

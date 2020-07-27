@@ -1,3 +1,5 @@
+( GMP Wrapper 0.0.0 )
+
 \ This file has been generated using SWIG and fsi,
 \ and is already platform dependent, search for the corresponding
 \ fsi-file to compile it where no one has compiled it before ;)

@@ -1,8 +1,6 @@
-.( patches for visual code editor ) cr
+.( Patches for Visual Code Editor 0.0.0)
 
-: .du   ( n -- )       0  <<# #s #> type #>> ;
 
-: code-l:c ( line pos -- )  swap ." :" .du  ." :" .du ;
 
 : editor-cmd2 ( souceview -- )
     s" EDITOR" getenv dup 0= IF
