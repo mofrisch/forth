@@ -1,1 +1,1 @@
-~/Entwicklung/gforth/gforth ~/Entwicklung/forth/startup.fs
+gforth startup.fs

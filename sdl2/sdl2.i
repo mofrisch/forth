@@ -1,4 +1,11 @@
+// sdl2/sdl2.i
+// SWIG interface for SDL2
+
+// Author : Moritz Frisch
+// Copyright(C) 2020 Free Software Foundation, Inc.
+
 // this file is in the public domain
+
 %module sdl2
 %insert("include")
 %{
