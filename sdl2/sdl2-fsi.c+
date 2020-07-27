@@ -15,10 +15,9 @@
 // end-of-default-includes
 
 
-#define DECLSPEC
-#define SDLCALL
-#define SDL_PRINTF_FORMAT_STRING
-#define SDL_PRINTF_VARARG_FUNC( fmtargnumber )
+// #define DECLSPEC
+// #define SDLCALL
+// #define SDL_PRINTF_FORMAT_STRING
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_log.h>
@@ -199,7 +198,7 @@ int main( int argc, char **argv )
 
 	swigComment("----===< prefix >===-----\n");
 
-	swigPrint( "c-library sdl2\ns\" sdl2\" add-lib\n\\c #define DECLSPEC\n\\c #define SDLCALL\n\\c #define SDL_PRINTF_FORMAT_STRING\n\\c #define SDL_PRINTF_VARARG_FUNC( fmtargnumber )\n\\c #include <SDL2/SDL.h>\n\\c #include <SDL2/SDL_log.h>\n\\c #include <SDL2/SDL_main.h>\n\\c #include <SDL2/SDL_revision.h>\n\\c #include <SDL2/SDL_version.h>", "( none )", "( none )" );
+	swigPrint( "c-library sdl2\ns\" sdl2\" add-lib\n\\c // #define DECLSPEC\n\\c // #define SDLCALL\n\\c // #define SDL_PRINTF_FORMAT_STRING\n\\c #include <SDL2/SDL.h>\n\\c #include <SDL2/SDL_log.h>\n\\c #include <SDL2/SDL_main.h>\n\\c #include <SDL2/SDL_revision.h>\n\\c #include <SDL2/SDL_version.h>", "( none )", "( none )" );
 
 	swigNewline();
 

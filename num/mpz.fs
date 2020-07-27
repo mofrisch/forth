@@ -1,3 +1,5 @@
+.( MPZ library ) cr
+
 Vocabulary gmp
 
 get-current also gmp definitions
@@ -6,7 +8,7 @@ include gmp.fs
 
 previous definitions also gmp
 
-true value mem_debug
+false value mem_debug
 
 variable dict_start   here dict_start !
 variable inits        0 inits !
@@ -136,14 +138,6 @@ variable clears       0 clears !
 
 previous set-current
 
-variable a0
-12 u>z a0 z!
-a0 z@ z.
-13 u>z a0 z!
-a0 z@ z.
-a0 z@ z.
 
-3 fct z.
-3 fct2 z.
 
 mem_debug [if] mem_stats [then]

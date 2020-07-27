@@ -10,10 +10,9 @@
 \ ----===< prefix >===-----
 c-library sdl2
 s" sdl2" add-lib
-\c #define DECLSPEC
-\c #define SDLCALL
-\c #define SDL_PRINTF_FORMAT_STRING
-\c #define SDL_PRINTF_VARARG_FUNC( fmtargnumber )
+\c // #define DECLSPEC
+\c // #define SDLCALL
+\c // #define SDL_PRINTF_FORMAT_STRING
 \c #include <SDL2/SDL.h>
 \c #include <SDL2/SDL_log.h>
 \c #include <SDL2/SDL_main.h>

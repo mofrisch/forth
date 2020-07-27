@@ -1,4 +1,4 @@
-.( patches for visual code editor )
+.( patches for visual code editor ) cr
 
 : .du   ( n -- )       0  <<# #s #> type #>> ;
 
@@ -36,7 +36,7 @@
     \g Enter the external editor at the place of the latest error,
     \g @code{locate}, @code{n} or @code{b}.
     current-location?
-    bn-view @ ['] editor-cmd2 >string-execute 2dup type 2dup system drop free throw 
+    bn-view @   ['] editor-cmd2   >string-execute   2dup type 2dup system   drop free throw 
     ;
 
 
