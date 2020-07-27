@@ -1,3 +1,4 @@
+.( patches for visual code editor )
 
 : .du   ( n -- )       0  <<# #s #> type #>> ;
 
