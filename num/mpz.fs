@@ -98,7 +98,23 @@ variable clears       0 clears !
     tuck ab>aaab
 ;
 
-: zu* ( z u -- z )
+: zu+ ( z u -- z+u )
+    ab>aaab __gmpz_add_ui
+;
+
+: z+ ( z1 z2 -- z1 = z1+z2 )
+    ab>baaab __gmpz_add swap zdrop
+;
+
+: zu- ( z u -- z-u )
+    ab>aaab __gmpz_sub_ui
+;
+
+: z- ( z1 z2 -- z1 = z1-z2 )
+    ab>baaab __gmpz_sub swap zdrop
+;
+
+: zu* ( z u -- z*u )
     ab>aaab __gmpz_mul_ui
 ;
 

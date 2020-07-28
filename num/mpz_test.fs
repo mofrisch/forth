@@ -17,11 +17,11 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-[ifundef] z_init 
+[ifundef] zinit 
    require mpz.fs
 [then]
 
-true to mem_debug
+false to mem_debug
 
 variable a0
 12 u>z a0 z!
@@ -33,4 +33,9 @@ a0 z@ z.
 3 fct z.
 3 fct2 z.
 
-mem_stats
+cr z 123456789012345678901234567890 2 zu+ z.
+cr z 123456789012345678901234567890 z 123456789012345678901234567890 z+ z.
+cr z 123456789012345678901234567890 2 zu- z.
+cr z 123456789012345678901234567890 z 123456789012345678901234567890 z- z.
+
+\ mem_stats
