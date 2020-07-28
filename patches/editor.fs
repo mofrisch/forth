@@ -1,4 +1,4 @@
-.[ Patches for Visual Code Editor 0.0.0]
+.( Patches for Visual Code Editor)
 
 \ patches/editor.fs
 \ Does VS Code Integration with Gforth.
@@ -18,36 +18,22 @@
 
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
+[ifundef] code-l:c
+require ../tools.fs
+[then]
 
-require tools.fs
+: editor-name ( -- addr n )
+    s" EDITOR" getenv
+;
+
+: use-code ( -- flag )
+    editor-name s" code" string-prefix?
+;
 
 : editor-cmd2 ( souceview -- )
-    s" EDITOR" getenv dup 0= IF
-	    2drop s" vi" \ if you don't set EDITOR, use vi as default
-    THEN
-
-    2dup 2>r type space 
-    
-    2r@ s" code" string-prefix? IF \ vscode
-        ." -g "
-        decode-view 1+ 2>r
-        ''' emit loadfilename#>str esc'type  2r> code-l:c ''' emit
-    ELSE 
-        2r@ s" emacsclient" string-prefix? IF  ." -n "  THEN
-        decode-view 1+
-        2r@ s" emacs" search nip nip  2r@ s" gedit" str= or  IF  
-            emacs-l:c  
-        ELSE
-	        2r@ s" kate" string-prefix? IF  
-                kate-l:c  
-            ELSE
-                vi-l:c  \ also works for joe, mcedit, nano, and is de facto standard
-	        THEN    
-        THEN
-        ''' emit loadfilename#>str esc'type ''' emit  
-    then
-    2rdrop 
-    ;
+    editor-name 2dup 2>r type   ."  -g " 
+    decode-view 1+ 2>r loadfilename#>str type   2r> code-l:c   2rdrop 
+;
 
 : extern-g2 ( -- )
     \g Enter the external editor at the place of the latest error,
@@ -56,6 +42,7 @@ require tools.fs
     bn-view @   ['] editor-cmd2   >string-execute   2dup type 2dup system   drop free throw 
     ;
 
-
+use-code [if]
 ' extern-g2 is g
+[then]
 

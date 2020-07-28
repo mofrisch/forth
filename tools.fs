@@ -1,4 +1,4 @@
-.[ Common Tools 0.0.0]
+.( Common Tools)
 
 \ patches/tools.fs
 \ tools for inserting and editing files
@@ -63,12 +63,11 @@ variable user-include    0 user-include !
 	2drop
 ;
 
-
-
-: ed ( "name" | "" -- )
+: ed ( -- ) 
 	user-include @ 0<> if
 		user-include $@ edit-file
 	else
 		." no current file"
 	then
 ;
+

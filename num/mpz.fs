@@ -1,4 +1,4 @@
-.[ MPZ library 0.0.0]
+.( MPZ library)
 
 \ num/mpz.fs
 \ Integers of arbitrary size via GMP
@@ -27,11 +27,7 @@ require gmp.fs
 
 previous definitions also gmp
 
-
-
 false value mem_debug
-
-\ variable dict_start   here dict_start !
 variable inits        0 inits !
 variable clears       0 clears !
 
@@ -57,6 +53,10 @@ variable clears       0 clears !
 
 : z_free ( z -- )
     dup z_clear free throw
+;
+
+: zdrop ( z -- )
+    z_free
 ;
 
 : u>z ( u -- z )
@@ -151,14 +151,15 @@ variable clears       0 clears !
     loop
 ;
 
+: fct3 ( u -- z )
+    z_new dup rot __gmpz_fac_ui
+;
+
 : mem_stats
-    cr ." dictionary usage: " here dict_start @ - 1024 / . ." KB "
     cr ." inits: " inits @ .
     cr ." clears: " clears @ .
 ;
 
 previous set-current
-
-
 
 mem_debug [if] mem_stats [then]

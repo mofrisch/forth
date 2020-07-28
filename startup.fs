@@ -26,7 +26,10 @@ true constant start-report
    0 ?do [char] - emit loop
 ;
 
-: .[ ']' parse start-report if type then ; immediate  
+\ Redifine .( )
+warnings @    warnings off
+: .( ')' parse start-report if type then ; immediate  
+warnings !
 
 : .dict ( -- )
    start-report if ." : "   here dict_start @ - .   ." Bytes " cr then
@@ -40,9 +43,9 @@ bold attr!
 error-color attr! 
 start-report [if]
    80 draw-seperator cr
-   ." Startup Code:" .dict 
+   ." Startup Code" .dict 
 [then]
-require2 patches/tools.fs
+require2 tools.fs
 require2 patches/editor.fs
 require2 num/mpz.fs
 require2 sdl2/sdl2-lib.fs

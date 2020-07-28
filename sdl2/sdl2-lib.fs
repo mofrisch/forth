@@ -1,4 +1,4 @@
-.[ SDL2 Library 0.0.0]
+.( SDL2 Library)
 
 \ sdl2/sdl2-lib.fs
 \ Simple DirectMedia Layer Support
