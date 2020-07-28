@@ -18,26 +18,27 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-: fn ( r -- r )
-fdup f* 2e f-
+19 set-precision
+
+: fn ( f -- f ) \ x^2-2
+    fdup f* 2e f-
 ;
 
-: fn' ( r -- r )
+: fn' ( f -- f ) \ 2x
 2e f*
 ;
 
-: next ( r -- r )
+: next-iteration ( f -- f ) 
 fdup fdup fn fswap fn' f/ f-
 ;
 
-: near ( r1 r2 -- f )
-f- fabs 1e-12 f<
+: near ( f1 f2 -- flag )
+1e-14 f~
 ;
 
-: fnew ( r -- r )
+: fnew ( f -- f )
 begin 
-    fdup next ( x1 x2 )
-    fswap fover ( x2 x1 x2 )
+    fdup next-iteration ftuck
 near until
 ;
 

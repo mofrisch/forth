@@ -45,29 +45,29 @@ variable user-include    0 user-include !
 	['] edit-cmd >string-execute   2dup type   2dup system   drop free throw
 ;
 
-: in ( "name" | "" -- ) \ include file "name" or last file included by "name"
+: select-file ( "name" -- addr u ) \ select file "name"
 	(name) dup 0<> if 
   		user-include @ 0= if 
-			2dup $make user-include ! 
+			$make user-include !
 		else
-			2dup user-include $!
+			user-include $!
 		then
-   	2dup included
-	else 
-		user-include @ if
-      	user-include $@ included
-    	else
-      	." no current file"
-    	then 
-   then
-	2drop
+	else
+		2drop
+	then 
 ;
 
-: ed ( -- ) 
-	user-include @ 0<> if
+: in ( "name" | "" -- ) \ include file "name" or last file included by "name"
+	select-file 
+	user-include @ 0<> if    
+		user-include $@ included
+	else ." no current file" then
+;
+
+: ed ( "name" | -- ) 
+	select-file
+	user-include @ 0<> if   
 		user-include $@ edit-file
-	else
-		." no current file"
-	then
+	else ." no current file" then
 ;
 

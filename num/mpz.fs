@@ -23,7 +23,7 @@ Vocabulary gmp
 
 get-current also gmp definitions
 
-require gmp.fs
+include gmp.fs
 
 previous definitions also gmp
 
@@ -31,57 +31,54 @@ false value mem_debug
 variable inits        0 inits !
 variable clears       0 clears !
 
-: z_init ( z -- ) 
-    mem_debug if
-        ." init: " dup .
-        inits @ 1+ inits !
-    then
+: zinit ( z -- ) 
+    mem_debug if   ." init: " dup .   inits @ 1+ inits !   then
     __gmpz_init
 ;
 
-: z_clear ( z -- )
-    mem_debug if
-        ." clear: " dup .
-        clears @ 1+ clears !
-    then
+: zclear ( z -- )
+    mem_debug if   ." clear: " dup .   clears @ 1+ clears !   then
     __gmpz_clear
 ;
 
-: z_new ( -- z )
-    __mpz_struct allocate throw dup z_init
+: z0 ( -- z )
+    __mpz_struct allocate throw    dup zinit
 ;
 
-: z_free ( z -- )
-    dup z_clear free throw
+: zfree ( z -- )
+    dup zclear free throw
 ;
 
 : zdrop ( z -- )
-    z_free
+    zfree
+;
+
+: zdup ( z -- z z )
+    dup z0 dup rot ( z z0 z0 z ) __gmpz_set
 ;
 
 : u>z ( u -- z )
-    z_new
-    dup rot __gmpz_set_ui
+    z0 dup rot __gmpz_set_ui
 ;
 
 : (z) ( str -- )
-    z_new dup 2swap 10 __gmpz_set_str 0<> if 1 throw then
+    z0 dup 2swap 10 __gmpz_set_str 0<> if 1 throw then
 ;
 
 : z ( "name" -- z )
     parse-name ( str len ) 
-    z_new dup 2swap 
+    z0 dup 2swap 
     ( z z str len ) 10 __gmpz_set_str 0<> if 
         1 throw 
     then
 ;
 
 : z! ( z var -- )
-    dup @ dup 0<> if z_free else drop then !
+    dup @ dup 0<> if zdrop else drop then !
 ;
 
 : z@ ( var -- z )
-    @ z_new dup rot __gmpz_set
+    @ z0 dup rot __gmpz_set
 ;
 
 : (z.) ( z -- z )
@@ -90,51 +87,51 @@ variable clears       0 clears !
 ;
 
 : z. ( z -- )
-    (z.) z_free
+    (z.) zdrop
 ;
 
-: ab->aaab ( a b -- a a a b ) \ prepare for binary operation
+: ab>aaab ( a b -- a a a b ) \ prepare for binary operation
     over dup 2swap
 ;
 
-: ab->baaab ( a b -- b a a a b )
-    tuck ab->aaab
+: ab>baaab ( a b -- b a a a b )
+    tuck ab>aaab
 ;
 
 : zu* ( z u -- z )
-    ab->aaab __gmpz_mul_ui
+    ab>aaab __gmpz_mul_ui
 ;
 
 : z* ( z1 z2 -- z1 = z1*z2 )
-    ab->baaab __gmpz_mul swap z_free
+    ab>baaab __gmpz_mul swap zdrop
 ;
 
-: z_cmp ( z1 z2 -- n )
-    2dup __gmpz_cmp -rot z_free z_free
+: zcmp ( z1 z2 -- n )
+    2dup __gmpz_cmp -rot zdrop zdrop
 ;
 
 : z= ( z1 z2 -- flag )
-    z_cmp 0=
+    zcmp 0=
 ;
 
 : z<> ( z1 z2 -- flag )
-    z_cmp 0<>
+    zcmp 0<>
 ;
 
 : z< ( z1 z2 -- flag )
-    z_cmp 0<
+    zcmp 0<
 ;
 
 : z<= ( z1 z2 -- flag )
-    z_cmp 0<=
+    zcmp 0<=
 ;
 
 : z> ( z1 z2 -- flag )
-    z_cmp 0>
+    zcmp 0>
 ;
 
 : z>= ( z1 z2 -- flag )
-    z_cmp 0>=
+    zcmp 0>=
 ;
 
 : fct ( u -- z )
@@ -152,7 +149,7 @@ variable clears       0 clears !
 ;
 
 : fct3 ( u -- z )
-    z_new dup rot __gmpz_fac_ui
+    z0 dup rot __gmpz_fac_ui
 ;
 
 : mem_stats
