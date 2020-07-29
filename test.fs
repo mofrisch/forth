@@ -1,6 +1,6 @@
-.( Benchmark Tools)
+.( Testing Tools)
 
-\ benchmark.fs
+\ test.fs
 \ Some exercises
 
 \ Author: Moritz Frisch
@@ -20,41 +20,25 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-2variable bench
-variable expression   0 expression !
+variable test-expression
 
-
-: start-bench
-   utime bench 2!
-;
-
-: stop-bench
-   utime bench 2@ d- ( 2dup d. ) d>f 1000e f/ f. ." ms" cr
-;
-
-: included-bench ( addr u -- )
-    utime bench !
-    included s" main" evaluate
-    utime bench 2@ d- 2dup d. d>f 1e6 f/ f.
-;
-
-
-: bench  ( -- )
-   
-   s" ../forth/num/mpz_bench.fs" included-bench
-;
-
-: b(  
-   ')' parse  
-   expression @ 0= if 
-      $make expression !
+: t(  
+   ')' parse 
+   test-expression @ 0= if 
+      $make test-expression !
    else
-      expression $!
+      test-expression $!
    then
-   expression $@ type
-   start-bench
-   expression $@ evaluate
-   stop-bench
+   test-expression $@ type
+   
+   test-expression $@ evaluate if 
+      success-color attr! ." test passed " 0 attr! cr
+   else
+      error-color attr! ." test failed " 0 attr! cr
+   then
+   
 ;
 
-b( 10000 fct zdrop )
+cr 
+t( z 1 z 1 z= )
+t( z 1 z 2 z= )

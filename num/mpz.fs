@@ -49,13 +49,97 @@ variable clears       0 clears !
     dup zclear free throw
 ;
 
+: is-z ( z | n -- z -1 | n 0 )
+    try dup dup __gmpz_cmp drop -1 iferror drop 0 then endtry
+;
+
+\ Comparison
+
+: zcmp ( z1 z2 -- n )
+    2dup __gmpz_cmp -rot zfree zfree
+;
+
+: z= ( z1 z2 -- flag )
+    zcmp 0=
+;
+
+: z<> ( z1 z2 -- flag )
+    zcmp 0<>
+;
+
+: z< ( z1 z2 -- flag )
+    zcmp 0<
+;
+
+: z<= ( z1 z2 -- flag )
+    zcmp 0<=
+;
+
+: z> ( z1 z2 -- flag )
+    zcmp 0>
+;
+
+: z>= ( z1 z2 -- flag )
+    zcmp 0>=
+;
+
+
+\ Stack Manipulation: We only need creative and destructive words
+
 : zdrop ( z -- )
     zfree
+;
+
+: znip ( z1 z2 -- z2 )
+    swap zdrop
 ;
 
 : zdup ( z -- z z )
     dup z0 dup rot ( z z0 z0 z ) __gmpz_set
 ;
+
+: ztuck ( z1 z2 -- z2 z1 z2 )
+    zdup -rot
+;
+
+: zover ( z1 z2 -- z1 z2 z1 )
+    swap ztuck
+;
+
+: zpick ( z1 ... zn u -- z1 ... zn zu )
+    pick >r z0 dup r> __gmpz_set
+;
+
+: z?dup ( z1<>0 -- z1 z1 )
+    zdup z0 z<> if zdup then
+;
+
+: z2drop ( z1 z2 -- )
+    zdrop zdrop
+;
+
+: z2nip ( z1 z2 z3 z4 -- z3 z4 )
+    2swap z2drop
+;
+
+: z2dup ( z1 z2 -- z1 z2 z1 z2 )
+    swap zdup rot zdup -rot
+;
+
+: -2rot ( z1 z2 z3 z4 z5 z6 -- z5 z6 z1 z2 z3 z4 )
+    2rot 2rot
+;
+
+: z2tuck ( z1 z2 z3 z4 -- z3 z4 z1 z2 z3 z4 )
+    z2dup -2rot
+;
+
+: z2over ( z1 z2 z3 z4 -- z1 z2 z3 z4 z1 z2 )
+    2swap z2tuck
+;
+
+
+\ Creating MPZ numbers
 
 : u>z ( u -- z )
     z0 dup rot __gmpz_set_ui
@@ -82,13 +166,28 @@ variable clears       0 clears !
 ;
 
 : (z.) ( z -- z )
-    dup 0 10 rot 
-    ( z 0 10 z ) __gmpz_out_str drop bl emit 
+    ." z(" dup 0 10 rot __gmpz_out_str drop ." ) "
 ;
 
+
 : z. ( z -- )
-    (z.) zdrop
+    is-z if (z.) zdrop else . then
 ;
+
+: z.s 
+    ." <" depth 0 .r ." > "
+    depth maxdepth-.s @ > if ." ... " then
+    depth 0 max maxdepth-.s @ min
+    dup 0
+    ?do
+        dup i - pick
+        is-z if (z.) drop else . then 
+    loop
+    drop
+;
+
+
+\ Arithmetics
 
 : ab>aaab ( a b -- a a a b ) \ prepare for binary operation
     over dup 2swap
@@ -122,33 +221,48 @@ variable clears       0 clears !
     ab>baaab __gmpz_mul swap zdrop
 ;
 
-: zcmp ( z1 z2 -- n )
-    2dup __gmpz_cmp -rot zdrop zdrop
+\ Division is floored
+
+: zu/ ( z u -- z/u )
+    ab>aaab __gmpz_fdiv_q_ui drop ( the remainder )
 ;
 
-: z= ( z1 z2 -- flag )
-    zcmp 0=
+: z/ ( z1 z2 -- z1/z2 )
+    ab>baaab __gmpz_fdiv_q swap zdrop
 ;
 
-: z<> ( z1 z2 -- flag )
-    zcmp 0<>
+: z/mod ( z1 z2 -- z1/z2 z1%z2 )
+    2dup z0 z0 2dup 2rot ( z1 z2 z0 z0 z0 z0 z1 z2 ) 
+    __gmpz_fdiv_qr 
+    2swap zdrop zdrop swap
 ;
 
-: z< ( z1 z2 -- flag )
-    zcmp 0<
+: zumod ( z u -- z%u )
+    ab>aaab __gmpz_fdiv_r_ui drop
 ;
 
-: z<= ( z1 z2 -- flag )
-    zcmp 0<=
+: zmod ( z1 z2 -- z1%z2 )
+    ab>baaab __gmpz_fdiv_r swap zdrop
 ;
 
-: z> ( z1 z2 -- flag )
-    zcmp 0>
+: znegate ( z -- -z )
+    dup dup __gmpz_neg
 ;
 
-: z>= ( z1 z2 -- flag )
-    zcmp 0>=
+: zabs ( z -- |z| )
+    dup dup __gmpz_abs
 ;
+
+: zmin ( z1 z2 -- z )
+    z2dup z<= if zdrop else swap zdrop then
+;
+
+: zmax ( z1 z2 -- z )
+    z2dup z>= if zdrop else swap zdrop then
+;
+
+
+\ Special functions
 
 : fct ( u -- z )
     1 u>z swap
