@@ -40,7 +40,7 @@ warnings !
 ;
 
 bold attr! 
-error-color attr! 
+success-color attr! 
 start-report [if]
    80 draw-seperator cr
    ." Startup Code" .dict 

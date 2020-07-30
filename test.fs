@@ -29,7 +29,7 @@ true value test-print-detail
 
 
 : tests 
-   ':' parse   test-section $!
+   10 parse   test-section $!
    cr
    test-section $@ type cr
    0 test-passed !   0 test-failed !
@@ -54,7 +54,7 @@ true value test-print-detail
 : totals 
    ." Tests: "    test-passed @ test-failed @ + . 
    ['] totals-passed success-color color-execute
-   ['] totals-failed error-color color-execute
+   test-failed @ if ['] totals-failed error-color color-execute then
    cr 80 draw-seperator
 ;
 

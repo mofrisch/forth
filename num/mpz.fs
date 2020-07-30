@@ -25,19 +25,30 @@ get-current also gmp definitions
 
 include gmp.fs
 
+\ previous set-current also gmp
 previous definitions also gmp
+\ Vocabulary mpz 
+\ get-current also mpz definitions
 
-false value mem_debug
-variable inits        0 inits !
-variable clears       0 clears !
+false value mpz-init-mem-debug
+false value mpz-init-print
+
+[ifundef] mpz-inits 
+variable mpz-inits        
+variable mpz-clears  
+[then]     
+
+0 mpz-inits !   0 mpz-clears !
 
 : zinit ( z -- ) 
-    mem_debug if   ." init: " dup .   inits @ 1+ inits !   then
+    mpz-init-mem-debug if mpz-inits ++ then
+    mpz-init-print if ." init: " dup . then
     __gmpz_init
 ;
 
 : zclear ( z -- )
-    mem_debug if   ." clear: " dup .   clears @ 1+ clears !   then
+    mpz-init-mem-debug if mpz-clears ++ then
+    mpz-init-print if ." init: " dup . then
     __gmpz_clear
 ;
 
@@ -282,11 +293,11 @@ variable clears       0 clears !
     z0 dup rot __gmpz_fac_ui
 ;
 
-: mem_stats
-    cr ." inits: " inits @ .
-    cr ." clears: " clears @ .
+: z-mem-stats
+    cr ." inits: " mpz-inits @ .
+    cr ." clears: " mpz-clears @ .
 ;
 
-previous set-current
+previous ( previous ) set-current
 
-mem_debug [if] mem_stats [then]
+

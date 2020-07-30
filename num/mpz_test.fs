@@ -23,34 +23,35 @@
 
 false to mem_debug
 
-variable a0
-12 u>z a0 z!
-a0 z@ z.
-13 u>z a0 z!
-a0 z@ z.
-a0 z@ z.
+[ifundef] a0 variable a0 [then]
 
-3 fct z.
-3 fct2 z.
-
-cr z 123456789012345678901234567890 2 zu+ z.
-cr z 123456789012345678901234567890 z 123456789012345678901234567890 z+ z.
-cr z 123456789012345678901234567890 2 zu- z.
-cr z 123456789012345678901234567890 z 123456789012345678901234567890 z- z.
-
-\ mem_stats
-
-print-summary
-\ print-detail
+\ print-summary
+print-detail
 cr 80 draw-seperator
+
+tests Variables:
+t( 12 u>z a0 z! a0 z@ z 12 z= )
+t( 13 u>z a0 z! a0 z@ z 13 z= )
+t( a0 z@ z 13 z= )
+t( z 14 a0 z! -1 )
+totals
+
 
 tests Comparison :
 t( z 1 z 1 z= )
-t( z 1 z 2 z= )
+t( z 1 z 2 z<> )
 t( z 1 z 1 z= )
 totals
 
 tests Arithmetics and special functions :
+t( z 123456789012345678901234567890 a0 z! -1 )
 t( z 1 z 1 z+ z 2 z= )
+t( a0 z@ 2 zu+ z 123456789012345678901234567892 z= )
+t( a0 z@ 2 zu- z 123456789012345678901234567888 z= )
+t( a0 z@ a0 z@ z- z0 z= )
+t( 5 fct z 120 z= )
 totals
+
 cr
+
+mem_stats
