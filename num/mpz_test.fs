@@ -39,3 +39,18 @@ cr z 123456789012345678901234567890 2 zu- z.
 cr z 123456789012345678901234567890 z 123456789012345678901234567890 z- z.
 
 \ mem_stats
+
+print-summary
+\ print-detail
+cr 80 draw-seperator
+
+tests Comparison :
+t( z 1 z 1 z= )
+t( z 1 z 2 z= )
+t( z 1 z 1 z= )
+totals
+
+tests Arithmetics and special functions :
+t( z 1 z 1 z+ z 2 z= )
+totals
+cr

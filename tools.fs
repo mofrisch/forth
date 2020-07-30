@@ -71,3 +71,6 @@ variable user-include    0 user-include !
 	else ." no current file" then
 ;
 
+: ++ ( var -- var )
+	1 swap +!
+;

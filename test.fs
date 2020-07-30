@@ -20,25 +20,59 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-variable test-expression
+variable test-expression   test-expression $init
+variable test-section      test-section $init
+variable test-passed       0 test-passed !
+variable test-failed       0 test-failed !
+variable test-print-string test-print-string $init
+true value test-print-detail
 
-: t(  
-   ')' parse 
-   test-expression @ 0= if 
-      $make test-expression !
-   else
-      test-expression $!
-   then
-   test-expression $@ type
-   
-   test-expression $@ evaluate if 
-      success-color attr! ." test passed " 0 attr! cr
-   else
-      error-color attr! ." test failed " 0 attr! cr
-   then
-   
+
+: tests 
+   ':' parse   test-section $!
+   cr
+   test-section $@ type cr
+   0 test-passed !   0 test-failed !
 ;
 
-cr 
-t( z 1 z 1 z= )
-t( z 1 z 2 z= )
+: totals-passed
+   ." Passed: " test-passed @ . 
+;
+
+: totals-failed
+   ." Failed: " test-failed @ .
+;
+
+: test-ok.
+   success-color attr! ." test passed " default-color attr! cr
+;
+
+: test-nok.
+   error-color attr! ." test failed " default-color attr! cr
+;
+
+: totals 
+   ." Tests: "    test-passed @ test-failed @ + . 
+   ['] totals-passed success-color color-execute
+   ['] totals-failed error-color color-execute
+   cr 80 draw-seperator
+;
+
+
+: t(  ')' parse    test-expression $!
+   test-expression $@ evaluate if 
+      test-passed ++   
+      test-print-detail if test-expression $@ type   test-ok. then
+   else
+      test-failed ++   test-expression $@ type   test-nok.
+   then
+;
+
+: print-summary
+   false to test-print-detail
+;
+
+: print-detail
+   true to test-print-detail
+;
+

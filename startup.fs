@@ -47,6 +47,8 @@ start-report [if]
 [then]
 require2 tools.fs
 require2 patches/editor.fs
+require2 test.fs
+require2 benchmark.fs
 require2 num/mpz.fs
 require2 sdl2/sdl2-lib.fs
 start-report [if]
