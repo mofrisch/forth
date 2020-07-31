@@ -19,6 +19,8 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
+require ../tools.fs
+
 Vocabulary gmp
 
 get-current also gmp definitions
@@ -34,8 +36,7 @@ false value mpz-init-mem-debug
 false value mpz-init-print
 
 [ifundef] mpz-inits 
-variable mpz-inits        
-variable mpz-clears  
+variable mpz-inits   variable mpz-clears  
 [then]     
 
 0 mpz-inits !   0 mpz-clears !
@@ -60,7 +61,7 @@ variable mpz-clears
     dup zclear free throw
 ;
 
-: is-z ( z | n -- z -1 | n 0 )
+: z-is ( z | n -- z -1 | n 0 )
     try dup dup __gmpz_cmp drop -1 iferror drop 0 then endtry
 ;
 
@@ -188,7 +189,7 @@ variable mpz-clears
 
 
 : z. ( z -- )
-    is-z if z(z.) zdrop else . then
+    z-is if z(z.) zdrop else . then
 ;
 
 : z.s 
@@ -198,10 +199,12 @@ variable mpz-clears
     dup 0
     ?do
         dup i - pick
-        is-z if z(z.) drop else . then 
+        z-is if z(z.) drop else . then 
     loop
     drop
 ;
+
+' z.s is ..s
 
 
 \ Arithmetics

@@ -74,3 +74,6 @@ variable user-include    0 user-include !
 : ++ ( var -- var )
 	1 swap +!
 ;
+
+defer ..s 
+' .s is ..s
