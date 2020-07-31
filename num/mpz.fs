@@ -48,7 +48,7 @@ variable mpz-clears
 
 : zclear ( z -- )
     mpz-init-mem-debug if mpz-clears ++ then
-    mpz-init-print if ." init: " dup . then
+    mpz-init-print if ." clear: " dup . then
     __gmpz_clear
 ;
 
@@ -93,6 +93,8 @@ variable mpz-clears
 : z>= ( z1 z2 -- flag )
     zcmp 0>=
 ;
+
+
 
 
 \ Stack Manipulation: We only need creative and destructive words
@@ -157,7 +159,7 @@ variable mpz-clears
 ;
 
 : (z) ( str -- )
-    z0 dup 2swap 10 __gmpz_set_str 0<> if 1 throw then
+    z0 dup 2swap 10 __gmpz_set_str 0<> if s" invalid character " exception throw then
 ;
 
 : z ( "name" -- z )
@@ -176,13 +178,17 @@ variable mpz-clears
     @ z0 dup rot __gmpz_set
 ;
 
-: (z.) ( z -- z )
+: (z.)
+    dup 0 10 rot __gmpz_out_str drop 
+;
+
+: z(z.) ( z -- z )
     ." z(" dup 0 10 rot __gmpz_out_str drop ." ) "
 ;
 
 
 : z. ( z -- )
-    is-z if (z.) zdrop else . then
+    is-z if z(z.) zdrop else . then
 ;
 
 : z.s 
@@ -192,7 +198,7 @@ variable mpz-clears
     dup 0
     ?do
         dup i - pick
-        is-z if (z.) drop else . then 
+        is-z if z(z.) drop else . then 
     loop
     drop
 ;
@@ -270,6 +276,10 @@ variable mpz-clears
 
 : zmax ( z1 z2 -- z )
     z2dup z>= if zdrop else swap zdrop then
+;
+
+: zgcd ( z1 z2 -- z )
+    ab>baaab __gmpz_gcd swap zdrop
 ;
 
 

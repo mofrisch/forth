@@ -17,41 +17,41 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-[ifundef] zinit 
-   require mpz.fs
+require mpz.fs
+
+false to mpz-init-mem-debug
+
+[ifundef] a1
+variable a1    variable a2   variable a3
 [then]
 
-false to mem_debug
-
-[ifundef] a0 variable a0 [then]
-
-\ print-summary
-print-detail
+print-summary
+\ print-detail
 cr 80 draw-seperator
 
 tests Variables:
-t( 12 u>z a0 z! a0 z@ z 12 z= )
-t( 13 u>z a0 z! a0 z@ z 13 z= )
-t( a0 z@ z 13 z= )
-t( z 14 a0 z! -1 )
+t( 12 u>z a1 z! a1 z@ z 12 z= )
+t( 13 u>z a1 z! a1 z@ z 13 z= )
+t( a1 z@ z 13 z= )
+t( z 14 a1 z! true )
 totals
-
 
 tests Comparison :
 t( z 1 z 1 z= )
 t( z 1 z 2 z<> )
-t( z 1 z 1 z= )
+t( z 1 z 2 z= false = )
+
 totals
 
 tests Arithmetics and special functions :
-t( z 123456789012345678901234567890 a0 z! -1 )
+t( z 123456789012345678901234567890 a1 z! true )
 t( z 1 z 1 z+ z 2 z= )
-t( a0 z@ 2 zu+ z 123456789012345678901234567892 z= )
-t( a0 z@ 2 zu- z 123456789012345678901234567888 z= )
-t( a0 z@ a0 z@ z- z0 z= )
+t( a1 z@ 2 zu+ z 123456789012345678901234567892 z= )
+t( a1 z@ 2 zu- z 123456789012345678901234567888 z= )
+t( a1 z@ a1 z@ z- z0 z= )
 t( 5 fct z 120 z= )
 totals
 
 cr
 
-mem_stats
+mpz-init-mem-debug [if] z-mem-stats [then]
