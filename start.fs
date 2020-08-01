@@ -19,42 +19,33 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-variable dict_start   here dict_start !
+variable start-dict   here start-dict !
 true constant start-report
 
-: draw-seperator ( n -- ) 
-   0 ?do [char] - emit loop
-;
-
+: draw-seperator ( n -- )   0 ?do [char] - emit loop ;
 \ Redifine .( )
 warnings @    warnings off
 : .( ')' parse start-report if type then ; immediate  
 warnings !
+: .used ( -- )
+   start-report if ." : "   here start-dict @ - .   ." Bytes " cr then ;
+: require2 ( -- )   here start-dict ! require .used ;
 
-: .dict ( -- )
-   start-report if ." : "   here dict_start @ - .   ." Bytes " cr then
-;
-
-: require2 
-   here dict_start !   require   .dict
-;
-
-bold attr! 
-success-color attr! 
-start-report [if]
-   80 draw-seperator cr
-   ." Startup Code" .dict 
+success-color attr!
+start-report [if] 
+   80 draw-seperator cr ." Startup Code" .used 
 [then]
 require2 tools.fs
-require2 patches/editor.fs
-require2 test.fs
-require2 benchmark.fs
-require2 num/mpz.fs
+require2 vscode.fs
+require2 test.fs   
+require2 ben.fs
+require2 num/z.fs
 require2 num/q.fs
 require2 sdl2/sdl2-lib.fs
-start-report [if]
-   ." Unused: " unused . ." Bytes" cr 
-   80 draw-seperator cr
+start-report [if] 
+   ." Unused: " unused . ." Bytes" cr 80 draw-seperator cr 
 [then]
-0 attr!
+default-color attr!
+
+
 

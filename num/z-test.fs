@@ -17,9 +17,9 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-require mpz.fs
+require z.fs
 
-false to mpz-init-mem-debug
+false to z-total-inits
 
 [ifundef] a1
 variable a1    variable a2   variable a3
@@ -36,14 +36,14 @@ t( a1 z@ z 13 z= )
 t( z 14 a1 z! true )
 totals
 
-tests Comparison :
+tests Comparison:
 t( z 1 z 1 z= )
 t( z 1 z 2 z<> )
 t( z 1 z 2 z= false = )
 
 totals
 
-tests Arithmetics and special functions :
+tests Arithmetics and special functions:
 t( z 123456789012345678901234567890 a1 z! true )
 t( z 1 z 1 z+ z 2 z= )
 t( a1 z@ 2 zu+ z 123456789012345678901234567892 z= )
@@ -54,4 +54,4 @@ totals
 
 cr
 
-mpz-init-mem-debug [if] z-mem-stats [then]
+z-total-inits [if] z-mem-stats [then]

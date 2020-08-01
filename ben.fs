@@ -20,28 +20,13 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-2variable bench
-variable expression   0 expression !
+2variable ben
+variable ben$   ben$ $init
 
-
-: start-bench
-   utime bench 2!
-;
-
-: stop-bench
-   utime bench 2@ d- ( 2dup d. ) d>f 1000e f/ f. ." ms" cr
-;
-
-: b(  
-   ')' parse  
-   expression @ 0= if 
-      $make expression !
-   else
-      expression $!
-   then
-   expression $@ type
-   start-bench
-   expression $@ evaluate
-   stop-bench
-;
+: ben!  ( addr u -- ) ben$ $! ;
+: ben@  ( -- addr u ) ben$ $@ ;
+: ben. ( d -- )   d>f 1000e f/    8 3 1 f.rdp    ."  ms" cr ;
+: ben-start ( -- )  utime ben 2! ;
+: ben-stop ( -- )   utime ben 2@ d- ben. ;
+: b( ')' parse ben! ben@ type ben-start ben@ evaluate ben-stop ; immediate
 

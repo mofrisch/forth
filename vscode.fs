@@ -1,4 +1,4 @@
-.( Patches for Visual Code Editor)
+.( Visual Code Editor)
 
 \ patches/editor.fs
 \ Does VS Code Integration with Gforth.

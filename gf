@@ -1,1 +1,1 @@
-gforth startup.fs
+~/gforth/gforth start.fs

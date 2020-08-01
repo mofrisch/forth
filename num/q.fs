@@ -19,8 +19,8 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-require mpz.fs
--1 to mpz-init-mem-debug   0 to mpz-init-print
+require z.fs
+0 to z-total-inits    0 to z-print-inits
 
 struct 
 cell% field _q%-num   
@@ -58,30 +58,29 @@ end-struct _q%
 : qdup { q1 -- q1 q1 }   qnew dup   dup q1 qn@ qn!   dup q1 qd@ qd! ;
 
 \ Printing
-: (q.) ( q -- q )   dup _q%-num @ (z.) drop   '/' emit   dup _q%-den @ (z.) 
-   drop ;
+: (q.) ( q -- q )   dup qn@ (z.) zdrop '/' emit dup qd@ (z.) zdrop drop ;
 : q. ( q -- )   (q.) bl emit qdrop ;
 : q.s ( -- )   
    ." <" depth 0 .r ." > "
    depth maxdepth-.s @ > if ." ... " then
    depth 0 max maxdepth-.s @ min dup 0 ?do   
-   dup i - pick   
-   q-is if (q.) drop else z-is if (z.) drop else . then then 
+      dup i - pick   
+      q-is if (q.) drop   else z-is if (z.) drop   else . then then 
    loop drop ;
 ' q.s is ..s
 
 \ Comparison
 : qcmp { q1 q2 -- -1|0|1 } \ -1: q1<q2 0: q1=q2 1: q1>q2
    q1 qn@ q2 qd@ z*   q1 qd@ q2 qn@ z*   zcmp ;
-: q= ( q1 q2 -- flag )   qcmp 0= ;
-: q<> ( q1 q2 -- flag )   qcmp 0<> ;
-: q> ( q1 q2 -- flag )   qcmp 1 = ;
-: q>= ( q1 q2 -- flag )   qcmp dup 0= swap 1 = or ;
-: q< ( q1 q2 -- flag )   qcmp -1 = ;
-: q<= ( q1 q2 -- flag )   qcmp dup 0= swap -1 = or ;
+: q=  ( q1 q2 -- ? )   qcmp 0= ;
+: q<> ( q1 q2 -- ? )   qcmp 0<> ;
+: q>  ( q1 q2 -- ? )   qcmp 0>  ;
+: q>= ( q1 q2 -- ? )   qcmp 0>= ;
+: q<  ( q1 q2 -- ? )   qcmp 0< ;
+: q<= ( q1 q2 -- ? )   qcmp 0<= ;
 
 \ Arithmetics
-: qneg ( q -- q )   dup dup qn@ znegate qni! ;
+: qneg ( q -- q )   dup dup qn@ zneg qni! ;
 : qabs ( q -- q )   dup dup qn@ zabs qni! ;
 : qinv { q1 -- 1/q1 } 
    qnew dup  q1 qn@ qd!   dup q1 qd@ qn!   q1 qdrop ;
@@ -94,4 +93,3 @@ end-struct _q%
    qnew dup   q1 qn@ q2 qn@ z*   qn!   dup   q1 qd@ q2 qd@ z*   qd!   qred   
    q1 qdrop   q2 qdrop ;
 : q/ ( q1 q2 -- q1/q2 )   qinv q* qred ;
-   
