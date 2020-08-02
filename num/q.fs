@@ -27,16 +27,18 @@ cell% field _q%-num
 cell% field _q%-den   
 end-struct _q%
 
-\ Accessors
+\ Accessors -- use qni! and qdi! for initialized variables to avoid a memory
+\ leak
 : qn@ ( q -- z )   _q%-num z@ ;
-: qd@ ( q -- z )   _q%-den z@ ;
 : qn! ( q z -- )   swap _q%-num ! ;
 : qni! ( q z -- )   swap _q%-num z! ;
+: qd@ ( q -- z )   _q%-den z@ ;
 : qd! ( q z -- )   swap _q%-den ! ;
 : qdi! ( q z -- ) swap _q%-den z! ;
 
 \ Initialize and free
-: q-is ( q -- q flag )   try dup qn@ drop -1 iferror drop 0 then endtry ;
+: q-is ( q -- q ? )  \ returns true iff the object on stack is of type q
+   try dup qn@ drop -1 iferror drop 0 then endtry ;
 : qnew ( -- q )   _q% %allocate throw ;
 : qinit ( q -- )   dup z0 qn!  dup 1 u>z qd! ;
 : qfree ( q -- )   dup _q%-num @ zdrop   dup _q%-den @ zdrop   free throw ;
@@ -93,3 +95,5 @@ end-struct _q%
    qnew dup   q1 qn@ q2 qn@ z*   qn!   dup   q1 qd@ q2 qd@ z*   qd!   qred   
    q1 qdrop   q2 qdrop ;
 : q/ ( q1 q2 -- q1/q2 )   qinv q* qred ;
+
+

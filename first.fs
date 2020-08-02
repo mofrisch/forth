@@ -1,6 +1,5 @@
 \ first.fs
 \ Some exercises
-
 \ Author: Moritz Frisch
 \ Copyright (C) 2020 Free Software Foundation, Inc.
 \ Version 0.0.0
@@ -18,15 +17,16 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
+\ #region 
 : sqr ( u -- u )
     dup * * ;
-
 : fn ( F: r -- r)
     fdup f* 2e f- ;
-
 : fn' ( F: r -- r)
     2e f* ;
+\ #endregion
 
+\ #region Second Region
 : next-iteration ( F: x1 -- x2 )
     \ x2 = x1 - f(x1) / f'(x1)
     fdup fdup fn 
@@ -41,13 +41,11 @@
     10 0 DO 
     	fdup f. cr 
     	next-iteration
-    LOOP ; 
-
-: nwt2 ( F: r -- r )
-    
-;
-    
+    LOOP ;
+\ #endregion
 
 
 
+ 
+\ }
 

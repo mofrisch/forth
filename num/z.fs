@@ -127,9 +127,12 @@ false value z-print-inits
 : fct ( u -- z )    1 u>z swap 1+ 1 do i zu* loop ;
 : fct2 ( u -- z )   1 u>z swap 1+ 1 do i u>z z* loop ;
 : fct3 ( u -- z )   z0 dup rot __gmpz_fac_ui ;
-: z-mem-stats ( -- )   cr ." inits: " z-inits @ .   cr ." clears: " 
-   z-clears @ . ;
+: z-mem-stats ( -- )   
+    cr ." inits: " z-inits @ .   
+    cr ." clears: " z-clears @ . ;
 
 previous set-current
+
+
 
 
