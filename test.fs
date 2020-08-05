@@ -44,11 +44,11 @@ true value test-print-detail
 ;
 
 : test-ok.
-   success-color attr! ." test passed " default-color attr! cr
+   success-color attr! ." test passed: " default-color attr!
 ;
 
 : test-nok.
-   error-color attr! ." test failed " default-color attr! cr
+   error-color attr! ." test failed: " default-color attr!
 ;
 
 : totals 
@@ -62,9 +62,14 @@ true value test-print-detail
 : t(  ')' parse    test-expression $!
    test-expression $@ evaluate if 
       test-passed ++   
-      test-print-detail if test-expression $@ type   test-ok. then
+      test-print-detail if 
+         sourcefilename type ':' emit sourceline# .du ':' emit 1 .du ':' 
+      emit ."  info: " test-ok. test-expression $@ type    cr 
+      then
    else
-      test-failed ++   test-expression $@ type   test-nok.
+      test-failed ++   
+      sourcefilename type ':' emit sourceline# .du ':' emit 1 .du ':' 
+      emit ."  error: " test-nok. test-expression $@ type cr 
    then
 ;
 

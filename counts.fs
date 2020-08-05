@@ -18,6 +18,11 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
+require abc.fs
+
+-1 variable x
+constant is 
+
 : counts ( limit counter -- )
     DO I . LOOP
 ;
@@ -107,3 +112,4 @@ page swap 0 do dup i - spaces stars cr loop drop
         7 min .
     loop drop
 ;
+

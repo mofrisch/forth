@@ -1,8 +1,10 @@
-\ first.fs
-\ Some exercises
+.( SDL2 Library)
+
+\ sdl2/sdl2-lib.fs
+\ Simple DirectMedia Layer Support
+
 \ Author: Moritz Frisch
 \ Copyright (C) 2020 Free Software Foundation, Inc.
-\ Version 0.0.0
 
 \ This program is free software; you can redistribute it and/or modify it
 \ under the terms of the GNU General Public License as published by the
@@ -17,32 +19,19 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
+Vocabulary sdl2
 
-\ #region abc  
-: sqr ( u -- u )
-    dup * * ;
-: fn ( F: r -- r)
-    fdup f* 2e f- ;
-: fn' ( F: r -- r)
-    2e f* ;
-\ #endregion
+get-current also sdl2 definitions
 
-\ #region Second Region
+s" libtypeset.so" prefetch-lib
 
-: next-iteration ( F: x1 -- x2 )
-    \ x2 = x1 - f(x1) / f'(x1)
-    fdup fdup fn 
-    fswap fn' 
-    f/ f- ;
+include generated/sdl2.fs
 
-: near ( r1 r2 -- f )
-    f- fabs 1e-6 f< ;
+previous definitions also sdl2
 
-: newton ( F: start-value -- estimation )
-    page 
-    10 0 DO 
-       fdup f. cr 
-       next-iteration
-    LOOP ;
-\ #endregion
+\ create sdlv SDL_version allot
+\ sdlv SDL_GetVersion
+\ sdlv 16 dump
+\ sdlv SDL_version-major c@ .
 
+previous set-current

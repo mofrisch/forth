@@ -8,11 +8,9 @@
 
 %module gmp
 %insert("include")
-%
-{
+%{
 #include <gmp.h>
-%
-}
+%}
 
 #define _GMP_H_HAVE_FILE 1
 

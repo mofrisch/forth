@@ -20,7 +20,7 @@
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
 variable start-dict   here start-dict !
-true constant start-report
+true value start-report
 
 : draw-seperator ( n -- )   0 ?do [char] - emit loop ;
 \ Redifine .( )
@@ -39,9 +39,9 @@ require2 tools.fs
 require2 vscode.fs
 require2 test.fs   
 require2 ben.fs
-require2 num/z.fs
-require2 num/q.fs
-require2 sdl2/sdl2-lib.fs
+require2 z.fs
+require2 q.fs
+require2 sdl2-lib.fs
 start-report [if] 
    ." Unused: " unused . ." Bytes" cr 80 draw-seperator cr 
 [then]

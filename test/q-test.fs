@@ -1,9 +1,12 @@
-\ first.fs
-\ Some exercises
+.( Test rationals)
+
+\ test/q-test.fs
+\ Test rational numbers.
+
 \ Author: Moritz Frisch
 \ Copyright (C) 2020 Free Software Foundation, Inc.
-\ Version 0.0.0
 
+\ #region License
 \ This program is free software; you can redistribute it and/or modify it
 \ under the terms of the GNU General Public License as published by the
 \ Free Software Foundation; either version 3, or (at your option) any
@@ -15,34 +18,16 @@
 \ GNU General Public License for more details.
 
 \ You should have received a copy of the GNU General Public License
-\ along with this program. If not, see http://www.gnu.org/licenses/.
-
-
-\ #region abc  
-: sqr ( u -- u )
-    dup * * ;
-: fn ( F: r -- r)
-    fdup f* 2e f- ;
-: fn' ( F: r -- r)
-    2e f* ;
+\ along with this program. If not, see http: //www.gnu.org/licenses/.
 \ #endregion
 
-\ #region Second Region
+require ../q.fs
 
-: next-iteration ( F: x1 -- x2 )
-    \ x2 = x1 - f(x1) / f'(x1)
-    fdup fdup fn 
-    fswap fn' 
-    f/ f- ;
-
-: near ( r1 r2 -- f )
-    f- fabs 1e-6 f< ;
-
-: newton ( F: start-value -- estimation )
-    page 
-    10 0 DO 
-       fdup f. cr 
-       next-iteration
-    LOOP ;
+\ #region Arithmetic tests
+tests Aritmetic tests
+t( q 1/2 q 1/3 q+ q 5/6 q= )
+t( q 1/2 q 1/3 q+ q 5/6 q<> )
+totals
 \ #endregion
+
 

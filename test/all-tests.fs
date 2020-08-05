@@ -1,11 +1,12 @@
-.( SDL2 Library)
+.( Run all Tests) 
 
-\ sdl2/sdl2-lib.fs
-\ Simple DirectMedia Layer Support
+\ test/all-tests.fs
+\ Run tests for z.fs and q.fs
 
 \ Author: Moritz Frisch
 \ Copyright (C) 2020 Free Software Foundation, Inc.
 
+\ #region License
 \ This program is free software; you can redistribute it and/or modify it
 \ under the terms of the GNU General Public License as published by the
 \ Free Software Foundation; either version 3, or (at your option) any
@@ -17,21 +18,8 @@
 \ GNU General Public License for more details.
 
 \ You should have received a copy of the GNU General Public License
-\ along with this program. If not, see http://www.gnu.org/licenses/.
+\ along with this program. If not, see http: //www.gnu.org/licenses/.
+\ #endregion
 
-Vocabulary sdl2
-
-get-current also sdl2 definitions
-
-s" libtypeset.so" prefetch-lib
-
-include sdl2.fs
-
-previous definitions also sdl2
-
-\ create sdlv SDL_version allot
-\ sdlv SDL_GetVersion
-\ sdlv 16 dump
-\ sdlv SDL_version-major c@ .
-
-previous set-current
+require z-test.fs
+require q-test.fs

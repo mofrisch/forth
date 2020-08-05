@@ -18,12 +18,12 @@
 #You should have received a copy of the GNU General Public License
 #along with this program. If not, see http://www.gnu.org/licenses/.
 
-INCLUDES   = -I/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/System/Library/Frameworks -I/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include -I/opt/X11/include -I/usr/local/Cellar/gcc/10.1.0/lib/gcc/10/gcc/x86_64-apple-darwin19/10.1.0/include -I/usr/local/Cellar/gcc/10.1.0/lib/gcc/10/gcc/x86_64-apple-darwin19/10.1.0/include-fixed -I/usr/local/include 
+INCLUDES   =  -I/usr/local/include 
 SWIG       = /usr/local/bin/swig
-TARGETS    =  xlib.fs png16.fs freetype_gl.fs harfbuzz.fs
+TARGETS    =  gmp.fs sdl2.fs
 WRAPPERS   = $(patsubst %.fs, %.fsx, $(TARGETS))
 GENWRAPPERS   = $(patsubst %.fs, %-fsi.c, $(TARGETS))
-LIBRARY    =  x.fs png16.fs freetype_gl.fs harfbuzz.fs
+LIBRARY    =  gmp.fs sdl2.fs
 HOST_OS    = $(subst -,_,darwin)
 OPTIONS    = -forth -cpperraswarn -Dhost_os_$(HOST_OS) -no-sectioncomments -use-structs -stackcomments $(subst -F,-I, $(INCLUDES))
 INSTALL	= /usr/bin/install -c

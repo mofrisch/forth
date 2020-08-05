@@ -6,6 +6,7 @@
 \ Author: Moritz Frisch
 \ Copyright (C) 2020 Free Software Foundation, Inc.
 
+\ #region License
 \ This program is free software; you can redistribute it and/or modify it
 \ under the terms of the GNU General Public License as published by the
 \ Free Software Foundation; either version 3, or (at your option) any
@@ -18,12 +19,14 @@
 
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
+\ #endregion
 
-require ../tools.fs
+\ #region Definitions
+require tools.fs
 
 vocabulary gmp
 get-current also gmp definitions
-include gmp.fs
+require generated/gmp.fs
 previous definitions also gmp
 
 false value z-total-inits
@@ -31,8 +34,9 @@ false value z-print-inits
 
 [ifundef] z-inits   variable z-inits   variable z-clears  [then]     
 0 z-inits !   0 z-clears !
+\ #endregion
 
-\ Allocate and free
+\ #region Allocate and free
 : zinit ( z -- ) 
     z-total-inits if z-inits ++ then
     z-print-inits if ." init: " dup . then
@@ -45,8 +49,9 @@ false value z-print-inits
 : zfree ( z -- )   dup zclear free throw ;
 : z-is ( z | n -- z -1 | n 0 ) 
     try dup dup __gmpz_cmp drop -1 iferror drop 0 then endtry ;
+\ #endregion
 
-\ Comparison
+\ #region Comparison
 : zcmp ( z1 z2 -- -1|0|1 ) \ -1: z1<z2 0: z1=z2 1: z1>z2
     2dup __gmpz_cmp -rot zfree zfree ;
 : z=  ( z1 z2 -- ? )   zcmp 0= ;
@@ -55,8 +60,10 @@ false value z-print-inits
 : z<= ( z1 z2 -- ? )   zcmp 0<= ;
 : z>  ( z1 z2 -- ? )   zcmp 0> ;
 : z>= ( z1 z2 -- ? )   zcmp 0>= ;
+\ #endregion
 
-\ Stack Manipulation: We only need creative and destructive words
+\ #region Stack Manipulation
+\ We only need creative and destructive words
 : zdrop ( z -- )   zfree ;
 : znip ( z1 z2 -- z2 )   swap zdrop ;
 : zdup ( z -- z z )   dup z0 dup rot __gmpz_set ;
@@ -70,9 +77,9 @@ false value z-print-inits
 : -2rot ( z1 z2 z3 z4 z5 z6 -- z5 z6 z1 z2 z3 z4 )   2rot 2rot ;
 : z2tuck ( z1 z2 z3 z4 -- z3 z4 z1 z2 z3 z4 )   z2dup -2rot ;
 : z2over ( z1 z2 z3 z4 -- z1 z2 z3 z4 z1 z2 )   2swap z2tuck ;
+\ #endregion
 
-
-\ Creating MPZ numbers
+\ #region Creating MPZ numbers
 : u>z ( u -- z )   z0 dup rot __gmpz_set_ui ;
 : (z) ( str -- )
     z0 dup 2swap 10 __gmpz_set_str 0<> if 
@@ -83,8 +90,9 @@ false value z-print-inits
     then ;
 : z! ( z var -- )   dup @ dup 0<> if zdrop else drop then ! ;
 : z@ ( var -- z )   @ z0 dup rot __gmpz_set ;
+\ #endregion
 
-\ Printing
+\ #region Printing
 : (z.) ( z -- z )   dup 0 10 rot __gmpz_out_str drop ;
 : z(z.) ( z -- z )  ." z(" dup 0 10 rot __gmpz_out_str drop ." ) " ;
 : z. ( z -- )       z-is if z(z.) zdrop else . then ;
@@ -99,9 +107,10 @@ false value z-print-inits
     loop
     drop ;
 ' z.s is ..s
+\ #endregion
 
-
-\ Arithmetics, division is floored
+\ #region Arithmetics
+\ division is floored
 : ab>aaab ( a b -- a a a b ) \ prepare for binary operation
     over dup 2swap ;
 : ab>baaab ( a b -- b a a a b )   tuck ab>aaab ;
@@ -122,16 +131,19 @@ false value z-print-inits
 : zmin ( z1 z2 -- z )   z2dup z<= if zdrop else swap zdrop then ;
 : zmax ( z1 z2 -- z )   z2dup z>= if zdrop else swap zdrop then ;
 : zgcd ( z1 z2 -- z )   ab>baaab __gmpz_gcd swap zdrop ;
+\ #endregion
 
-\ Special functions
+\ #region Special functions
 : fct ( u -- z )    1 u>z swap 1+ 1 do i zu* loop ;
 : fct2 ( u -- z )   1 u>z swap 1+ 1 do i u>z z* loop ;
 : fct3 ( u -- z )   z0 dup rot __gmpz_fac_ui ;
 : z-mem-stats ( -- )   
     cr ." inits: " z-inits @ .   
     cr ." clears: " z-clears @ . ;
+\ #endregion
 
 previous set-current
+
 
 
 

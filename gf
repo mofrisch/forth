@@ -1,1 +1,1 @@
-gforth start.fs
+cd ../gforth; gforth ../forth/start.fs
