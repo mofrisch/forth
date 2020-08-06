@@ -18,9 +18,9 @@
 #You should have received a copy of the GNU General Public License
 #along with this program. If not, see http://www.gnu.org/licenses/.
 
-INCLUDES   =  -I/usr/local/include 
+INCLUDES   =  -I/usr/local/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
 SWIG       = /usr/local/bin/swig
-TARGETS    =  gmp.fs sdl2.fs
+TARGETS    =  gmp.fs sdl2.fs mpfr.fs
 WRAPPERS   = $(patsubst %.fs, %.fsx, $(TARGETS))
 GENWRAPPERS   = $(patsubst %.fs, %-fsi.c, $(TARGETS))
 LIBRARY    =  gmp.fs sdl2.fs
@@ -45,7 +45,7 @@ GCC	= gcc
 HOSTCC	= $(GCC)
 CC	= $(HOSTCC) $(INCLUDES) -I.
 
-all: $(GENWRAPPERS) $(TARGETS) stat.fs
+all: $(GENWRAPPERS) $(TARGETS)
 
 wrappers: $(WRAPPERS)
 
