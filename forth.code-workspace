@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../gforth"
+		},
+		{
+			"path": "../cc"
+		},
+		{
+			"path": "../../.cache"
+		}
+	],
+	"settings": {}
+}

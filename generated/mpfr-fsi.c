@@ -15,6 +15,8 @@
 // end-of-default-includes
 
 
+#include <stdio.h>
+#define MPFR_USE_NO_MACRO 1
 #include <mpfr.h>
 
 typedef enum{ NONE = -1, GFORTH = 0, SWIFTFORTH, VFX } SwigTargetSystem;
@@ -190,11 +192,17 @@ int main( int argc, char **argv )
 
 	swigComment("----===< prefix >===-----\n");
 
-	swigPrint( "c-library mpfr\ns\" mpfr\" add-lib\n\\c #include <mpfr.h>", "( none )", "( none )" );
+	swigPrint( "c-library mpfr\ns\" mpfr\" add-lib\n\\c #include <stdio.h>\n\\c #define MPFR_USE_NO_MACRO 1\n\\c #include <mpfr.h>", "( none )", "( none )" );
 
 	swigNewline();
 
 	swigComment("----===< int constants >===-----\n");
+	#ifdef MPFR_USE_FILE
+		swigIntConstant( MPFR_USE_FILE, "MPFR_USE_FILE" );
+	#endif
+	#ifdef MPFR_USE_NO_MACRO
+		swigIntConstant( MPFR_USE_NO_MACRO, "MPFR_USE_NO_MACRO" );
+	#endif
 	#ifdef MPFR_VERSION_MAJOR
 		swigIntConstant( MPFR_VERSION_MAJOR, "MPFR_VERSION_MAJOR" );
 	#endif
@@ -239,6 +247,9 @@ int main( int argc, char **argv )
 	#endif
 	#ifdef MPFR_USE_C99_FEATURE
 		swigIntConstant( MPFR_USE_C99_FEATURE, "MPFR_USE_C99_FEATURE" );
+	#endif
+	#ifdef _MPFR_H_HAVE_FILE
+		swigIntConstant( _MPFR_H_HAVE_FILE, "_MPFR_H_HAVE_FILE" );
 	#endif
 
 	swigNewline();
@@ -336,8 +347,8 @@ int main( int argc, char **argv )
 	swigFunction( "c-function mpfr_set_d mpfr_set_d a r n -- n", "FUNCTION: mpfr_set_d (    -- n )", "EXTERN: \"C\" int mpfr_set_d( void * , double , int  );", "	( <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_set_flt mpfr_set_flt a r n -- n", "FUNCTION: mpfr_set_flt (    -- n )", "EXTERN: \"C\" int mpfr_set_flt( void * , float , int  );", "	( <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_set_ld mpfr_set_ld a r n -- n", "FUNCTION: mpfr_set_ld (    -- n )", "EXTERN: \"C\" int mpfr_set_ld( void * , double , int  );", "	( <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_set_z mpfr_set_z a n n -- n", "FUNCTION: mpfr_set_z (    -- n )", "EXTERN: \"C\" int mpfr_set_z( void * , n , int  );", "	( <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_set_z_2exp mpfr_set_z_2exp a n n n -- n", "FUNCTION: mpfr_set_z_2exp (     -- n )", "EXTERN: \"C\" int mpfr_set_z_2exp( void * , n , long , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_set_z mpfr_set_z a a n -- n", "FUNCTION: mpfr_set_z (    -- n )", "EXTERN: \"C\" int mpfr_set_z( void * , void * , int  );", "	( <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_set_z_2exp mpfr_set_z_2exp a a n n -- n", "FUNCTION: mpfr_set_z_2exp (     -- n )", "EXTERN: \"C\" int mpfr_set_z_2exp( void * , void * , long , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_set_nan mpfr_set_nan a -- void", "FUNCTION: mpfr_set_nan (  -- void )", "EXTERN: \"C\" void mpfr_set_nan( void *  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_set_inf mpfr_set_inf a n -- void", "FUNCTION: mpfr_set_inf (   -- void )", "EXTERN: \"C\" void mpfr_set_inf( void * , int  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_set_zero mpfr_set_zero a n -- void", "FUNCTION: mpfr_set_zero (   -- void )", "EXTERN: \"C\" void mpfr_set_zero( void * , int  );", "	( <noname> <noname> -- )" );
@@ -348,13 +359,13 @@ int main( int argc, char **argv )
 	swigFunction( "c-function mpfr_set_ui mpfr_set_ui a u n -- n", "FUNCTION: mpfr_set_ui (    -- n )", "EXTERN: \"C\" int mpfr_set_ui( void * , long , int  );", "	( <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_set_si_2exp mpfr_set_si_2exp a n n n -- n", "FUNCTION: mpfr_set_si_2exp (     -- n )", "EXTERN: \"C\" int mpfr_set_si_2exp( void * , long , long , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_set_ui_2exp mpfr_set_ui_2exp a u n n -- n", "FUNCTION: mpfr_set_ui_2exp (     -- n )", "EXTERN: \"C\" int mpfr_set_ui_2exp( void * , long , long , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_set_q mpfr_set_q a n n -- n", "FUNCTION: mpfr_set_q (    -- n )", "EXTERN: \"C\" int mpfr_set_q( void * , n , int  );", "	( <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_mul_q mpfr_mul_q a a n n -- n", "FUNCTION: mpfr_mul_q (     -- n )", "EXTERN: \"C\" int mpfr_mul_q( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_div_q mpfr_div_q a a n n -- n", "FUNCTION: mpfr_div_q (     -- n )", "EXTERN: \"C\" int mpfr_div_q( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_add_q mpfr_add_q a a n n -- n", "FUNCTION: mpfr_add_q (     -- n )", "EXTERN: \"C\" int mpfr_add_q( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_sub_q mpfr_sub_q a a n n -- n", "FUNCTION: mpfr_sub_q (     -- n )", "EXTERN: \"C\" int mpfr_sub_q( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_cmp_q mpfr_cmp_q a n -- n", "FUNCTION: mpfr_cmp_q (   -- n )", "EXTERN: \"C\" int mpfr_cmp_q( void * , n  );", "	( <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_get_q mpfr_get_q n a -- void", "FUNCTION: mpfr_get_q ( q f -- void )", "EXTERN: \"C\" void mpfr_get_q( n q, void * f );", "	( q f -- )" );
+	swigFunction( "c-function mpfr_set_q mpfr_set_q a a n -- n", "FUNCTION: mpfr_set_q (    -- n )", "EXTERN: \"C\" int mpfr_set_q( void * , void * , int  );", "	( <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_mul_q mpfr_mul_q a a a n -- n", "FUNCTION: mpfr_mul_q (     -- n )", "EXTERN: \"C\" int mpfr_mul_q( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_div_q mpfr_div_q a a a n -- n", "FUNCTION: mpfr_div_q (     -- n )", "EXTERN: \"C\" int mpfr_div_q( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_add_q mpfr_add_q a a a n -- n", "FUNCTION: mpfr_add_q (     -- n )", "EXTERN: \"C\" int mpfr_add_q( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_sub_q mpfr_sub_q a a a n -- n", "FUNCTION: mpfr_sub_q (     -- n )", "EXTERN: \"C\" int mpfr_sub_q( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_cmp_q mpfr_cmp_q a a -- n", "FUNCTION: mpfr_cmp_q (   -- n )", "EXTERN: \"C\" int mpfr_cmp_q( void * , void *  );", "	( <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_get_q mpfr_get_q a a -- void", "FUNCTION: mpfr_get_q ( q f -- void )", "EXTERN: \"C\" void mpfr_get_q( void * q, void * f );", "	( q f -- )" );
 	swigFunction( "c-function mpfr_set_str mpfr_set_str a s n n -- n", "FUNCTION: mpfr_set_str (     -- n )", "EXTERN: \"C\" int mpfr_set_str( void * , char * , int , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_init_set_str mpfr_init_set_str a s n n -- n", "FUNCTION: mpfr_init_set_str (     -- n )", "EXTERN: \"C\" int mpfr_init_set_str( void * , char * , int , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_set4 mpfr_set4 a a n n -- n", "FUNCTION: mpfr_set4 (     -- n )", "EXTERN: \"C\" int mpfr_set4( void * , void * , int , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
@@ -364,7 +375,7 @@ int main( int argc, char **argv )
 	swigFunction( "c-function mpfr_signbit mpfr_signbit a -- n", "FUNCTION: mpfr_signbit (  -- n )", "EXTERN: \"C\" int mpfr_signbit( void *  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_setsign mpfr_setsign a a n n -- n", "FUNCTION: mpfr_setsign (     -- n )", "EXTERN: \"C\" int mpfr_setsign( void * , void * , int , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_copysign mpfr_copysign a a a n -- n", "FUNCTION: mpfr_copysign (     -- n )", "EXTERN: \"C\" int mpfr_copysign( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_get_z_2exp mpfr_get_z_2exp n a -- n", "FUNCTION: mpfr_get_z_2exp (   -- n )", "EXTERN: \"C\" long mpfr_get_z_2exp( n , void *  );", "	( <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_get_z_2exp mpfr_get_z_2exp a a -- n", "FUNCTION: mpfr_get_z_2exp (   -- n )", "EXTERN: \"C\" long mpfr_get_z_2exp( void * , void *  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_get_flt mpfr_get_flt a n -- r", "FUNCTION: mpfr_get_flt (   -- r )", "EXTERN: \"C\" float mpfr_get_flt( void * , int  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_get_d mpfr_get_d a n -- r", "FUNCTION: mpfr_get_d (   -- r )", "EXTERN: \"C\" double mpfr_get_d( void * , int  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_get_ld mpfr_get_ld a n -- r", "FUNCTION: mpfr_get_ld (   -- r )", "EXTERN: \"C\" double mpfr_get_ld( void * , int  );", "	( <noname> <noname> -- )" );
@@ -374,28 +385,28 @@ int main( int argc, char **argv )
 	swigFunction( "c-function mpfr_frexp mpfr_frexp a a a n -- n", "FUNCTION: mpfr_frexp (     -- n )", "EXTERN: \"C\" int mpfr_frexp( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_get_si mpfr_get_si a n -- n", "FUNCTION: mpfr_get_si (   -- n )", "EXTERN: \"C\" long mpfr_get_si( void * , int  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_get_ui mpfr_get_ui a n -- u", "FUNCTION: mpfr_get_ui (   -- u )", "EXTERN: \"C\" long mpfr_get_ui( void * , int  );", "	( <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_get_str_ndigits mpfr_get_str_ndigits n n -- n", "FUNCTION: mpfr_get_str_ndigits (   -- n )", "EXTERN: \"C\" n mpfr_get_str_ndigits( int , long  );", "	( <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_get_str mpfr_get_str a a n n a n -- a", "FUNCTION: mpfr_get_str (       -- a )", "EXTERN: \"C\" void * mpfr_get_str( void * , void * , int , n , void * , int  );", "	( <noname> <noname> <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_get_z mpfr_get_z n a n -- n", "FUNCTION: mpfr_get_z ( z f  -- n )", "EXTERN: \"C\" int mpfr_get_z( n z, void * f, int  );", "	( z f <noname> -- )" );
+	swigFunction( "c-function mpfr_get_str_ndigits mpfr_get_str_ndigits n n -- n", "FUNCTION: mpfr_get_str_ndigits (   -- n )", "EXTERN: \"C\" int mpfr_get_str_ndigits( int , long  );", "	( <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_get_str mpfr_get_str a a n n a n -- a", "FUNCTION: mpfr_get_str (       -- a )", "EXTERN: \"C\" void * mpfr_get_str( void * , void * , int , int , void * , int  );", "	( <noname> <noname> <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_get_z mpfr_get_z a a n -- n", "FUNCTION: mpfr_get_z ( z f  -- n )", "EXTERN: \"C\" int mpfr_get_z( void * z, void * f, int  );", "	( z f <noname> -- )" );
 	swigFunction( "c-function mpfr_free_str mpfr_free_str a -- void", "FUNCTION: mpfr_free_str (  -- void )", "EXTERN: \"C\" void mpfr_free_str( void *  );", "	( <noname> -- )" );
-	swigFunction( "c-function mpfr_urandom mpfr_urandom a n n -- n", "FUNCTION: mpfr_urandom (    -- n )", "EXTERN: \"C\" int mpfr_urandom( void * , n , int  );", "	( <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_grandom mpfr_grandom a a n n -- n", "FUNCTION: mpfr_grandom (     -- n )", "EXTERN: \"C\" int mpfr_grandom( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_nrandom mpfr_nrandom a n n -- n", "FUNCTION: mpfr_nrandom (    -- n )", "EXTERN: \"C\" int mpfr_nrandom( void * , n , int  );", "	( <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_erandom mpfr_erandom a n n -- n", "FUNCTION: mpfr_erandom (    -- n )", "EXTERN: \"C\" int mpfr_erandom( void * , n , int  );", "	( <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_urandomb mpfr_urandomb a n -- n", "FUNCTION: mpfr_urandomb (   -- n )", "EXTERN: \"C\" int mpfr_urandomb( void * , n  );", "	( <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_urandom mpfr_urandom a a n -- n", "FUNCTION: mpfr_urandom (    -- n )", "EXTERN: \"C\" int mpfr_urandom( void * , void * , int  );", "	( <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_grandom mpfr_grandom a a a n -- n", "FUNCTION: mpfr_grandom (     -- n )", "EXTERN: \"C\" int mpfr_grandom( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_nrandom mpfr_nrandom a a n -- n", "FUNCTION: mpfr_nrandom (    -- n )", "EXTERN: \"C\" int mpfr_nrandom( void * , void * , int  );", "	( <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_erandom mpfr_erandom a a n -- n", "FUNCTION: mpfr_erandom (    -- n )", "EXTERN: \"C\" int mpfr_erandom( void * , void * , int  );", "	( <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_urandomb mpfr_urandomb a a -- n", "FUNCTION: mpfr_urandomb (   -- n )", "EXTERN: \"C\" int mpfr_urandomb( void * , void *  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_nextabove mpfr_nextabove a -- void", "FUNCTION: mpfr_nextabove (  -- void )", "EXTERN: \"C\" void mpfr_nextabove( void *  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_nextbelow mpfr_nextbelow a -- void", "FUNCTION: mpfr_nextbelow (  -- void )", "EXTERN: \"C\" void mpfr_nextbelow( void *  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_nexttoward mpfr_nexttoward a a -- void", "FUNCTION: mpfr_nexttoward (   -- void )", "EXTERN: \"C\" void mpfr_nexttoward( void * , void *  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_printf mpfr_printf s ... -- n", "FUNCTION: mpfr_printf (   -- n )", "EXTERN: \"C\" int mpfr_printf( char * , ...  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_asprintf mpfr_asprintf a s ... -- n", "FUNCTION: mpfr_asprintf (    -- n )", "EXTERN: \"C\" int mpfr_asprintf( void * , char * , ...  );", "	( <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_sprintf mpfr_sprintf a s ... -- n", "FUNCTION: mpfr_sprintf (    -- n )", "EXTERN: \"C\" int mpfr_sprintf( void * , char * , ...  );", "	( <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_snprintf mpfr_snprintf a n s ... -- n", "FUNCTION: mpfr_snprintf (     -- n )", "EXTERN: \"C\" int mpfr_snprintf( void * , n , char * , ...  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_snprintf mpfr_snprintf a n s ... -- n", "FUNCTION: mpfr_snprintf (     -- n )", "EXTERN: \"C\" int mpfr_snprintf( void * , int , char * , ...  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_pow mpfr_pow a a a n -- n", "FUNCTION: mpfr_pow (     -- n )", "EXTERN: \"C\" int mpfr_pow( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_pow_si mpfr_pow_si a a n n -- n", "FUNCTION: mpfr_pow_si (     -- n )", "EXTERN: \"C\" int mpfr_pow_si( void * , void * , long , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_pow_ui mpfr_pow_ui a a u n -- n", "FUNCTION: mpfr_pow_ui (     -- n )", "EXTERN: \"C\" int mpfr_pow_ui( void * , void * , long , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_ui_pow_ui mpfr_ui_pow_ui a u u n -- n", "FUNCTION: mpfr_ui_pow_ui (     -- n )", "EXTERN: \"C\" int mpfr_ui_pow_ui( void * , long , long , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_ui_pow mpfr_ui_pow a u a n -- n", "FUNCTION: mpfr_ui_pow (     -- n )", "EXTERN: \"C\" int mpfr_ui_pow( void * , long , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_pow_z mpfr_pow_z a a n n -- n", "FUNCTION: mpfr_pow_z (     -- n )", "EXTERN: \"C\" int mpfr_pow_z( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_pow_z mpfr_pow_z a a a n -- n", "FUNCTION: mpfr_pow_z (     -- n )", "EXTERN: \"C\" int mpfr_pow_z( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_sqrt mpfr_sqrt a a n -- n", "FUNCTION: mpfr_sqrt (    -- n )", "EXTERN: \"C\" int mpfr_sqrt( void * , void * , int  );", "	( <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_sqrt_ui mpfr_sqrt_ui a u n -- n", "FUNCTION: mpfr_sqrt_ui (    -- n )", "EXTERN: \"C\" int mpfr_sqrt_ui( void * , long , int  );", "	( <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_rec_sqrt mpfr_rec_sqrt a a n -- n", "FUNCTION: mpfr_rec_sqrt (    -- n )", "EXTERN: \"C\" int mpfr_rec_sqrt( void * , void * , int  );", "	( <noname> <noname> <noname> -- )" );
@@ -482,7 +493,7 @@ int main( int argc, char **argv )
 	swigFunction( "c-function mpfr_fits_sshort_p mpfr_fits_sshort_p a n -- n", "FUNCTION: mpfr_fits_sshort_p (   -- n )", "EXTERN: \"C\" int mpfr_fits_sshort_p( void * , int  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_fits_uintmax_p mpfr_fits_uintmax_p a n -- n", "FUNCTION: mpfr_fits_uintmax_p (   -- n )", "EXTERN: \"C\" int mpfr_fits_uintmax_p( void * , int  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_fits_intmax_p mpfr_fits_intmax_p a n -- n", "FUNCTION: mpfr_fits_intmax_p (   -- n )", "EXTERN: \"C\" int mpfr_fits_intmax_p( void * , int  );", "	( <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_extract mpfr_extract n a u -- void", "FUNCTION: mpfr_extract (    -- void )", "EXTERN: \"C\" void mpfr_extract( n , void * , int  );", "	( <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_extract mpfr_extract a a u -- void", "FUNCTION: mpfr_extract (    -- void )", "EXTERN: \"C\" void mpfr_extract( void * , void * , int  );", "	( <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_swap mpfr_swap a a -- void", "FUNCTION: mpfr_swap (   -- void )", "EXTERN: \"C\" void mpfr_swap( void * , void *  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_dump mpfr_dump a -- void", "FUNCTION: mpfr_dump (  -- void )", "EXTERN: \"C\" void mpfr_dump( void *  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_nan_p mpfr_nan_p a -- n", "FUNCTION: mpfr_nan_p (  -- n )", "EXTERN: \"C\" int mpfr_nan_p( void *  );", "	( <noname> -- )" );
@@ -544,12 +555,12 @@ int main( int argc, char **argv )
 	swigFunction( "c-function mpfr_min mpfr_min a a a n -- n", "FUNCTION: mpfr_min (     -- n )", "EXTERN: \"C\" int mpfr_min( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_max mpfr_max a a a n -- n", "FUNCTION: mpfr_max (     -- n )", "EXTERN: \"C\" int mpfr_max( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_dim mpfr_dim a a a n -- n", "FUNCTION: mpfr_dim (     -- n )", "EXTERN: \"C\" int mpfr_dim( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_mul_z mpfr_mul_z a a n n -- n", "FUNCTION: mpfr_mul_z (     -- n )", "EXTERN: \"C\" int mpfr_mul_z( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_div_z mpfr_div_z a a n n -- n", "FUNCTION: mpfr_div_z (     -- n )", "EXTERN: \"C\" int mpfr_div_z( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_add_z mpfr_add_z a a n n -- n", "FUNCTION: mpfr_add_z (     -- n )", "EXTERN: \"C\" int mpfr_add_z( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_sub_z mpfr_sub_z a a n n -- n", "FUNCTION: mpfr_sub_z (     -- n )", "EXTERN: \"C\" int mpfr_sub_z( void * , void * , n , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_z_sub mpfr_z_sub a n a n -- n", "FUNCTION: mpfr_z_sub (     -- n )", "EXTERN: \"C\" int mpfr_z_sub( void * , n , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_cmp_z mpfr_cmp_z a n -- n", "FUNCTION: mpfr_cmp_z (   -- n )", "EXTERN: \"C\" int mpfr_cmp_z( void * , n  );", "	( <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_mul_z mpfr_mul_z a a a n -- n", "FUNCTION: mpfr_mul_z (     -- n )", "EXTERN: \"C\" int mpfr_mul_z( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_div_z mpfr_div_z a a a n -- n", "FUNCTION: mpfr_div_z (     -- n )", "EXTERN: \"C\" int mpfr_div_z( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_add_z mpfr_add_z a a a n -- n", "FUNCTION: mpfr_add_z (     -- n )", "EXTERN: \"C\" int mpfr_add_z( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_sub_z mpfr_sub_z a a a n -- n", "FUNCTION: mpfr_sub_z (     -- n )", "EXTERN: \"C\" int mpfr_sub_z( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_z_sub mpfr_z_sub a a a n -- n", "FUNCTION: mpfr_z_sub (     -- n )", "EXTERN: \"C\" int mpfr_z_sub( void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function mpfr_cmp_z mpfr_cmp_z a a -- n", "FUNCTION: mpfr_cmp_z (   -- n )", "EXTERN: \"C\" int mpfr_cmp_z( void * , void *  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_fma mpfr_fma a a a a n -- n", "FUNCTION: mpfr_fma (      -- n )", "EXTERN: \"C\" int mpfr_fma( void * , void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_fms mpfr_fms a a a a n -- n", "FUNCTION: mpfr_fms (      -- n )", "EXTERN: \"C\" int mpfr_fms( void * , void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_fmma mpfr_fmma a a a a a n -- n", "FUNCTION: mpfr_fmma (       -- n )", "EXTERN: \"C\" int mpfr_fmma( void * , void * , void * , void * , void * , int  );", "	( <noname> <noname> <noname> <noname> <noname> <noname> -- )" );
@@ -564,7 +575,7 @@ int main( int argc, char **argv )
 	swigFunction( "c-function mpfr_strtofr mpfr_strtofr a s a n n -- n", "FUNCTION: mpfr_strtofr (      -- n )", "EXTERN: \"C\" int mpfr_strtofr( void * , char * , void * , int , int  );", "	( <noname> <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_round_nearest_away_begin mpfr_round_nearest_away_begin a -- void", "FUNCTION: mpfr_round_nearest_away_begin (  -- void )", "EXTERN: \"C\" void mpfr_round_nearest_away_begin( void *  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_round_nearest_away_end mpfr_round_nearest_away_end a n -- n", "FUNCTION: mpfr_round_nearest_away_end (   -- n )", "EXTERN: \"C\" int mpfr_round_nearest_away_end( void * , int  );", "	( <noname> <noname> -- )" );
-	swigFunction( "c-function mpfr_custom_get_size mpfr_custom_get_size n -- n", "FUNCTION: mpfr_custom_get_size (  -- n )", "EXTERN: \"C\" n mpfr_custom_get_size( long  );", "	( <noname> -- )" );
+	swigFunction( "c-function mpfr_custom_get_size mpfr_custom_get_size n -- n", "FUNCTION: mpfr_custom_get_size (  -- n )", "EXTERN: \"C\" int mpfr_custom_get_size( long  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_custom_init mpfr_custom_init a n -- void", "FUNCTION: mpfr_custom_init (   -- void )", "EXTERN: \"C\" void mpfr_custom_init( void * , long  );", "	( <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_custom_get_significand mpfr_custom_get_significand a -- a", "FUNCTION: mpfr_custom_get_significand (  -- a )", "EXTERN: \"C\" void * mpfr_custom_get_significand( void *  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_custom_get_exp mpfr_custom_get_exp a -- n", "FUNCTION: mpfr_custom_get_exp (  -- n )", "EXTERN: \"C\" long mpfr_custom_get_exp( void *  );", "	( <noname> -- )" );
@@ -572,6 +583,11 @@ int main( int argc, char **argv )
 	swigFunction( "c-function mpfr_custom_init_set mpfr_custom_init_set a n n n a -- void", "FUNCTION: mpfr_custom_init_set (      -- void )", "EXTERN: \"C\" void mpfr_custom_init_set( void * , int , long , long , void *  );", "	( <noname> <noname> <noname> <noname> <noname> -- )" );
 	swigFunction( "c-function mpfr_custom_get_kind mpfr_custom_get_kind a -- n", "FUNCTION: mpfr_custom_get_kind (  -- n )", "EXTERN: \"C\" int mpfr_custom_get_kind( void *  );", "	( <noname> -- )" );
 	swigFunction( "c-function mpfr_total_order_p mpfr_total_order_p a a -- n", "FUNCTION: mpfr_total_order_p (   -- n )", "EXTERN: \"C\" int mpfr_total_order_p( void * , void *  );", "	( <noname> <noname> -- )" );
+	swigFunction( "c-function __gmpfr_inp_str __gmpfr_inp_str a a n n -- n", "FUNCTION: __gmpfr_inp_str (     -- n )", "EXTERN: \"C\" int __gmpfr_inp_str( void * , void * , int , int  );", "	( <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function __gmpfr_out_str __gmpfr_out_str a n n a n -- n", "FUNCTION: __gmpfr_out_str (      -- n )", "EXTERN: \"C\" int __gmpfr_out_str( void * , int , int , void * , int  );", "	( <noname> <noname> <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function __gmpfr_fprintf __gmpfr_fprintf a s ... -- n", "FUNCTION: __gmpfr_fprintf (    -- n )", "EXTERN: \"C\" int __gmpfr_fprintf( void * , char * , ...  );", "	( <noname> <noname> <noname> -- )" );
+	swigFunction( "c-function __gmpfr_fpif_export __gmpfr_fpif_export a a -- n", "FUNCTION: __gmpfr_fpif_export (   -- n )", "EXTERN: \"C\" int __gmpfr_fpif_export( void * , void *  );", "	( <noname> <noname> -- )" );
+	swigFunction( "c-function __gmpfr_fpif_import __gmpfr_fpif_import a a -- n", "FUNCTION: __gmpfr_fpif_import (   -- n )", "EXTERN: \"C\" int __gmpfr_fpif_import( void * , void *  );", "	( <noname> <noname> -- )" );
 
 	swigNewline();
 

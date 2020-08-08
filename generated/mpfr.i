@@ -10,8 +10,16 @@
 %insert("include")
 %{
 #include <mpfr.h>
-%}
+%} 
 
-// #define _GMP_H_HAVE_FILE 1
+
+
+%apply SWIGTYPE * { mpz_srcptr, mpz_ptr, mpq_srcptr, mpq_ptr };
+%apply SWIGTYPE * { gmp_randstate_t };
+%apply __mpfr_struct * { mpfr_ptr, mpfr_srcptr };
+%apply long { mpfr_prec_t } ;
+%apply int { size_t };
+#define MPFR_USE_FILE 1
+#define MPFR_USE_NO_MACRO 1
 
 %include <mpfr.h>

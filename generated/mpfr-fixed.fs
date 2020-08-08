@@ -10,12 +10,9 @@
 \ ----===< prefix >===-----
 c-library mpfr
 s" mpfr" add-lib
-\c #include <stdio.h>
-\c #define MPFR_USE_NO_MACRO 1
 \c #include <mpfr.h>
 
 \ ----===< int constants >===-----
-#1	constant MPFR_USE_NO_MACRO
 #4	constant MPFR_VERSION_MAJOR
 #1	constant MPFR_VERSION_MINOR
 #0	constant MPFR_VERSION_PATCHLEVEL
@@ -31,7 +28,6 @@ s" mpfr" add-lib
 #3	constant _MPFR_EXP_FORMAT
 #1	constant MPFR_PREC_MIN
 #1	constant MPFR_USE_C99_FEATURE
-#1	constant _MPFR_H_HAVE_FILE
 
 \ --------===< enums >===---------
 #0	constant MPFR_RNDN
@@ -111,9 +107,9 @@ c-function mpfr_clears mpfr_clears a ... -- void	( <noname> <noname> -- )
 c-function mpfr_prec_round mpfr_prec_round a n n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_can_round mpfr_can_round a n n n n -- n	( <noname> <noname> <noname> <noname> <noname> -- )
 c-function mpfr_min_prec mpfr_min_prec a -- n	( <noname> -- )
-c-function mpfr_get_exp mpfr_get_exp a -- n	( <noname> -- )
+\ c-function mpfr_get_exp mpfr_get_exp a -- n	( <noname> -- )
 c-function mpfr_set_exp mpfr_set_exp a n -- n	( <noname> <noname> -- )
-c-function mpfr_get_prec mpfr_get_prec a -- n	( <noname> -- )
+\ c-function mpfr_get_prec mpfr_get_prec a -- n	( <noname> -- )
 c-function mpfr_set_prec mpfr_set_prec a n -- void	( <noname> <noname> -- )
 c-function mpfr_set_prec_raw mpfr_set_prec_raw a n -- void	( <noname> <noname> -- )
 c-function mpfr_set_default_prec mpfr_set_default_prec n -- void	( <noname> -- )
@@ -126,9 +122,9 @@ c-function mpfr_set_z_2exp mpfr_set_z_2exp a a n n -- n	( <noname> <noname> <non
 c-function mpfr_set_nan mpfr_set_nan a -- void	( <noname> -- )
 c-function mpfr_set_inf mpfr_set_inf a n -- void	( <noname> <noname> -- )
 c-function mpfr_set_zero mpfr_set_zero a n -- void	( <noname> <noname> -- )
-c-function mpfr_set_f mpfr_set_f a n n -- n	( <noname> <noname> <noname> -- )
-c-function mpfr_cmp_f mpfr_cmp_f a n -- n	( <noname> <noname> -- )
-c-function mpfr_get_f mpfr_get_f n a n -- n	( <noname> <noname> <noname> -- )
+c-function mpfr_set_f mpfr_set_f a a n -- n	( <noname> <noname> <noname> -- )
+c-function mpfr_cmp_f mpfr_cmp_f a a -- n	( <noname> <noname> -- )
+\ c-function mpfr_get_f mpfr_get_f n a n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_set_si mpfr_set_si a n n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_set_ui mpfr_set_ui a u n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_set_si_2exp mpfr_set_si_2exp a n n n -- n	( <noname> <noname> <noname> <noname> -- )
@@ -146,9 +142,9 @@ c-function mpfr_set4 mpfr_set4 a a n n -- n	( <noname> <noname> <noname> <noname
 c-function mpfr_abs mpfr_abs a a n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_set mpfr_set a a n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_neg mpfr_neg a a n -- n	( <noname> <noname> <noname> -- )
-c-function mpfr_signbit mpfr_signbit a -- n	( <noname> -- )
+\ c-function mpfr_signbit mpfr_signbit a -- n	( <noname> -- )
 c-function mpfr_setsign mpfr_setsign a a n n -- n	( <noname> <noname> <noname> <noname> -- )
-c-function mpfr_copysign mpfr_copysign a a a n -- n	( <noname> <noname> <noname> <noname> -- )
+\ c-function mpfr_copysign mpfr_copysign a a a n -- n	( <noname> <noname> <noname> <noname> -- )
 c-function mpfr_get_z_2exp mpfr_get_z_2exp a a -- n	( <noname> <noname> -- )
 c-function mpfr_get_flt mpfr_get_flt a n -- r	( <noname> <noname> -- )
 c-function mpfr_get_d mpfr_get_d a n -- r	( <noname> <noname> -- )
@@ -163,11 +159,11 @@ c-function mpfr_get_str_ndigits mpfr_get_str_ndigits n n -- n	( <noname> <noname
 c-function mpfr_get_str mpfr_get_str a a n n a n -- a	( <noname> <noname> <noname> <noname> <noname> <noname> -- )
 c-function mpfr_get_z mpfr_get_z a a n -- n	( z f <noname> -- )
 c-function mpfr_free_str mpfr_free_str a -- void	( <noname> -- )
-c-function mpfr_urandom mpfr_urandom a a n -- n	( <noname> <noname> <noname> -- )
-c-function mpfr_grandom mpfr_grandom a a a n -- n	( <noname> <noname> <noname> <noname> -- )
-c-function mpfr_nrandom mpfr_nrandom a a n -- n	( <noname> <noname> <noname> -- )
-c-function mpfr_erandom mpfr_erandom a a n -- n	( <noname> <noname> <noname> -- )
-c-function mpfr_urandomb mpfr_urandomb a a -- n	( <noname> <noname> -- )
+\ c-function mpfr_urandom mpfr_urandom a n n -- n	( <noname> <noname> <noname> -- )
+\ c-function mpfr_grandom mpfr_grandom a a n n -- n	( <noname> <noname> <noname> <noname> -- )
+\ c-function mpfr_nrandom mpfr_nrandom a n n -- n	( <noname> <noname> <noname> -- )
+\ c-function mpfr_erandom mpfr_erandom a n n -- n	( <noname> <noname> <noname> -- )
+\ c-function mpfr_urandomb mpfr_urandomb a n -- n	( <noname> <noname> -- )
 c-function mpfr_nextabove mpfr_nextabove a -- void	( <noname> -- )
 c-function mpfr_nextbelow mpfr_nextbelow a -- void	( <noname> -- )
 c-function mpfr_nexttoward mpfr_nexttoward a a -- void	( <noname> <noname> -- )
@@ -235,7 +231,7 @@ c-function mpfr_cmpabs mpfr_cmpabs a a -- n	( <noname> <noname> -- )
 c-function mpfr_cmpabs_ui mpfr_cmpabs_ui a u -- n	( <noname> <noname> -- )
 c-function mpfr_reldiff mpfr_reldiff a a a n -- void	( <noname> <noname> <noname> <noname> -- )
 c-function mpfr_eq mpfr_eq a a u -- n	( <noname> <noname> <noname> -- )
-c-function mpfr_sgn mpfr_sgn a -- n	( <noname> -- )
+\ c-function mpfr_sgn mpfr_sgn a -- n	( <noname> -- )
 c-function mpfr_mul_2exp mpfr_mul_2exp a a u n -- n	( <noname> <noname> <noname> <noname> -- )
 c-function mpfr_div_2exp mpfr_div_2exp a a u n -- n	( <noname> <noname> <noname> <noname> -- )
 c-function mpfr_mul_2ui mpfr_mul_2ui a a u n -- n	( <noname> <noname> <noname> <noname> -- )
@@ -270,12 +266,12 @@ c-function mpfr_fits_intmax_p mpfr_fits_intmax_p a n -- n	( <noname> <noname> --
 c-function mpfr_extract mpfr_extract a a u -- void	( <noname> <noname> <noname> -- )
 c-function mpfr_swap mpfr_swap a a -- void	( <noname> <noname> -- )
 c-function mpfr_dump mpfr_dump a -- void	( <noname> -- )
-c-function mpfr_nan_p mpfr_nan_p a -- n	( <noname> -- )
-c-function mpfr_inf_p mpfr_inf_p a -- n	( <noname> -- )
+\ c-function mpfr_nan_p mpfr_nan_p a -- n	( <noname> -- )
+\ c-function mpfr_inf_p mpfr_inf_p a -- n	( <noname> -- )
 c-function mpfr_number_p mpfr_number_p a -- n	( <noname> -- )
 c-function mpfr_integer_p mpfr_integer_p a -- n	( <noname> -- )
-c-function mpfr_zero_p mpfr_zero_p a -- n	( <noname> -- )
-c-function mpfr_regular_p mpfr_regular_p a -- n	( <noname> -- )
+\ c-function mpfr_zero_p mpfr_zero_p a -- n	( <noname> -- )
+\ c-function mpfr_regular_p mpfr_regular_p a -- n	( <noname> -- )
 c-function mpfr_greater_p mpfr_greater_p a a -- n	( <noname> <noname> -- )
 c-function mpfr_greaterequal_p mpfr_greaterequal_p a a -- n	( <noname> <noname> -- )
 c-function mpfr_less_p mpfr_less_p a a -- n	( <noname> <noname> -- )
@@ -308,7 +304,7 @@ c-function mpfr_hypot mpfr_hypot a a a n -- n	( <noname> <noname> <noname> <nona
 c-function mpfr_erf mpfr_erf a a n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_erfc mpfr_erfc a a n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_cbrt mpfr_cbrt a a n -- n	( <noname> <noname> <noname> -- )
-c-function mpfr_root mpfr_root a a u n -- n	( <noname> <noname> <noname> <noname> -- )
+\ c-function mpfr_root mpfr_root a a u n -- n	( <noname> <noname> <noname> <noname> -- )
 c-function mpfr_rootn_ui mpfr_rootn_ui a a u n -- n	( <noname> <noname> <noname> <noname> -- )
 c-function mpfr_gamma mpfr_gamma a a n -- n	( <noname> <noname> <noname> -- )
 c-function mpfr_gamma_inc mpfr_gamma_inc a a a n -- n	( <noname> <noname> <noname> <noname> -- )
@@ -351,17 +347,12 @@ c-function mpfr_round_nearest_away_begin mpfr_round_nearest_away_begin a -- void
 c-function mpfr_round_nearest_away_end mpfr_round_nearest_away_end a n -- n	( <noname> <noname> -- )
 c-function mpfr_custom_get_size mpfr_custom_get_size n -- n	( <noname> -- )
 c-function mpfr_custom_init mpfr_custom_init a n -- void	( <noname> <noname> -- )
-c-function mpfr_custom_get_significand mpfr_custom_get_significand a -- a	( <noname> -- )
-c-function mpfr_custom_get_exp mpfr_custom_get_exp a -- n	( <noname> -- )
-c-function mpfr_custom_move mpfr_custom_move a a -- void	( <noname> <noname> -- )
+\ c-function mpfr_custom_get_significand mpfr_custom_get_significand a -- a	( <noname> -- )
+\ c-function mpfr_custom_get_exp mpfr_custom_get_exp a -- n	( <noname> -- )
+\ c-function mpfr_custom_move mpfr_custom_move a a -- void	( <noname> <noname> -- )
 c-function mpfr_custom_init_set mpfr_custom_init_set a n n n a -- void	( <noname> <noname> <noname> <noname> <noname> -- )
-c-function mpfr_custom_get_kind mpfr_custom_get_kind a -- n	( <noname> -- )
+\ c-function mpfr_custom_get_kind mpfr_custom_get_kind a -- n	( <noname> -- )
 c-function mpfr_total_order_p mpfr_total_order_p a a -- n	( <noname> <noname> -- )
-c-function __gmpfr_inp_str __gmpfr_inp_str a a n n -- n	( <noname> <noname> <noname> <noname> -- )
-c-function __gmpfr_out_str __gmpfr_out_str a n n a n -- n	( <noname> <noname> <noname> <noname> <noname> -- )
-c-function __gmpfr_fprintf __gmpfr_fprintf a s ... -- n	( <noname> <noname> <noname> -- )
-c-function __gmpfr_fpif_export __gmpfr_fpif_export a a -- n	( <noname> <noname> -- )
-c-function __gmpfr_fpif_import __gmpfr_fpif_import a a -- n	( <noname> <noname> -- )
 
 \ ----===< postfix >===-----
 end-c-library

@@ -18,12 +18,12 @@
 #You should have received a copy of the GNU General Public License
 #along with this program. If not, see http://www.gnu.org/licenses/.
 
-INCLUDES   =  -I/usr/local/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
+INCLUDES   = -I/usr/local/Cellar/gcc/10.2.0/lib/gcc/10/gcc/x86_64-apple-darwin20/10.2.0/include-fixed -I/usr/local/include -I/Applications/Xcode-beta.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
 SWIG       = /usr/local/bin/swig
 TARGETS    =  gmp.fs sdl2.fs mpfr.fs
 WRAPPERS   = $(patsubst %.fs, %.fsx, $(TARGETS))
 GENWRAPPERS   = $(patsubst %.fs, %-fsi.c, $(TARGETS))
-LIBRARY    =  gmp.fs sdl2.fs
+LIBRARY    =  gmp.fs sdl2.fs mpfr.fs
 HOST_OS    = $(subst -,_,darwin)
 OPTIONS    = -forth -cpperraswarn -Dhost_os_$(HOST_OS) -no-sectioncomments -use-structs -stackcomments $(subst -F,-I, $(INCLUDES))
 INSTALL	= /usr/bin/install -c
