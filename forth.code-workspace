@@ -5,12 +5,6 @@
 		},
 		{
 			"path": "../gforth"
-		},
-		{
-			"path": "../cc"
-		},
-		{
-			"path": "../../.cache"
 		}
 	],
 	"settings": {}

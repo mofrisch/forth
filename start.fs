@@ -41,6 +41,7 @@ require2 test.fs
 require2 ben.fs
 require2 z.fs
 require2 q.fs
+require2 fr.fs
 require2 sdl2-lib.fs
 start-report [if] 
    ." Unused: " unused . ." Bytes" cr 80 draw-seperator cr 

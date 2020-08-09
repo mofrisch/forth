@@ -26,7 +26,7 @@ require tools.fs
 
 vocabulary gmp
 get-current also gmp definitions
-require generated/gmp.fs
+include generated/gmp.fs
 previous definitions also gmp
 
 false value z-total-inits
@@ -93,7 +93,7 @@ false value z-print-inits
 \ #endregion
 
 \ #region Printing
-: (z.) ( z -- z )   dup 0 10 rot __gmpz_out_str drop ;
+: (z.) ( z -- z )   dup stdout base @ rot __gmpz_out_str drop ;
 : z(z.) ( z -- z )  ." z(" dup 0 10 rot __gmpz_out_str drop ." ) " ;
 : z. ( z -- )       z-is if z(z.) zdrop else . then ;
 : z.s ( -- )

@@ -23,3 +23,4 @@
 
 require z-test.fs
 require q-test.fs
+require fr-test.fs
