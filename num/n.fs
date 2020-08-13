@@ -3,6 +3,7 @@ require intro.fs
 0 constant add_op
 1 constant sub_op
 2 constant mul_op
+3 constant div_op
 
 
 
@@ -14,7 +15,7 @@ drop 16 end-structure
 : ntype ( o -- type )
     _num%-type @ ;
 
-: ntype! ( o -- type )
+: ntype! ( o -- )
     swap _num%-type ! ;
 
 : nvalue ( o -- value )
@@ -42,7 +43,7 @@ drop 16 end-structure
 : n. ( num -- )
    (n.) ;
 
-: nbefore
+: nbefore ( n1 n2 -- n1 n1 n1val n2val )
    swap tuck tuck nvalue swap nvalue ;
 
 : opz+ ( num1 num2 -- num )
@@ -100,7 +101,7 @@ drop 16 end-structure
    endcase ;
 
 : nz>q ( num -- num )
-   ~~ dup dup nvalue ~~ z>q nvalue! ~~ dup q_type ~~ ntype! ;
+   dup dup nvalue z>q nvalue! dup q_type ntype! ;
 
 : nz>fr ( num -- num )
    dup dup nvalue z>fr nvalue! dup fr_type ntype! ;
@@ -108,21 +109,21 @@ drop 16 end-structure
 : nq>fr ( num -- num )
    dup dup nvalue q>fr nvalue! dup fr_type ntype! ;
 
-: convert ( num type -- num )
+: nconvert ( num type -- num )
    ~~ dup q_type = if 
-      nz>q drop
+      drop nz>q
    else
       ~~ over ntype z_type = if 
          drop ~~ nz>fr ~~ 
       else
-         nq>fr 
+         drop nq>fr 
    then then ;
 
-: common_type { num1 num2 -- num1 num2 type }
+: ncommon-type { num1 num2 -- num1 num2 type }
       ~~ num1 ntype num2 ntype ~~ 2dup < if 
-         nip dup num1 swap ~~ convert ~~ num2 rot ~~
+         nip dup num1 swap ~~ nconvert ~~ num2 rot ~~
       else ~~ 2dup > if 
-         drop dup num2 swap convert num1 swap rot
+         drop dup num2 swap nconvert num1 swap rot
       else drop num1 num2 rot ~~
       then 
       
@@ -142,7 +143,7 @@ drop 16 end-structure
    then ;
 
 : n- ( num1 num2 -- num )
-   common_type ( n1 n2 t ) ~~ sub_op ~~ nop ;
+   ncommon-type ( n1 n2 t ) ~~ sub_op ~~ nop ;
 
 : nnew ( -- num )
    _num% allocate throw ;

@@ -162,7 +162,7 @@ MPFR_RNDN value fr-round
 \ #endregion
 
 : q>fr ( q -- fr )
-    dup frnew dup rot qn@ fr-round mpfr_set_z ~~ drop swap  ~~ 
+    dup frnew dup rot qn@ fr-round mpfr_set_z drop swap
     frnew dup rot qd@ fr-round mpfr_set_z drop
     fr/
     ;
