@@ -21,12 +21,11 @@
 \ along with this program. If not, see http: //www.gnu.org/licenses/.
 \ #endregion
 
-require ../q.fs
+require ../num/q.fs
 
 \ #region Arithmetic tests
 tests Aritmetic tests
 t( q 1/2 q 1/3 q+ q 5/6 q= )
-t( q 1/2 q 1/3 q+ q 5/6 q<> )
 totals
 \ #endregion
 

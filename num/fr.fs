@@ -22,11 +22,11 @@
 \ #endregion
 
 \ #region Definitions
-require tools.fs
+\ require tools.fs
 
 vocabulary mpfr
 get-current also mpfr definitions
-include generated/mpfr.fs
+include ../generated/mpfr.fs
 previous definitions also mpfr
 
 false value fr-total-inits
@@ -61,6 +61,11 @@ MPFR_RNDN value fr-round
 
 : frfree ( fr -- )   
     dup frclear free throw ;
+
+: z>fr ( z -- fr )
+    frnew dup rot fr-round mpfr_set_z drop ;
+
+
 
 \ : z-is ( z | n -- z -1 | n 0 ) 
 \    try dup dup __gmpz_cmp drop -1 iferror drop 0 then endtry ;
@@ -131,7 +136,7 @@ MPFR_RNDN value fr-round
 : frbin ( fr1 fr2 -- fr2 fr1 fr1 fr1 fr2 fr-round )
     tuck over dup 2swap fr-round ;
 
-: frafter ( fr2 fr1 0 -- fr1 (fr.)
+: frafter ( fr2 fr1 0 -- fr1 )
     drop swap frdrop ;
 
 : fr+ ( fr1 fr2 -- fr1+fr2 )
@@ -146,11 +151,21 @@ MPFR_RNDN value fr-round
     frbin mpfr_mul frafter
     ;
 
+: fr/ ( fr1 fr2 -- fr1*fr2 )
+    frbin mpfr_div frafter
+    ;
+
 : frabs ( fr1 -- |fr1| )
     frunary mpfr_abs drop ;
 
 
 \ #endregion
+
+: q>fr ( q -- fr )
+    dup frnew dup rot qn@ fr-round mpfr_set_z ~~ drop swap  ~~ 
+    frnew dup rot qd@ fr-round mpfr_set_z drop
+    fr/
+    ;
 
 
 

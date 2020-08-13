@@ -19,13 +19,17 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
+require intro.fs
 require z.fs
+
 0 to z-total-inits    0 to z-print-inits
 
-struct 
-cell% field _q%-num   
-cell% field _q%-den   
-end-struct _q%
+
+
+begin-structure _q%
+	drop 0 8 +field _q%-num
+	drop 8 8 +field _q%-den
+drop 16 end-structure
 
 \ Accessors -- use qni! and qdi! for initialized variables to avoid a memory
 \ leak
@@ -37,9 +41,10 @@ end-struct _q%
 : qdi! ( q z -- ) swap _q%-den z! ;
 
 \ Initialize and free
-: q-is ( q -- q ? )  \ returns true iff the object on stack is of type q
-   try dup qn@ drop -1 iferror drop 0 then endtry ;
-: qnew ( -- q )   _q% %allocate throw ;
+\ : q-is ( q -- ? )  \ returns true iff the object on stack is of type q
+\   __type @ q_type = ;
+: qnew ( -- q )   
+   _q% allocate throw  ;
 : qinit ( q -- )   dup z0 qn!  dup 1 u>z qd! ;
 : qfree ( q -- )   dup _q%-num @ zdrop   dup _q%-den @ zdrop   free throw ;
 : q0 ( -- q )   qnew dup qinit ;
@@ -60,16 +65,16 @@ end-struct _q%
 : qdup { q1 -- q1 q1 }   qnew dup   dup q1 qn@ qn!   dup q1 qd@ qd! ;
 
 \ Printing
-: (q.) ( q -- q )   dup qn@ (z.) zdrop '/' emit dup qd@ (z.) zdrop drop ;
+: (q.) ( q -- q )   dup qn@ (z.) zdrop '/' emit dup qd@ (z.) zdrop ;
 : q. ( q -- )   (q.) bl emit qdrop ;
-: q.s ( -- )   
-   ." <" depth 0 .r ." > "
-   depth maxdepth-.s @ > if ." ... " then
-   depth 0 max maxdepth-.s @ min dup 0 ?do   
-      dup i - pick   
-      q-is if (q.) drop   else z-is if (z.) drop   else . then then 
-   loop drop ;
-' q.s is ..s
+\ : q.s ( -- )   
+\   ." <" depth 0 .r ." > "
+\   depth maxdepth-.s @ > if ." ... " then
+\   depth 0 max maxdepth-.s @ min dup 0 ?do   
+\      dup i - pick
+\      dup q-is if (q.) drop else z-is if z(z.) drop else . drop then then 
+\   loop ;
+\ ' q.s is ..s
 
 \ Comparison
 : qcmp { q1 q2 -- -1|0|1 } \ -1: q1<q2 0: q1=q2 1: q1>q2

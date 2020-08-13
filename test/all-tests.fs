@@ -21,6 +21,7 @@
 \ along with this program. If not, see http: //www.gnu.org/licenses/.
 \ #endregion
 
-require z-test.fs
-require q-test.fs
-require fr-test.fs
+include z-test.fs
+include q-test.fs
+include fr-test.fs
+include n-test.fs

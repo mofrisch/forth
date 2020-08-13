@@ -22,15 +22,22 @@
 \ #endregion
 
 \ #region Definitions
-require tools.fs
+\ require tools.fs
+require intro.fs
 
 vocabulary gmp
 get-current also gmp definitions
-include generated/gmp.fs
+include ../generated/gmp.fs
 previous definitions also gmp
 
 false value z-total-inits
 false value z-print-inits
+
+begin-structure __z_struct
+	drop 0 4 +field __z_struct-_mp_alloc
+	drop 4 4 +field __z_struct-_mp_size
+	drop 8 8 +field __z_struct-_mp_d
+drop 16 end-structure
 
 [ifundef] z-inits   variable z-inits   variable z-clears  [then]     
 0 z-inits !   0 z-clears !
@@ -40,15 +47,17 @@ false value z-print-inits
 : zinit ( z -- ) 
     z-total-inits if z-inits ++ then
     z-print-inits if ." init: " dup . then
-    __gmpz_init ;
+    dup __gmpz_init 
+    
+    ;
 : zclear ( z -- )
     z-total-inits if z-clears ++ then
     z-print-inits if ." clear: " dup . then
     __gmpz_clear ;
-: z0 ( -- z )   __mpz_struct allocate throw    dup zinit ;
+: z0 ( -- z )   __z_struct allocate throw    dup zinit drop ;
 : zfree ( z -- )   dup zclear free throw ;
-: z-is ( z | n -- z -1 | n 0 ) 
-    try dup dup __gmpz_cmp drop -1 iferror drop 0 then endtry ;
+\ : z-is ( z | n -- ? ) 
+\    __type @ z_type = ;
 \ #endregion
 
 \ #region Comparison
@@ -95,18 +104,18 @@ false value z-print-inits
 \ #region Printing
 : (z.) ( z -- z )   dup stdout base @ rot __gmpz_out_str drop ;
 : z(z.) ( z -- z )  ." z(" dup 0 10 rot __gmpz_out_str drop ." ) " ;
-: z. ( z -- )       z-is if z(z.) zdrop else . then ;
-: z.s ( -- )
-    ." <" depth 0 .r ." > "
-    depth maxdepth-.s @ > if ." ... " then
-    depth 0 max maxdepth-.s @ min
-    dup 0
-    ?do
-        dup i - pick
-        z-is if z(z.) drop else . then 
-    loop
-    drop ;
-' z.s is ..s
+: z. ( z -- )       z(z.) zdrop ;
+\ : z.s ( -- )
+\    ." <" depth 0 .r ." > "
+\    depth maxdepth-.s @ > if ." ... " then
+\    depth 0 max maxdepth-.s @ min
+\    dup 0
+\    ?do
+\        dup i - pick
+\        z-is if z(z.) drop else . then 
+\    loop
+\    drop ;
+\ ' z.s is ..s
 \ #endregion
 
 \ #region Arithmetics

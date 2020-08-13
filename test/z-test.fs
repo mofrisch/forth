@@ -19,9 +19,9 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-require ../z.fs
+require ../num/z.fs
 
-false to z-total-inits
+-1 to z-total-inits
 
 [ifundef] a1
 variable a1    variable a2   variable a3
@@ -41,8 +41,6 @@ totals
 tests Comparison:
 t( z 1 z 1 z= )
 t( z 1 z 2 z<> )
-t( z 1 z 2 z= )
-
 totals
 
 tests Arithmetics and special functions:
