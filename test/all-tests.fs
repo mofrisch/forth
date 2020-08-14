@@ -25,3 +25,5 @@ include z-test.fs
 include q-test.fs
 include fr-test.fs
 include n-test.fs
+
+grand-totals

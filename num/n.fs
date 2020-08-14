@@ -110,40 +110,27 @@ drop 16 end-structure
    dup dup nvalue q>fr nvalue! dup fr_type ntype! ;
 
 : nconvert ( num type -- num )
-   ~~ dup q_type = if 
-      drop nz>q
-   else
-      ~~ over ntype z_type = if 
-         drop ~~ nz>fr ~~ 
-      else
-         drop nq>fr 
+   dup q_type = if drop nz>q
+   else over ntype z_type = if drop nz>fr 
+   else drop nq>fr 
    then then ;
 
 : ncommon-type { num1 num2 -- num1 num2 type }
-      ~~ num1 ntype num2 ntype ~~ 2dup < if 
-         nip dup num1 swap ~~ nconvert ~~ num2 rot ~~
-      else ~~ 2dup > if 
+      num1 ntype num2 ntype 2dup < if 
+         nip dup num1 swap nconvert num2 rot
+      else 2dup > if 
          drop dup num2 swap nconvert num1 swap rot
-      else drop num1 num2 rot ~~
-      then 
-      
-      then  ;
-
-: (n+) ( num1 num2 type -- num1 + num2 )
-   ~~
-   case 
-   z_type of ~~ swap tuck tuck ~~ nvalue swap nvalue z+ swap _num%-ptr ! endof
-   q_type of q+ endof
-   endcase ;
-
+      else drop num1 num2 rot
+      then then  ;
 
 : n+ ( num1 num2 -- num1+num2 ) \ add according to type
-   2dup swap ( n1 n2 n2 n1 ) ntype dup . ~~ ( n1 n2 n2 t1 ) tuck swap ( n1 n2 t1 t1 n2 ) ntype = if
-      ~~ (n+)
-   then ;
+   ncommon-type add_op nop ;
 
 : n- ( num1 num2 -- num )
-   ncommon-type ( n1 n2 t ) ~~ sub_op ~~ nop ;
+   ncommon-type sub_op nop ;
+
+: n* ( n1 n2 -- n1*n2 )
+   ncommon-type mul_op nop ;
 
 : nnew ( -- num )
    _num% allocate throw ;
@@ -156,6 +143,3 @@ drop 16 end-structure
 
 : nfr ( -- num )
    fr nnew tuck _num%-ptr !  fr_type over _num%-type ! ;
-
-\ z 1 >num q 1/2 >num n+
-\ zn 1 zq 1/2 n+
