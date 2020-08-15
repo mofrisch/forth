@@ -62,9 +62,18 @@ MPFR_RNDN value fr-round
 : frfree ( fr -- )   
     dup frclear free throw ;
 
+: frdrop ( fr --  ) \ 
+    frfree ;
+
 : z>fr ( z -- fr )
     frnew dup rot fr-round mpfr_set_z drop ;
 
+: fr! ( fr -- )
+    dup @ dup 0<> if frdrop else drop then ;
+
+
+: fr@ ( fr -- fr )
+    @ frnew dup rot fr-round mpfr_set drop ;
 
 
 \ : z-is ( z | n -- z -1 | n 0 ) 
@@ -77,8 +86,6 @@ MPFR_RNDN value fr-round
 
 : frdup ( fr -- fr fr )   dup frnew dup rot fr-round mpfr_set drop ;
 
-: frdrop ( fr --  ) \ 
-    frfree ;
 
 : fr2dup ( fr1 fr2 -- fr1 fr2 fr1 fr2 )
     swap frdup rot frdup -rot ;

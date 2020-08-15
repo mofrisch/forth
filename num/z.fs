@@ -99,6 +99,9 @@ drop 16 end-structure
     then ;
 : z! ( z var -- )   dup @ dup 0<> if zdrop else drop then ! ;
 : z@ ( var -- z )   @ z0 dup rot __gmpz_set ;
+
+: zv-free ( var -- )
+   dup dup @ 0<> if @ zdrop then 0 swap ! ;
 \ #endregion
 
 \ #region Printing

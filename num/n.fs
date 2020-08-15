@@ -12,6 +12,18 @@ begin-structure _num%
 	drop 8 8 +field _num%-type
 drop 16 end-structure
 
+: nnew ( -- num )
+   _num% allocate throw ;
+
+: nz ( -- num )
+   z nnew tuck _num%-ptr !  z_type over _num%-type ! ;
+
+: nq ( -- num )
+   q nnew tuck _num%-ptr !  q_type over _num%-type ! ;
+
+: nfr ( -- num )
+   fr nnew tuck _num%-ptr !  fr_type over _num%-type ! ;
+
 : ntype ( o -- type )
     _num%-type @ ;
 
@@ -132,14 +144,4 @@ drop 16 end-structure
 : n* ( n1 n2 -- n1*n2 )
    ncommon-type mul_op nop ;
 
-: nnew ( -- num )
-   _num% allocate throw ;
 
-: nz ( -- num )
-   z nnew tuck _num%-ptr !  z_type over _num%-type ! ;
-
-: nq ( -- num )
-   q nnew tuck _num%-ptr !  q_type over _num%-type ! ;
-
-: nfr ( -- num )
-   fr nnew tuck _num%-ptr !  fr_type over _num%-type ! ;

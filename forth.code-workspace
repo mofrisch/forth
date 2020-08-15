@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../gforth"
+		},
+		{
+			"path": "../forth-language"
 		}
 	],
 	"settings": {}

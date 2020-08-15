@@ -4,11 +4,10 @@ require ../num/n.fs
 variable n1 
 variable n2 
 variable n3
-\ variable eps
-\ fr 1e-19 eps !
+variable epsilon  fr 1e-19 epsilon !
 
-\ : fr 1e-19
-\   fr 1e-19 frdup ;
+: eps
+   epsilon fr@ ;
 
 nz 23 n1 !
 nq 1/3 n2 !
@@ -24,7 +23,7 @@ t( nfr 2.01 ntype fr_type = )
 t( 8 c_type = )
 t( n1 @ nvalue  z 23 z= )
 t( n2 @ nvalue q 1/3 q= )
-t( n3 @ nvalue fr 2.01 fr 1e-19 fr~abs )
+t( n3 @ nvalue fr 2.01 eps fr~abs )
 t( n1 @ q_type ntype! n1 @ ntype q_type = ) 
 t( n1 @ z_type ntype! n1 @ ntype z_type = ) 
 t( n1 @ z 3 nvalue! n1 @ nvalue z 3 z= )

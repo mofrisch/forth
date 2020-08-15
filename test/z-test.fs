@@ -41,6 +41,12 @@ totals
 tests Comparison:
 t( z 1 z 1 z= )
 t( z 1 z 2 z<> )
+t( a1 z@ a1 z@ z= )
+t( z 14 a1 z@ z= )
+t( 200 fct 201 fct z<= )
+t( 200 fct 201 fct z< )
+t( 201 fct 200 fct z>= ) 
+t( 201 fct 200 fct z> ) 
 totals
 
 tests Arithmetics and special functions:
@@ -53,5 +59,8 @@ t( 5 fct z 120 z= )
 totals
 
 cr
+
+a1 zv-free
+a1 zv-free
 
 z-total-inits [if] z-mem-stats [then]
