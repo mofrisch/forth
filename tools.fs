@@ -77,3 +77,6 @@ variable user-include    0 user-include !
 
 defer ..s 
 ' .s is ..s
+
+: -2rot ( z1 z2 z3 z4 z5 z6 -- z5 z6 z1 z2 z3 z4 )   
+	2rot 2rot ;

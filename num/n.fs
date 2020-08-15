@@ -44,7 +44,7 @@ drop 16 end-structure
 
 : (n.) ( num -- num )
    dup ntype z_type = if
-      nvalue (z.)
+      nvalue {z.}
    else dup ntype q_type = if
       nvalue (q.)
    else

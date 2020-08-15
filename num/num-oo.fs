@@ -18,7 +18,7 @@ num class int
       : + ( a -- )
          self getValue ~~ swap -rot ~~ z+ value z! drop self ~~ ;
       : print 
-         getValue (z.) ;
+         getValue {z.} ;
       : copy
          value @ ;
 class;

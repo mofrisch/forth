@@ -83,7 +83,7 @@ drop 24 end-structure
    q1 qd@ swap z/ q1 swap qdi!   q1 ;
 
 : q ( "z/z" -- q )   
-   qnew dup   '/' parse (z) qn!   dup bl parse (z) qd!   qred ;
+   qnew dup   '/' parse {z} qn!   dup bl parse {z} qd!   qred ;
 
 : q! ( q var -- )
    dup @ 0<> if dup @ qdrop then ! ;
@@ -105,7 +105,7 @@ drop 24 end-structure
 
 \ Printing
 : (q.) ( q -- q )   
-   dup qn@ (z.) zdrop '/' emit dup qd@ (z.) zdrop ;
+   dup qn@ {z.} zdrop '/' emit dup qd@ {z.} zdrop ;
 
 : q. ( q -- )   
    (q.) bl emit qdrop ;
@@ -114,7 +114,7 @@ drop 24 end-structure
 \   depth maxdepth-.s @ > if ." ... " then
 \   depth 0 max maxdepth-.s @ min dup 0 ?do   
 \      dup i - pick
-\      dup q-is if (q.) drop else z-is if z(z.) drop else . drop then then 
+\      dup q-is if (q.) drop else z-is if z{z.} drop else . drop then then 
 \   loop ;
 \ ' q.s is ..s
 
