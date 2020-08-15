@@ -19,8 +19,8 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-require intro.fs
-require z.fs
+\* require intro.fs
+require z.fs *\
 
 -1 to z-total-inits    0 to z-print-inits
 
