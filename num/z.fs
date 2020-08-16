@@ -104,6 +104,7 @@ drop 16 end-structure
 
 : zover ( z1 z2 -- z1 z2 z1 )   
     swap ztuck ;
+    
 : zpick ( z1 ... zn u -- z1 ... zn zu )   
     pick >r z0 dup r> __gmpz_set ;
 

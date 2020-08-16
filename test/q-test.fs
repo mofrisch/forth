@@ -25,10 +25,35 @@ require ../num/q.fs
 
 variable q1  q 1/2 q1 q!
 
+\ #region Accessors
+tests accessors
+t( q 23/45 dup qn@ z 23 z= swap qdrop ) 
+t( q 11/17 dup qd@ z 17 z= swap qdrop )
+t( qnew dup z 24 qn! dup z 13 qd! q 24/13 q= )
+t( q0 dup z 11 qni! dup z 15 qdi! q 11/15 q= )
+totals
+\ #endregion
+
+\ #region initialize and free
+
+tests initialize and free
+t( qnew dup _q%-num z0 swap ! dup _q%-den z 1 swap !  qfree true )
+t( qnew qinit q 0/1 q= )
+t( q0 qdrop true )
+t( q0 qdup qdrop q0 q= )
+t( q 1/2 qdup qdrop q 1/2 q= )
+totals
+\ #endregion
+
+
+
+
+
 \ #region Arithmetic tests
 tests Aritmetic tests
 t( q 1/3 q1 q! true )
-t( q1 q@ q 1/3 q+ q 2/3 q= )
+t( q 1/2 q1 q! true )
+t( q1 q@ q 1/3 q+ q 5/6 q= )
 t( q 1/2 q1 q! true )
 t( q1 q@ q1 q@ q* q 1/4 q= ) 
 t( q1 q@ q 1/2 q+ q 1/1 q= )

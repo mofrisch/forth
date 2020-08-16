@@ -67,36 +67,36 @@ drop 24 end-structure
    dup _q%-num @ zdrop   dup _q%-den @ zdrop   free throw ;
 
 : qdrop ( q -- )   
-   qfree ;
+   qfree ; 
 
-: qdup { q1 -- q1 q1 }   
-   qnew dup   dup q1 qn@ qn!   dup q1 qd@ qd! ;
+: qdup ( q1 -- q1 q1 )  
+   qnew  2dup 2dup swap qn@  qn! swap qd@ qd! ;
 
 : qv-free ( var -- )
    dup dup @ 0<> if @ qdrop then 0 swap ! ;
 
 : q0 ( -- q )   
-   qnew dup qinit ;
+   qnew qinit ;
 
-: qred { q1 -- q2 }   
-   q1 qn@ q1 qd@ zgcd zdup   q1 qn@ swap z/ q1 swap qni!   
-   q1 qd@ swap z/ q1 swap qdi!   q1 ;
+: qred { q1tmp -- q2 }   
+   q1tmp qn@ q1tmp qd@ zgcd zdup   q1tmp qn@ swap z/ q1tmp swap qni!   
+   q1tmp qd@ swap z/ q1tmp swap qdi!   q1tmp ;
 
 : q ( "z/z" -- q )   
    qnew dup   '/' parse {z} qn!   dup bl parse {z} qd!   qred ;
 
 : q! ( q var -- )
-   dup @ 0<> if dup @ qdrop then ! ;
+   dup @ dup 0<> if qdrop else drop then ! ;
 
 : q@ ( var -- q )
    @ qdup nip ;
 
 \ Conversion
-: zz>q { z1 z2 -- q }   
-   qnew   dup z1 qn!   dup z2 qd!   qred ;
+: zz>q { z1tmp z2tmp -- q }   
+   qnew   dup z1tmp qn!   dup z2tmp qd!   qred ;
 
-: z>q { z1 -- q=z/1 }   
-   qnew   dup z1 qn!   dup 1 u>z qd! ;
+: z>q { z1tmp -- q=z/1 }   
+   qnew   dup z1tmp qn!   dup 1 u>z qd! ;
 
 : q>z ( q -- z )   
    dup qn@ swap qd@ z/ ;
@@ -119,9 +119,9 @@ drop 24 end-structure
 \ ' q.s is ..s
 
 \ Comparison
-: qcmp { q1 q2 -- -1|0|1 } \ -1: q1<q2 0: q1=q2 1: q1>q2
-   q1 qn@ q2 qd@ z*   q1 qd@ q2 qn@ z*   zcmp 
-   q1 qdrop q2 qdrop ;
+: qcmp { q1tmp q2tmp -- -1|0|1 } \ -1: q1<q2 0: q1=q2 1: q1>q2
+   q1tmp qn@ q2tmp qd@ z*   q1tmp qd@ q2tmp qn@ z*   zcmp 
+   q1tmp qdrop q2tmp qdrop ;
 
 : q=  ( q1 q2 -- ? )   
    qcmp 0= ;
@@ -148,20 +148,20 @@ drop 24 end-structure
 : qabs ( q -- q )   
    dup dup qn@ zabs qni! ;
 
-: qinv { q1 -- 1/q1 } 
-   qnew dup  q1 qn@ qd!   dup q1 qd@ qn!   q1 qdrop ;
+: qinv { q1tmp -- 1/q1 } 
+   qnew dup  q1tmp qn@ qd!   dup q1tmp qd@ qn!   q1tmp qdrop ;
 
-: q+ { q1 q2 -- q1+q2 } \ ( q1n * q2d + q1d * q2n ) / ( q1d * q2d )
-   qnew dup   q1 qn@ q2 qd@ z*   q1 qd@ q2 qn@ z*   z+   qn!
-   dup   q1 qd@ q2 qd@ z*   qd!   qred 
-   q1 qdrop   q2 qdrop ;
+: q+ { q1tmp q2tmp -- q1+q2 } \ ( q1n * q2d + q1d * q2n ) / ( q1d * q2d )
+   qnew dup   q1tmp qn@ q2tmp qd@ z*   q1tmp qd@ q2tmp qn@ z*   z+   qn!
+   dup   q1tmp qd@ q2tmp qd@ z*   qd!   qred 
+   q1tmp qdrop   q2tmp qdrop ;
 
 : q- ( q1 q2 -- q1-q2 )   
    qneg q+ qred ;
 
-: q* { q1 q2 -- q1*q2 } \ ( q1n * q2n ) / ( q1d * q2d )
-   qnew dup   q1 qn@ q2 qn@ z*   qn!   dup   q1 qd@ q2 qd@ z*   qd!   qred   
-   q1 qdrop   q2 qdrop ;
+: q* { q1tmp q2tmp -- q1*q2 } \ ( q1n * q2n ) / ( q1d * q2d )
+   qnew dup   q1tmp qn@ q2tmp qn@ z*   qn!   dup   q1tmp qd@ q2tmp qd@ z*   qd!   qred   
+   q1tmp qdrop   q2tmp qdrop ;
 
 : q/ ( q1 q2 -- q1/q2 )   
    qinv q* qred ;
