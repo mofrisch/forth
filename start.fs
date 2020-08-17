@@ -19,11 +19,9 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-
-
-
 variable start-dict   here start-dict !
 true value start-report
+true constant start-coverage
 
 : draw-seperator ( n -- )   0 ?do [char] - emit loop ;
 \ Redifine .( )
@@ -42,10 +40,13 @@ require2 tools.fs
 require2 vscode.fs
 require2 test.fs   
 require2 ben.fs
+require2 sdl2-lib.fs
+start-coverage [if] include ../gforth/coverage.fs [then]
+require2 num/intro.fs
 require2 num/z.fs
 require2 num/q.fs
 require2 num/fr.fs
-require2 sdl2-lib.fs
+require2 num/n.fs
 start-report [if] 
    ." Unused: " unused . ." Bytes" cr 80 draw-seperator cr 
 [then]

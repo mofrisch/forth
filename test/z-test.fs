@@ -19,9 +19,15 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-require ../num/z.fs
+false constant z-coverage
 
--1 to z-total-inits
+z-coverage [if] 
+include ../../gforth/coverage.fs 
+include ../num/z.fs
+[else]
+require ../num/z.fs
+[then]
+\ 0 z-print-inits !
 
 [ifundef] a1
 variable a1    variable a2   variable a3
@@ -76,6 +82,10 @@ tests creating
 t( 23 u>z z 23 z= )
 t( -12 s>z z -12 z= )
 t( s" 123" {z} z 123 z= )
+: invalid 
+   try  {z} iferror then endtry ;
+t( invalid s" abc" true )
+t( invalid s" 1" true )
 totals
 
 tests printing
@@ -118,9 +128,9 @@ t( 100 fct 100 fct3 z= )
 t( ." you should see 100!: " 100 fct z. cr true )
 totals
 
+a1 zv-free
+a1 zv-free
+
+z-mem-stats
+z-coverage [if] cr cov% [then]
 cr
-
-a1 zv-free
-a1 zv-free
-
-z-total-inits [if] z-mem-stats [then]

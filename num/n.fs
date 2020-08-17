@@ -1,3 +1,27 @@
+.( Numbers Library )
+
+\ num/n.fs
+\ description
+
+\ Author: Moritz Frisch
+\ Copyright (C) 2020 Free Software Foundation, Inc.
+
+\ #region License
+\ This program is free software; you can redistribute it and/or modify it
+\ under the terms of the GNU General Public License as published by the
+\ Free Software Foundation; either version 3, or (at your option) any
+\ later version.
+
+\ This program is distributed in the hope that it will be useful,
+\ but WITHOUT ANY WARRANTY; without even the implied warranty of
+\ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+\ GNU General Public License for more details.
+
+\ You should have received a copy of the GNU General Public License
+\ along with this program. If not, see http: //www.gnu.org/licenses/.
+\ #endregion
+
+
 require intro.fs
 
 0 constant add_op
@@ -5,6 +29,8 @@ require intro.fs
 2 constant mul_op
 3 constant div_op
 
+variable n-inits   0 n-inits !
+variable n-clears  0 n-clears !
 
 
 begin-structure _num%
@@ -12,29 +38,77 @@ begin-structure _num%
 	drop 8 8 +field _num%-type
 drop 16 end-structure
 
-: nnew ( -- num )
-   _num% allocate throw ;
-
-: nz ( -- num )
-   z nnew tuck _num%-ptr !  z_type over _num%-type ! ;
-
-: nq ( -- num )
-   q nnew tuck _num%-ptr !  q_type over _num%-type ! ;
-
-: nfr ( -- num )
-   fr nnew tuck _num%-ptr !  fr_type over _num%-type ! ;
-
 : ntype ( o -- type )
     _num%-type @ ;
 
-: ntype! ( o -- )
-    swap _num%-type ! ;
+: ntype! ( type num -- )
+    _num%-type ! ;
 
-: nvalue ( o -- value )
+: nvalue ( obj -- value )
    _num%-ptr @ ;
 
-: nvalue! 
-   swap _num%-ptr ! ;
+: nvalue! ( value num -- )
+   _num%-ptr ! ;
+
+: nallocate ( -- num )
+   n-inits ++
+   _num% allocate throw ;
+
+: nfree ( num --  )
+   n-clears ++
+   free throw  ;
+
+: ndrop ( num -- )
+   nfree ;
+
+: n-type-val ( num -- type obj )
+   dup dup ntype swap nvalue rot ndrop ; 
+
+
+: nv-destroy ( var num -- )
+   ~~ dup ntype dup . z_type = if
+      nvalue zdrop ~~ 
+   then ;
+
+: nv-free ( var -- )
+   dup @ dup 0<> if ndrop then 0 swap ! ;
+
+: n! ( num var -- )
+   dup @ dup 0<> if 
+      dup ntype z_type = if
+         ~~ dup nvalue zdrop
+         else 
+            dup ntype q_type = if
+               dup nvalue qdrop
+            else
+               dup nvalue frdrop
+            then
+         then
+      ndrop 
+   else 
+      drop 
+   then ! ;   
+
+
+
+
+: nnip ( num1 num2 -- num2 )
+   swap ndrop ;
+
+: nvaldrop ( num -- obj )
+   dup nvalue swap ndrop ;
+
+: nmake ( type obj -- num )
+   nallocate tuck nvalue! tuck ntype!  ;
+
+: nz ( -- num )
+   z_type z nmake ;
+
+: nq ( -- num )
+   q_type q nmake ;
+
+: nfr ( -- num )
+   fr_type fr nmake ;
 
 \ : >num ( obj -- num ) \ description
 \   _num% %allocate throw
@@ -42,48 +116,48 @@ drop 16 end-structure
 \   dup rot q-is if q-type else z-type then swap _num%-type !
 \   ;
 
-: (n.) ( num -- num )
+: {n.} ( num -- num )
    dup ntype z_type = if
-      nvalue {z.}
+       dup nvalue z.  
    else dup ntype q_type = if
-      nvalue (q.)
+      dup nvalue q.
    else
-      nvalue (fr.)
+      dup nvalue fr.
    then then ;
    
 
 : n. ( num -- )
-   (n.) ;
+   {n.}  ndrop ;
 
 : nbefore ( n1 n2 -- n1 n1 n1val n2val )
-   swap tuck tuck nvalue swap nvalue ;
+   swap tuck tuck  ( n1 n1 n2 n1 )  over swap  nvalue swap nvalue rot  ndrop ;   
 
 : opz+ ( num1 num2 -- num )
-   nbefore z+ nvalue! ;
+    nbefore  z+ swap nvalue! ;
 
 : opq+ ( num1 num2 -- num )
-   nbefore q+ nvalue! ;
+   nbefore q+ swap nvalue! ;
 
 : opfr+ ( num1 num2 -- num )
-   nbefore fr+ nvalue! ;
+   nbefore fr+ swap nvalue! ;
 
 : opz- ( num1 num2 -- num )
-   nbefore z- nvalue! ;
+   nbefore z- swap nvalue! ;
 
 : opq- ( num1 num2 -- num )
-   nbefore q- nvalue! ;
+   nbefore q- swap nvalue! ;
 
 : opfr- ( num1 num2 -- num )
-   nbefore fr- nvalue! ;
+   nbefore fr- swap nvalue! ;
 
 : opz* ( num1 num2 -- num )
-   nbefore z* nvalue! ;
+   nbefore z* swap nvalue! ;
 
 : opq* ( num1 num2 -- num )
-   nbefore q* nvalue! ;
+   nbefore q* swap nvalue! ;
 
 : opfr* ( num1 num2 -- num )
-   nbefore fr* nvalue! ;
+   nbefore fr* swap nvalue! ;
 
 
 
@@ -94,13 +168,15 @@ drop 16 end-structure
             z_type of opz+ endof
             q_type of opq+ endof
             fr_type of opfr+ endof
-         endcase
+            drop + dup
+            endcase
       endof
       sub_op of
          case 
             z_type of opz- endof
             q_type of opq- endof
             fr_type of opfr- endof
+            drop - dup
          endcase
       endof
       mul_op of
@@ -108,18 +184,21 @@ drop 16 end-structure
             z_type of opz* endof
             q_type of opq* endof
             fr_type of opfr* endof
+            drop * dup
          endcase
       endof
+      2drop ." invalid operator" cr
    endcase ;
 
 : nz>q ( num -- num )
-   dup dup nvalue z>q nvalue! dup q_type ntype! ;
+      dup dup nvalue z>q swap nvalue! dup q_type swap ntype! ;
+
 
 : nz>fr ( num -- num )
-   dup dup nvalue z>fr nvalue! dup fr_type ntype! ;
+   dup dup nvalue z>fr swap nvalue! dup fr_type swap ntype! ;
 
 : nq>fr ( num -- num )
-   dup dup nvalue q>fr nvalue! dup fr_type ntype! ;
+   dup dup nvalue q>fr swap nvalue! dup fr_type swap ntype! ;
 
 : nconvert ( num type -- num )
    dup q_type = if drop nz>q
@@ -143,5 +222,9 @@ drop 16 end-structure
 
 : n* ( n1 n2 -- n1*n2 )
    ncommon-type mul_op nop ;
+
+: n-mem-stats ( -- )   
+    cr ." n-inits:   " n-inits @ .   
+    bl emit ." n-clears:  " n-clears @ . ;
 
 

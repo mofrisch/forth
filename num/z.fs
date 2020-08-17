@@ -30,8 +30,7 @@ get-current also gmp definitions
 include ../generated/gmp.fs
 previous definitions also gmp
 
-false value z-total-inits
-false value z-print-inits
+variable z-print-inits   0 z-print-inits !
 
 begin-structure __z_struct
 	drop 0 4 +field __z_struct-_mp_alloc
@@ -45,13 +44,13 @@ drop 16 end-structure
 
 \ #region Allocate and free
 : zinit ( z -- ) 
-    z-total-inits if z-inits ++ then
-    z-print-inits if ." init: " dup . then
+    z-inits ++
+    \ z-print-inits if ." init: " dup . then
     dup __gmpz_init ;
 
 : zclear ( z -- )
-    z-total-inits if z-clears ++ then
-    z-print-inits if ." clear: " dup . then
+    z-clears ++
+    \ z-print-inits if ." clear: " dup . then
     __gmpz_clear ;
 
 : z0 ( -- z )   
@@ -137,7 +136,9 @@ drop 16 end-structure
 
 : {z} ( str -- )
     z0 dup 2swap 10 __gmpz_set_str 0<> if 
-        s" invalid character " exception throw 
+        zdrop
+        ." invalid character " 
+        z0
     then ;
 
 : z ( "name" -- z )
@@ -237,12 +238,18 @@ drop 16 end-structure
 \ #endregion
 
 \ #region Special functions
-: fct ( u -- z )    1 u>z swap 1+ 1 do i zu* loop ;
-: fct2 ( u -- z )   1 u>z swap 1+ 1 do i u>z z* loop ;
-: fct3 ( u -- z )   z0 dup rot __gmpz_fac_ui ;
+: fct ( u -- z )    
+    1 u>z swap 1+ 1 do i zu* loop ;
+
+: fct2 ( u -- z )   
+    1 u>z swap 1+ 1 do i u>z z* loop ;
+
+: fct3 ( u -- z )   
+    z0 dup rot __gmpz_fac_ui ;
+
 : z-mem-stats ( -- )   
-    cr ." inits: " z-inits @ .   
-    cr ." clears: " z-clears @ . ;
+    cr ." z-inits:   " z-inits @ .   
+    bl emit ." z-clears:  " z-clears @ . ;
 \ #endregion
 
 previous set-current

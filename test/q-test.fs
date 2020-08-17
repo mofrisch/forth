@@ -21,7 +21,15 @@
 \ along with this program. If not, see http: //www.gnu.org/licenses/.
 \ #endregion
 
+require ../num/z.fs
+false constant q-coverage
+
+q-coverage [if] 
+include ../../gforth/coverage.fs 
+include ../num/q.fs
+[else]
 require ../num/q.fs
+[then]
 
 variable q1  q 1/2 q1 q!
 
@@ -42,15 +50,50 @@ t( qnew qinit q 0/1 q= )
 t( q0 qdrop true )
 t( q0 qdup qdrop q0 q= )
 t( q 1/2 qdup qdrop q 1/2 q= )
+t( q 15/30 qred q 1/2 q= )
+totals
+\ #endregion
+
+\ #region Conversion
+
+tests conversion
+t( z 2 z 6 zz>q q 1/3 q= )
+t( z 7 z>q q 7/1 q= )
+t( q 8/2 q>z z 4 z= )
+t( q 4/3 q>z z 1 z= )
+totals
+
+\ #endregion
+
+\ #region Printing
+tests printing
+t( ." you should see 1/7: " q 1/7 {q.} cr qdrop true )
+t( ." you should see 1/8: " q 1/8 q. cr true )
+totals
+\ #endregion
+
+\ #region Comparison
+tests comparison
+t( q 1/2 q 1/3 qcmp 1 = )
+t( q 1/3 q 1/2 qcmp -1 = )
+t( q 1/3 q 1/3 qcmp 0= )
+t( q 1/7 q 1/7 q= )
+t( q 1/7 q 1/3 q<> )
+t( q 1/3 q 1/8 q> )
+t( q 1/3 q 1/8 q>= )
+t( q 1/16 q 1/8 q< )
+t( q 1/16 q 1/8 q<= )
 totals
 \ #endregion
 
 
 
-
-
 \ #region Arithmetic tests
 tests Aritmetic tests
+t( q 1/2 qneg q -1/2 q= )
+t( q 1/5 qabs q 1/5 q= )
+t( q -1/5 qabs q 1/5 q= )
+t( q 1/9 qinv q 9/1 q= )
 t( q 1/3 q1 q! true )
 t( q 1/2 q1 q! true )
 t( q1 q@ q 1/3 q+ q 5/6 q= )
@@ -58,14 +101,15 @@ t( q 1/2 q1 q! true )
 t( q1 q@ q1 q@ q* q 1/4 q= ) 
 t( q1 q@ q 1/2 q+ q 1/1 q= )
 t( q 1/2 q 1/3 q+ q 5/6 q= )
+t( q 1/2 q 1/2 q- q0 q= )
+t( q 1/2 q 2/1 q/ q 1/4 q= )
 t( q1 qv-free true )
 t( q1 qv-free true )
 totals
 \ #endregion
 
-
-
-
 z-mem-stats
 q-mem-stats
+q-coverage [if] cr cov% [then]
+cr
 

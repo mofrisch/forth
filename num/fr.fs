@@ -23,10 +23,12 @@
 
 \ #region Definitions
 \ require tools.fs
+require z.fs
+require q.fs
 
 vocabulary mpfr
 get-current also mpfr definitions
-include ../generated/mpfr.fs
+require ../generated/mpfr.fs
 previous definitions also mpfr
 
 false value fr-total-inits
@@ -35,6 +37,7 @@ false value fr-print-inits
 fr-digits 1000 3321 */ value fr-decimal-digits \ divide by log(2,10)
 
 MPFR_RNDN value fr-round
+variable epsilon 
 
 [ifundef] fr-inits   variable fr-inits   variable fr-clears  [then]     
 0 fr-inits !   0 fr-clears !
@@ -44,12 +47,12 @@ MPFR_RNDN value fr-round
 
 : frinit ( fr -- ) 
     fr-inits ++
-    fr-print-inits if ." init: " dup . then
+    \ fr-print-inits if ." init: " dup . then
     fr-digits mpfr_init2 ;
 
 : frclear ( fr -- )
     fr-clears ++
-    fr-print-inits if ." clear: " dup . then
+    \ fr-print-inits if ." clear: " dup . then
     mpfr_clear ;
 
 : frnew (   -- fr ) \ create uninilized value
@@ -66,18 +69,18 @@ MPFR_RNDN value fr-round
     frfree ;
 
 : z>fr ( z -- fr )
-    frnew dup rot fr-round mpfr_set_z drop ;
+    dup frnew dup rot fr-round mpfr_set_z drop swap zdrop ;
 
 : fr! ( fr -- )
-    dup @ dup 0<> if frdrop else drop then ;
+    dup @ dup 0<> if frdrop else drop then ! ;
 
 
 : fr@ ( fr -- fr )
     @ frnew dup rot fr-round mpfr_set drop ;
 
+: frv-free ( var -- )
+   dup dup @ 0<> if @ frdrop then 0 swap ! ;
 
-\ : z-is ( z | n -- z -1 | n 0 ) 
-\    try dup dup __gmpz_cmp drop -1 iferror drop 0 then endtry ;
 \ #endregion
 
 : frdig ( u -- )
@@ -124,11 +127,23 @@ MPFR_RNDN value fr-round
 : s>fr ( s -- fr )   
     >r frnew dup r> fr-round mpfr_set_si drop ;
 
-: (fr) ( str -- fr )
+: {fr} ( str -- fr )
     frnew dup 2swap base @ fr-round mpfr_set_str drop ;
 
 : fr ( "value" -- fr )
-    parse-name (fr) ;
+    parse-name {fr} ;
+
+
+
+: eps ( -- fr )
+   epsilon fr@ ;
+
+: eps! ( fr -- )
+    epsilon fr! ;
+
+fr 1e-19 eps!
+
+    
 
 
 \ z! ( z var -- )   dup @ dup 0<> if zdrop else drop then ! ;
@@ -137,7 +152,7 @@ MPFR_RNDN value fr-round
 
 \ #region Arithmetics
 
-: frunary ( fr1 -- fr1 fr1 fr-round )
+: frunary ( fr1 -- fr1 fr1 fr1 fr-round )
     dup dup fr-round ;
 
 : frbin ( fr1 fr2 -- fr2 fr1 fr1 fr1 fr2 fr-round )
@@ -169,20 +184,10 @@ MPFR_RNDN value fr-round
 \ #endregion
 
 : q>fr ( q -- fr )
-    dup frnew dup rot qn@ fr-round mpfr_set_z drop swap
-    frnew dup rot qd@ fr-round mpfr_set_z drop
-    fr/
-    ;
+    dup dup frnew dup rot qn@ tuck fr-round mpfr_set_z drop zdrop swap
+    frnew dup rot qd@ tuck fr-round mpfr_set_z drop zdrop fr/ qnip ;
 
-
-
-\ : frinit (  -- fr ) \ init fr
-\    __mpfr_struct allocate throw  ~~ 
-\    dup 53 mpfr_init2 ~~ 
-\    dup 10 fr-round mpfr_set_ui ~~ drop ;
-
-
-: (fr.) ( fr --  ) \ print fr number
+: {fr.} ( fr --  ) \ print fr number
     dup >r 
     stdout 
     base @ 
@@ -192,38 +197,31 @@ MPFR_RNDN value fr-round
     __gmpfr_out_str drop ;
 
 : fr. ( fr --  ) \ description
-    (fr.) frdrop ;
+    {fr.} frdrop ;
 
 
 : #fr. ( fr u --  ) \ print fr number with u digits
-    >r dup >r stdout base @ 2r> fr-round __gmpfr_out_str drop ;
+    >r dup >r stdout base @ 2r> fr-round __gmpfr_out_str drop frdrop ;
 
 : frsin ( fr -- fr ) \ sine
-    dup dup fr-round mpfr_sin drop ;
+    frunary mpfr_sin drop ;
 
 : frupow ( fr u -- fr ) \ raise to the power of u
     >r dup dup r> fr-round mpfr_pow_ui drop ;
 
 
-: fr~abs ( fr1 fr2 fr3 - ? ) \ is |fr1 - fr2| < fr3 
-    -rot fr- frabs swap fr<
+: fr~abs ( fr1 fr2 fr3 - ? ) \ is |fr1 - fr2| <= fr3 
+    -rot fr- frabs swap fr<=
 ;
 
-: fr~rel ( fr1 fr2 fr3 -- ? ) \ |fr1 - fr2| < fr3 * | fr1 + fr2 |
-    -rot fr2dup fr- frabs ( fr3 fr1 fr2 res1 ) -rot fr+ frabs ( fr3 res1 res2 ) rot fr* ~~ fr< ;
-    \ fr1 fr2 fr- frabs ~~ fr1 fr2 fr+ frabs ~~ fr3 fr* ~~ fr< ;
-
-
-\ __mpfr_struct allocate throw dup 53 mpfr_init2 ~~ \ /* x: 53-bit precision */
-\ dup 10 fr-round mpfr_set_ui drop ~~ fr.
-\ dup 22 fr-round ~~ mpfr_pow_ui
-\    mpfr_sin (x, x, fr-round);
-\    mpfr_printf ("sin(10^22) = %.17Rg\n", x);
-\    mpfr_clear (x);
-\    return 0;
+: fr~rel ( fr1 fr2 fr3 -- ? ) \ |fr1 - fr2| <= fr3 * | fr1 + fr2 |
+    -rot fr2dup fr- frabs -rot fr+ frabs rot fr* fr<= ;
 
 : fr-mem-stats ( -- )   
-    cr ." inits: " fr-inits @ .   
-    cr ." clears: " fr-clears @ . ;
+    cr ." fr-inits:  " fr-inits @ .   
+    bl emit ." fr-clears: " fr-clears @ . ;
+
+: fr-mem-reset ( -- ) 
+    0 fr-inits !   0 fr-clears ! ;
 
 previous set-current

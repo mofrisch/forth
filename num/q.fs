@@ -22,9 +22,6 @@
 require intro.fs
 require z.fs 
 
-
--1 to z-total-inits    0 to z-print-inits
-
 variable q-debug-mem  -1 q-debug-mem !
 variable q-news       0 q-news !
 variable q-frees      0 q-frees !
@@ -72,6 +69,9 @@ drop 24 end-structure
 : qdup ( q1 -- q1 q1 )  
    qnew  2dup 2dup swap qn@  qn! swap qd@ qd! ;
 
+: qnip ( q1 q2 -- q2 )
+   swap qdrop ;
+
 : qv-free ( var -- )
    dup dup @ 0<> if @ qdrop then 0 swap ! ;
 
@@ -99,16 +99,16 @@ drop 24 end-structure
    qnew   dup z1tmp qn!   dup 1 u>z qd! ;
 
 : q>z ( q -- z )   
-   dup qn@ swap qd@ z/ ;
+   dup dup qn@ swap qd@ z/ swap qdrop ;
 
 
 
 \ Printing
-: (q.) ( q -- q )   
+: {q.} ( q -- q )   
    dup qn@ {z.} zdrop '/' emit dup qd@ {z.} zdrop ;
 
 : q. ( q -- )   
-   (q.) bl emit qdrop ;
+   {q.} bl emit qdrop ;
 \ : q.s ( -- )   
 \   ." <" depth 0 .r ." > "
 \   depth maxdepth-.s @ > if ." ... " then
@@ -167,7 +167,7 @@ drop 24 end-structure
    qinv q* qred ;
 
 : q-mem-stats ( -- )
-   cr ." news: " q-news @ .   
-   cr ." frees: " q-frees @ . ;
+   cr ." q-inits:   " q-news @ .   
+   bl emit ." q-clears:  " q-frees @ . ;
 
 
