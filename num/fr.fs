@@ -28,7 +28,7 @@ require q.fs
 
 vocabulary mpfr
 get-current also mpfr definitions
-require ../generated/mpfr.fs
+include ../generated/mpfr.fs
 previous definitions also mpfr
 
 false value fr-total-inits
@@ -37,7 +37,7 @@ false value fr-print-inits
 fr-digits 1000 3321 */ value fr-decimal-digits \ divide by log(2,10)
 
 MPFR_RNDN value fr-round
-variable epsilon 
+
 
 [ifundef] fr-inits   variable fr-inits   variable fr-clears  [then]     
 0 fr-inits !   0 fr-clears !
@@ -135,13 +135,7 @@ variable epsilon
 
 
 
-: eps ( -- fr )
-   epsilon fr@ ;
 
-: eps! ( fr -- )
-    epsilon fr! ;
-
-fr 1e-19 eps!
 
     
 

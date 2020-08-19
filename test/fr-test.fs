@@ -26,7 +26,7 @@ require ../num/q.fs
 
 start-coverage [if] fr-mem-reset [then]
 
-false constant fr-coverage
+true constant fr-coverage
 
 fr-coverage [if] 
 include ../../gforth/coverage.fs 
@@ -36,10 +36,17 @@ fr-mem-reset
 require ../num/fr.fs
 [then]
 
+variable epsilon 
+: eps ( -- fr )
+   epsilon fr@ ;
 
+: eps! ( fr -- )
+    epsilon fr! ;
+
+fr 1e-19 eps!
 variable fr_1   fr 1 fr_1 fr!
 variable fr_2   fr 2 fr_2 fr!
-variable old-epsilon   eps old-epsilon fr!   fr 1e-50 eps!
+
 
 tests initialization
 t( fr_1 fr@ fr_2 fr@ fr+ fr 3 eps fr~abs )
@@ -78,7 +85,7 @@ t( 2 u>fr fr 2 fr= )
 t( -2 s>fr fr -2 fr= )
 t( "-2.4e-03" {fr} fr -2.4e-3 fr= )
 t( fr -3.14e-2 "-3.14e-02" {fr} fr= )
-t( eps fr 1e-50 fr= )
+t( eps fr 1e-19 fr= )
 totals
 
 
@@ -110,12 +117,11 @@ t( fr 0 fr 0.001 fr 0.99999 fr~rel invert )
 totals 
 
 
-cr ." inner epsilon: " eps fr. 
+
 fr_1 frv-free
 fr_2 frv-free
-old-epsilon fr@ eps!
-old-epsilon frv-free
-cr ." outer epsilon: " eps fr.
+epsilon frv-free
+
 
 z-mem-stats
 q-mem-stats

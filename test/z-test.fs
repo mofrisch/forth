@@ -19,7 +19,7 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-false constant z-coverage
+true constant z-coverage
 
 z-coverage [if] 
 include ../../gforth/coverage.fs 
@@ -67,6 +67,7 @@ t( z 1 z 2 z 3 z 4 z2tuck z2drop z2drop z 4 z= swap z 3 z= and )
 t( z 1 z 2 z 3 z 4 z2over z2drop z2drop z 2 z= swap z 1 z= and )
 totals
 
+
 tests Comparison:
 t( z 1 z 1 z= )
 t( z 1 z 2 z<> )
@@ -82,10 +83,6 @@ tests creating
 t( 23 u>z z 23 z= )
 t( -12 s>z z -12 z= )
 t( s" 123" {z} z 123 z= )
-: invalid 
-   try  {z} iferror then endtry ;
-t( invalid s" abc" true )
-t( invalid s" 1" true )
 totals
 
 tests printing

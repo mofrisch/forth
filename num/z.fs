@@ -136,9 +136,7 @@ drop 16 end-structure
 
 : {z} ( str -- )
     z0 dup 2swap 10 __gmpz_set_str 0<> if 
-        zdrop
-        ." invalid character " 
-        z0
+        s" invalid character " throw
     then ;
 
 : z ( "name" -- z )

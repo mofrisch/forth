@@ -21,7 +21,7 @@
 
 variable start-dict   here start-dict !
 true value start-report
-true constant start-coverage
+false constant start-coverage
 
 : draw-seperator ( n -- )   0 ?do [char] - emit loop ;
 \ Redifine .( )

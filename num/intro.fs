@@ -22,7 +22,7 @@
 \ #endregion
 
 
-1 constant z_type
-2 constant q_type
-4 constant fr_type
-8 constant c_type
+0 constant z-type
+1 constant q-type
+2 constant fr-type
+3 constant c-type
