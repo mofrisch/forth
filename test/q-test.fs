@@ -32,6 +32,10 @@ require ../num/q.fs
 [then]
 
 variable q1  q 1/2 q1 q!
+q 2/3 q1 q!
+q 1/2 q1 q!
+q1 q@ q.
+q1 q@ q.
 
 \ #region Accessors
 tests accessors

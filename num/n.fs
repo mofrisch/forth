@@ -30,11 +30,12 @@ require intro.fs
 3 constant div-op
 
 \ Maybe better than the big case: in nop...
-create print-ops ' z. , ' q. , ' fr. ,
+create print-ops ' {z.} , ' {q.} , ' {fr.} ,
 create add-ops ' z+ , ' q+ , ' fr+ ,
 create sub-ops ' z- , ' q- , ' fr- ,
-create drop-ops ' zdrop , ' qdrop , ' frdrop
+create drop-ops ' zdrop , ' qdrop , ' frdrop ,
 create cmp-ops ' zcmp , ' qcmp , ' frcmp ,
+create arith-ops add-ops , sub-ops ,
 
 
 variable n-inits   0 n-inits !
@@ -61,27 +62,34 @@ drop 16 end-structure
    n-inits ++
    _num% allocate throw ;
 
+
+
+\ : ndup ( num1 -- num1 num1 )  
+\   nallocate  2dup 2dup swap ntype swap ntype! swap nvalue swap nvalue! ;
+
+: n-type-value ( num -- type obj )
+   dup dup ntype swap nvalue rot drop ;
+
+: n-type-value! ( num type obj -- )
+   rot dup ( t v n n ) rot swap nvalue! ntype! ;
+
+: ndup ( num1 -- num1 num1 )
+   nallocate 2dup ( n1 n2 n1 n2) swap ( n1 n2 n2 n1 )
+   n-type-value ( n1 n2 n2 t v ) n-type-value! ;
+
+: nfree-value ( num -- )
+   ~~ n-type-value drop-ops rot cells + @ execute ;
+
 : nfree ( num -- )
    n-clears ++
-   \ dup dup ntype z-type = if nvalue zdrop else
-   \ dup dup ntype q-type = if nvalue qdrop else
-   \ dup nvalue frdrop then then
+   dup nfree-value
     ~~ free throw ;
 
 : ndrop
    nfree ;
 
-: ndup ( num1 -- num1 num1 )  
-   nallocate  2dup 2dup swap ntype swap ntype! swap nvalue swap nvalue! ;
-
-: n-type-val ( num -- type obj )
-   dup dup ntype swap nvalue rot drop ; 
-
-: nfree-value ( var -- )
-   @  n-type-val  drop-ops rot  cells + @ execute ;
-
 : n! ( num var -- )
-   dup @ dup ~~ ( num var var@ var@ ) 0<> ( num var var@ ? ) ~~ if ndrop ~~ else drop then  ~~ ! ;
+   dup @ dup 0<> if ndrop else drop then ! ;
 
 : n@ ( var -- num)
    @ ndup nip ; 
@@ -102,13 +110,13 @@ drop 16 end-structure
    fr-type fr nmake ;
 
 : {n.} ( num -- num )
-   dup n-type-val print-ops rot cells + @ execute  ;
+   ~~ dup n-type-value print-ops rot cells + @ execute drop ~~ ;
    
 : n. ( num -- )
    {n.}  ndrop ;
 
 : nbefore ( n1 n2 -- n1 n1 n1val n2val )
-   swap tuck tuck  ( n1 n1 n2 n1 )  over swap  nvalue swap nvalue rot  ndrop ;   
+   swap tuck tuck  ( n1 n1 n2 n1 )  ~~ over swap  nvalue swap nvalue rot drop ;   
 
 : opz+ ( num1 num2 -- num )
     nbefore  z+ swap nvalue! ;
@@ -184,16 +192,43 @@ drop 16 end-structure
    else drop nq>fr 
    then then ;
 
-: n-common-type { num1 num2 -- num1 num2 type }
-      num1 ntype num2 ntype 2dup < if 
-         nip dup num1 swap nconvert num2 rot
-      else 2dup > if 
-         drop dup num2 swap nconvert num1 swap rot
-      else drop num1 num2 rot
-      then then  ;
+\ : n-common-type { num1 num2 -- num1 num2 type }
+\      num1 ntype num2 ntype 2dup < if 
+\         nip dup num1 swap nconvert num2 rot
+\      else 2dup > if 
+\         drop dup num2 swap nconvert num1 swap rot
+\      else drop num1 num2 rot
+\     then then  ;
+
+: n-common-type ( num 1 num2 -- type )
+   ntype swap ntype swap max ;
+
+\ : n-to-value ( num type -- obj )
+\   swap n-type-value ( type t1 v1 ) -rot 2dup > if  
+\         swap q-type = if 
+\         drop z>q
+\      else 
+\         z-type = if
+\            drop z>fr
+\         else 
+\            2drop q>fr
+\   else 
+\      2drop
+\  then 
+\  then 
+\  then ~~ ;
+
+: n-to-value ( num type -- obj )
+   swap n-type-value -rot 2dup > if
+   else 2drop then ; 
+
+
 
 : n+ ( num1 num2 -- num1+num2 ) \ add according to type
-   n-common-type add-op nop ;
+   ~~ 2dup 2dup n-common-type ( n1 n2 t ) 
+   tuck ~~ n-to-value ( n1 t z )-rot ~~ 
+   n-to-value  ~~ z+ z-type swap ~~ nmake dup . ~~
+   -rot ~~ ndrop ndrop dup . ;
 
 : n- ( num1 num2 -- num )
    n-common-type sub-op nop ;
