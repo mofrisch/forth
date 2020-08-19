@@ -91,6 +91,12 @@ drop 24 end-structure
 : q@ ( var -- q )
    @ qdup nip ;
 
+: q? ( num -- ? )
+   try qn@ zdrop iferror 2drop false nothrow 
+   else true then endtry
+   ;
+
+
 \ Conversion
 : zz>q { z1tmp z2tmp -- q }   
    qnew   dup z1tmp qn!   dup z2tmp qd!   qred ;

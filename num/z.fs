@@ -59,6 +59,7 @@ drop 16 end-structure
 : zfree ( z -- )   
     dup zclear free throw ;
 
+
 \ #endregion
 
 \ #region Comparison
@@ -125,6 +126,12 @@ drop 16 end-structure
     2swap z2tuck ;
 
 \ #endregion
+
+: z? ( cell -- ? )
+    try zdup __gmpz_cmp iferror 2drop false nothrow 
+    else true then endtry
+    ;
+
 
 \ #region Creating MPZ numbers
 

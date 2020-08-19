@@ -93,6 +93,11 @@ MPFR_RNDN value fr-round
 : fr2dup ( fr1 fr2 -- fr1 fr2 fr1 fr2 )
     swap frdup rot frdup -rot ;
 
+: fr? ( cell -- ? )
+    try frdup mpfr_cmp drop iferror 2drop false nothrow 
+    else true then endtry
+    ;
+
 
 \ #region Comparison
 : frcmp ( fr1 fr2 -- -1|0|1 ) \ -1: fr1<fr2 0: fr1=fr2 1: fr1>2

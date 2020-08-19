@@ -21,8 +21,8 @@
 \ along with this program. If not, see http: //www.gnu.org/licenses/.
 \ #endregion
 
-
-0 constant z-type
-1 constant q-type
-2 constant fr-type
-3 constant c-type
+0 constant other-type
+1 constant z-type
+2 constant q-type
+3 constant fr-type
+4 constant c-type
