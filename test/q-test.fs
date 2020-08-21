@@ -21,8 +21,12 @@
 \ along with this program. If not, see http: //www.gnu.org/licenses/.
 \ #endregion
 
+require ../num/intro.fs
 require ../num/z.fs
+
+true constant q-mem-debug
 false constant q-coverage
+[ifundef] run-all-tests false constant run-all-tests [then]
 
 q-coverage [if] 
 include ../../gforth/coverage.fs 
@@ -36,6 +40,12 @@ q 2/3 q1 q!
 q 1/2 q1 q!
 q1 q@ q.
 q1 q@ q.
+
+\ false  z-print-inits !
+print-summary
+\ print-detail
+cr 80 draw-seperator
+
 
 \ #region Accessors
 tests accessors
@@ -112,8 +122,10 @@ t( q1 qv-free true )
 totals
 \ #endregion
 
-z-mem-stats
-q-mem-stats
+run-all-tests invert [if]
+q-mem-debug [if] .s  z-mem-stats q-mem-stats [then]
 q-coverage [if] cr cov% [then]
-cr
+grand-totals
+[then]
+
 

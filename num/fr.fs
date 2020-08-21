@@ -79,7 +79,7 @@ MPFR_RNDN value fr-round
     @ frnew dup rot fr-round mpfr_set drop ;
 
 : frv-free ( var -- )
-   dup dup @ 0<> if @ frdrop then 0 swap ! ;
+   dup dup @ 0<> if @ frdrop else drop then 0 swap ! ;
 
 \ #endregion
 
@@ -93,11 +93,8 @@ MPFR_RNDN value fr-round
 : fr2dup ( fr1 fr2 -- fr1 fr2 fr1 fr2 )
     swap frdup rot frdup -rot ;
 
-: fr? ( cell -- ? )
-    try frdup mpfr_cmp drop iferror 2drop false nothrow 
-    else true then endtry
-    ;
-
+: frnip ( fr1 fr2 -- fr2 )
+    swap frdrop ;
 
 \ #region Comparison
 : frcmp ( fr1 fr2 -- -1|0|1 ) \ -1: fr1<fr2 0: fr1=fr2 1: fr1>2
@@ -222,5 +219,8 @@ MPFR_RNDN value fr-round
 
 : fr-mem-reset ( -- ) 
     0 fr-inits !   0 fr-clears ! ;
+
+: fr-show-mem
+   cr .s z-mem-stats q-mem-stats fr-mem-stats ;
 
 previous set-current

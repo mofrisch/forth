@@ -22,17 +22,39 @@
 \ #endregion
 
 require intro.fs
+require z.fs
+require q.fs
+require fr.fs
 
-create print-ops ' {z.} , ' {q.} , ' {fr.} ,
+also gmp also mpfr
+
+
+create print-ops{} ' . , ' z{z.} , ' {q.} , ' {fr.} ,
+create print-ops ' . , ' z. , ' q. , ' fr. ,
 
 : n-show-mem
    cr .s z-mem-stats q-mem-stats fr-mem-stats ;
 
-: ntype ( cell -- type ) 
-   dup z? if z-type else 
-   dup q? if q-type else 
-   dup fr? if fr-type else
-   other-type 
-   then then then nip ;
+: fr? ( cell -- cell ? )
+    try dup dup mpfr_cmp drop iferror drop false nothrow 
+    else true then endtry
+    ;
 
-: {n.} ( cell -- cell ) ;
+: q? ( cell -- cell ? )
+   try dup _q%-num @ dup __gmpz_cmp iferror drop false nothrow 
+   else drop true then endtry  ;
+
+: z? ( cell -- cell ? )
+    try dup @ dup here < swap 1000000 > and iferror drop false nothrow 
+    else then endtry ;
+
+: ntype ( cell -- cell type ) 
+   z? if z-type else  q? if q-type else fr? if fr-type else other-type 
+   then then then ;
+
+: {n.} ( cell -- cell ) 
+   ntype print-ops{} swap cells + @ execute ;
+
+: n. ( cell -- )
+   ntype print-ops swap cells + @ execute ;
+   

@@ -21,24 +21,25 @@
 \ along with this program. If not, see http: //www.gnu.org/licenses/.
 \ #endregion
 
+true constant run-all-tests
+true constant all-coverage 
 
-\ true constant all-coverage 
-
-\ all-coverage [if] 
-\ include ../../gforth/coverage.fs 
-\ include ../num/z.fs
-\ include ../num/q.fs
-\ include ../num/fr.fs
-\ include ../num/n.fs
-\ [then]
+all-coverage [if] 
+include ../../gforth/coverage.fs 
+include ../num/z.fs
+include ../num/q.fs
+include ../num/fr.fs
+include ../num/n.fs
+[then]
 
 require z-test.fs
 require q-test.fs
 require fr-test.fs
-require n-test.fs
+require n-test.fs 
+
 
 z-mem-stats
 q-mem-stats
 fr-mem-stats
-start-coverage [if] cr cov% [then]
+all-coverage [if] cr cov% [then]
 grand-totals

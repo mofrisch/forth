@@ -30,7 +30,7 @@ get-current also gmp definitions
 include ../generated/gmp.fs
 previous definitions also gmp
 
-variable z-print-inits   0 z-print-inits !
+variable z-print-inits   false z-print-inits !
 
 begin-structure __z_struct
 	drop 0 4 +field __z_struct-_mp_alloc
@@ -38,19 +38,20 @@ begin-structure __z_struct
 	drop 8 8 +field __z_struct-_mp_d
 drop 16 end-structure
 
-[ifundef] z-inits   variable z-inits   variable z-clears  [then]     
-0 z-inits !   0 z-clears !
+variable z-inits   0 z-inits ! 
+variable z-clears  0 z-clears ! 
+  
 \ #endregion
 
 \ #region Allocate and free
 : zinit ( z -- ) 
     z-inits ++
-    \ z-print-inits if ." init: " dup . then
+    z-print-inits @ if ." init: " dup . then
     dup __gmpz_init ;
 
 : zclear ( z -- )
     z-clears ++
-    \ z-print-inits if ." clear: " dup . then
+    z-print-inits @ if ." clear: " dup . then
     __gmpz_clear ;
 
 : z0 ( -- z )   
@@ -127,10 +128,7 @@ drop 16 end-structure
 
 \ #endregion
 
-: z? ( cell -- ? )
-    try zdup __gmpz_cmp iferror 2drop false nothrow 
-    else true then endtry
-    ;
+
 
 
 \ #region Creating MPZ numbers

@@ -21,12 +21,15 @@
 \ along with this program. If not, see http: //www.gnu.org/licenses/.
 \ #endregion
 
+require ../num/intro.fs
 require ../num/z.fs
 require ../num/q.fs
 
 start-coverage [if] fr-mem-reset [then]
 
-true constant fr-coverage
+true constant fr-mem-debug
+false constant fr-coverage
+[ifundef] run-all-tests false constant run-all-tests [then]
 
 fr-coverage [if] 
 include ../../gforth/coverage.fs 
@@ -47,6 +50,10 @@ fr 1e-19 eps!
 variable fr_1   fr 1 fr_1 fr!
 variable fr_2   fr 2 fr_2 fr!
 
+\ false  z-print-inits !
+print-summary
+\ print-detail
+cr 80 draw-seperator
 
 tests initialization
 t( fr_1 fr@ fr_2 fr@ fr+ fr 3 eps fr~abs )
@@ -58,15 +65,12 @@ t( 2 u>fr fr 2 fr= )
 t( -2 s>fr fr. cr true )
 totals
 
-
-
 tests auxiliary
 t( 1000 frdig fr-decimal-digits 301 = )
 t( 200 frdig fr-decimal-digits 60 = )
 t( fr 1.5 frdup fr 1.5 eps fr~abs swap fr 1.5 eps fr~abs and )
 t( fr 2.3 fr 3.1 fr2dup 2swap frdrop frdrop fr 3.1 eps fr~abs swap fr 2.3 eps fr~abs and )
 totals
-
 
 tests comparison
 t( fr_1 fr@ fr_2 fr@ frcmp -1 = )
@@ -88,7 +92,6 @@ t( fr -3.14e-2 "-3.14e-02" {fr} fr= )
 t( eps fr 1e-19 fr= )
 totals
 
-
 tests arithmetics
 t( fr 2.3 frunary fr-round = nip nip swap frdrop )
 t( fr 1.1 fr 4.5 frbin fr-round = nip nip nip swap fr 1.1 fr= and swap fr 4.5 fr= and )
@@ -100,14 +103,12 @@ t( fr 7.8 fr 2 fr/ fr 3.9 eps fr~abs )
 t( fr -7.8 frabs fr 7.8 fr= )
 totals
 
-z-mem-stats
 tests utility
 t( q 1/2 q>fr fr 0.5 fr= )
 z-mem-stats
 t( ." you should see 3.300...0e-1: " fr 0.33 {fr.} cr frdrop true )
 t( ." you should see 3.300...0e-1: " fr 0.33 fr. cr true )
 t( ." you should see 3.30000e-1: " fr 0.33 6 #fr. cr true )
-
 t( fr 0 frsin fr 0 fr= )
 t( fr 2 10 frupow fr 1024 fr= )
 t( fr 0 fr 0.001 fr 0.001 fr~abs )
@@ -116,15 +117,13 @@ t( fr 0 fr 0.001 fr 1. fr~rel )
 t( fr 0 fr 0.001 fr 0.99999 fr~rel invert )
 totals 
 
+tests deletion
+t( fr_1 frv-free true )
+t( fr_2 frv-free true )
+t( epsilon frv-free true )
 
-
-fr_1 frv-free
-fr_2 frv-free
-epsilon frv-free
-
-
-z-mem-stats
-q-mem-stats
-fr-mem-stats
+run-all-tests invert [if]
+fr-mem-debug [if] fr-show-mem [then]
 fr-coverage [if] cr cov% [then]
-cr
+grand-totals
+[then]

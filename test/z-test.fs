@@ -19,7 +19,11 @@
 \ You should have received a copy of the GNU General Public License
 \ along with this program. If not, see http://www.gnu.org/licenses/.
 
-true constant z-coverage
+require ../num/intro.fs
+
+true constant z-mem-debug
+false constant z-coverage
+[ifundef] run-all-tests false constant run-all-tests [then]
 
 z-coverage [if] 
 include ../../gforth/coverage.fs 
@@ -27,17 +31,15 @@ include ../num/z.fs
 [else]
 require ../num/z.fs
 [then]
+
+variable a1    
+variable a2   
+variable a3
+
 \ 0 z-print-inits !
-
-[ifundef] a1
-variable a1    variable a2   variable a3
-[then]
-
 print-summary
 \ print-detail
 cr 80 draw-seperator
-
-
 
 tests Variables:
 t( 12 u>z a1 z! a1 z@ z 12 z= )
@@ -66,7 +68,6 @@ t( z 1 z 2 z2dup 2swap z2drop z 2 z= swap z 1 z= and )
 t( z 1 z 2 z 3 z 4 z2tuck z2drop z2drop z 4 z= swap z 3 z= and )
 t( z 1 z 2 z 3 z 4 z2over z2drop z2drop z 2 z= swap z 1 z= and )
 totals
-
 
 tests Comparison:
 t( z 1 z 1 z= )
@@ -125,9 +126,12 @@ t( 100 fct 100 fct3 z= )
 t( ." you should see 100!: " 100 fct z. cr true )
 totals
 
-a1 zv-free
-a1 zv-free
+tests deletion
+t( a1 zv-free true )
+t( a1 zv-free true )
 
-z-mem-stats
+run-all-tests invert [if]
+z-mem-debug [if] .s z-mem-stats [then]
 z-coverage [if] cr cov% [then]
-cr
+grand-totals
+[then]
